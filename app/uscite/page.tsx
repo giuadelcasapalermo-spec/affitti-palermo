@@ -392,8 +392,58 @@ export default function PrimaNotaPage() {
         </div>
       )}
 
-      {/* Lista unificata */}
-      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      {/* Lista unificata — mobile */}
+      <div className="sm:hidden bg-white rounded-lg shadow-sm divide-y divide-gray-100">
+        {righe.length === 0 ? (
+          <div className="text-center text-gray-400 py-10">Nessun movimento registrato</div>
+        ) : (
+          <>
+            {righe.map(r => {
+              const s = saldoMap.get(r.rec.id) ?? 0;
+              const isE = r.tipo === 'entrata';
+              const e = r.rec as Entrata;
+              const u = r.rec as Uscita;
+              return (
+                <div key={r.rec.id} className={`flex items-center gap-2 px-3 py-2 border-l-2 ${isE ? 'border-l-green-400' : 'border-l-red-400'}`}>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[11px] text-gray-400 whitespace-nowrap">{fData(r.rec.data)}</span>
+                      {isE
+                        ? <span className={`text-[10px] px-1.5 py-0 rounded-full font-medium ${COL_ENTRATA[e.categoria]}`}>{e.categoria}</span>
+                        : <span className={`text-[10px] px-1.5 py-0 rounded-full font-medium ${COL_USCITA[u.categoria]}`}>{u.categoria}</span>
+                      }
+                    </div>
+                    <div className="text-xs font-medium text-gray-800 truncate">{r.rec.descrizione}</div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className={`text-sm font-bold ${isE ? 'text-green-700' : 'text-red-600'}`}>
+                      {isE ? '+' : '-'}€{r.rec.importo.toFixed(2)}
+                    </div>
+                    <div className={`text-[10px] font-medium ${s >= 0 ? 'text-green-700' : 'text-red-700'}`}>
+                      {s >= 0 ? '+' : ''}€{s.toFixed(2)}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1 shrink-0">
+                    <button onClick={() => isE ? setEditingE(e) : setEditingU(u)} className="text-gray-300 hover:text-blue-600"><Pencil size={13} /></button>
+                    <button onClick={() => isE ? eliminaEntrata(e.id) : eliminaUscita(u.id)} className="text-gray-300 hover:text-red-600"><Trash2 size={13} /></button>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="flex justify-between px-3 py-2 bg-gray-50 text-xs font-semibold">
+              <span className="text-gray-600">Totale mese</span>
+              <div className="flex gap-3">
+                <span className="text-green-700">+€{totEntrate.toFixed(2)}</span>
+                <span className="text-red-600">-€{totUscite.toFixed(2)}</span>
+                <span className={saldo >= 0 ? 'text-green-700' : 'text-red-700'}>{saldo >= 0 ? '+' : ''}€{saldo.toFixed(2)}</span>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Lista unificata — desktop */}
+      <div className="hidden sm:block bg-white rounded-lg shadow-sm overflow-x-auto">
         {righe.length === 0 ? (
           <div className="text-center text-gray-400 py-12">Nessun movimento registrato</div>
         ) : (
@@ -428,25 +478,13 @@ export default function PrimaNotaPage() {
                         : <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${COL_USCITA[u.categoria]}`}>{u.categoria}</span>
                       }
                     </td>
-                    <td className="px-4 py-3 text-right font-semibold text-green-700">
-                      {isE ? `+€${r.rec.importo.toFixed(2)}` : ''}
-                    </td>
-                    <td className="px-4 py-3 text-right font-semibold text-red-600">
-                      {!isE ? `-€${r.rec.importo.toFixed(2)}` : ''}
-                    </td>
-                    <td className={`px-4 py-3 text-right font-bold ${s >= 0 ? 'text-green-700' : 'text-red-700'}`}>
-                      {s >= 0 ? '+' : ''}€{s.toFixed(2)}
-                    </td>
+                    <td className="px-4 py-3 text-right font-semibold text-green-700">{isE ? `+€${r.rec.importo.toFixed(2)}` : ''}</td>
+                    <td className="px-4 py-3 text-right font-semibold text-red-600">{!isE ? `-€${r.rec.importo.toFixed(2)}` : ''}</td>
+                    <td className={`px-4 py-3 text-right font-bold ${s >= 0 ? 'text-green-700' : 'text-red-700'}`}>{s >= 0 ? '+' : ''}€{s.toFixed(2)}</td>
                     <td className="px-4 py-3">
                       <div className="flex gap-2 justify-end">
-                        <button
-                          onClick={() => isE ? setEditingE(e) : setEditingU(u)}
-                          className="text-gray-400 hover:text-blue-600"
-                        ><Pencil size={15} /></button>
-                        <button
-                          onClick={() => isE ? eliminaEntrata(e.id) : eliminaUscita(u.id)}
-                          className="text-gray-400 hover:text-red-600"
-                        ><Trash2 size={15} /></button>
+                        <button onClick={() => isE ? setEditingE(e) : setEditingU(u)} className="text-gray-400 hover:text-blue-600"><Pencil size={15} /></button>
+                        <button onClick={() => isE ? eliminaEntrata(e.id) : eliminaUscita(u.id)} className="text-gray-400 hover:text-red-600"><Trash2 size={15} /></button>
                       </div>
                     </td>
                   </tr>
@@ -458,9 +496,7 @@ export default function PrimaNotaPage() {
                 <td colSpan={3} className="px-4 py-3 text-gray-600">Totale mese</td>
                 <td className="px-4 py-3 text-right text-green-700">+€{totEntrate.toFixed(2)}</td>
                 <td className="px-4 py-3 text-right text-red-600">-€{totUscite.toFixed(2)}</td>
-                <td className={`px-4 py-3 text-right font-bold ${saldo >= 0 ? 'text-green-700' : 'text-red-700'}`}>
-                  {saldo >= 0 ? '+' : ''}€{saldo.toFixed(2)}
-                </td>
+                <td className={`px-4 py-3 text-right font-bold ${saldo >= 0 ? 'text-green-700' : 'text-red-700'}`}>{saldo >= 0 ? '+' : ''}€{saldo.toFixed(2)}</td>
                 <td />
               </tr>
             </tfoot>
