@@ -1141,5 +1141,32 @@
     "importo": 65,
     "note": "",
     "created_at": "2026-04-14T20:15:20.858Z"
+  },
+  {
+    "id": "0e40b9d0-5ed5-434c-9447-64c87836025f",
+    "data": "2026-04-08",
+    "descrizione": "Anna",
+    "categoria": "Forniture",
+    "importo": 70,
+    "note": "",
+    "created_at": "2026-04-14T20:18:01.138Z"
+  },
+  {
+    "id": "2a3745f8-59ba-434e-8065-8fa2914808b7",
+    "data": "2026-04-14",
+    "descrizione": "Tassa di soggiorno",
+    "categoria": "Tasse",
+    "importo": 252,
+    "note": "",
+    "created_at": "2026-04-14T20:18:01.466Z"
+  },
+  {
+    "id": "c80a482b-879b-4e6c-ae55-643dbc6e27f0",
+    "data": "2026-04-08",
+    "descrizione": "Anna",
+    "categoria": "Forniture",
+    "importo": 70,
+    "note": "",
+    "created_at": "2026-04-14T20:18:01.466Z"
   }
 ]
