@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { exportToSheets, importFromSheets } from '@/lib/googlesheets';
+import { syncToSheets, importFromSheets } from '@/lib/googlesheets';
 
 export async function POST(req: NextRequest) {
   const { direzione } = await req.json() as { direzione: 'export' | 'import' | 'both' };
@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
 
   try {
     if (direzione === 'export') {
-      await exportToSheets();
+      await syncToSheets();
       return NextResponse.json({ ok: true, messaggio: 'Dati esportati su Google Sheets' });
     }
 
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (direzione === 'both') {
-      await exportToSheets();
+      await syncToSheets();
       const { importate, ignorate } = await importFromSheets();
       return NextResponse.json({ ok: true, messaggio: `Sincronizzazione completata — importati ${importate}, aggiornato foglio` });
     }
