@@ -1,14 +1,5 @@
 [
   {
-    "id": "4c142239-cd9e-4e84-924f-6550004d724c",
-    "data": "2026-04-14",
-    "descrizione": "Tassa di soggiorno I trimestre 2026",
-    "categoria": "Tasse",
-    "importo": 252,
-    "note": "",
-    "created_at": "2026-04-14T08:46:59.629Z"
-  },
-  {
     "id": "47737544-e4b8-423b-9759-186afae6f499",
     "data": "2026-12-01",
     "descrizione": "Mobili Ikea - 208€",
