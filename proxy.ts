@@ -30,7 +30,7 @@ async function tokenValido(token: string): Promise<boolean> {
   }
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (PUBLIC.some((p) => pathname.startsWith(p))) {
