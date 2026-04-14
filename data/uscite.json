@@ -1,0 +1,1109 @@
+[
+  {
+    "id": "4c142239-cd9e-4e84-924f-6550004d724c",
+    "data": "2026-04-14",
+    "descrizione": "Tassa di soggiorno I trimestre 2026",
+    "categoria": "Tasse",
+    "importo": 252,
+    "note": "",
+    "created_at": "2026-04-14T08:46:59.629Z"
+  },
+  {
+    "id": "47737544-e4b8-423b-9759-186afae6f499",
+    "data": "2026-12-01",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.186Z"
+  },
+  {
+    "id": "59a8aad7-cd65-4232-bad9-554d691c53ed",
+    "data": "2026-12-01",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.186Z"
+  },
+  {
+    "id": "2d857477-cc02-4814-bb02-5ff857d7de79",
+    "data": "2026-11-01",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.188Z"
+  },
+  {
+    "id": "83934d25-7e7c-48a9-9a4f-b37c22f23d59",
+    "data": "2026-11-01",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.188Z"
+  },
+  {
+    "id": "828f3c3f-603d-4034-80b1-449c2351292c",
+    "data": "2026-10-01",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.189Z"
+  },
+  {
+    "id": "838fac0c-4181-4f3d-b6ba-d0da422b8ee6",
+    "data": "2026-10-01",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.189Z"
+  },
+  {
+    "id": "7130731c-0729-4fa7-8829-c4743d5bd48e",
+    "data": "2026-09-01",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.191Z"
+  },
+  {
+    "id": "4306d807-74ac-4aec-a5ee-c84595f88a39",
+    "data": "2026-09-01",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.191Z"
+  },
+  {
+    "id": "68b25c78-888f-45aa-87ea-5b367d6afb08",
+    "data": "2026-08-01",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.193Z"
+  },
+  {
+    "id": "25c75925-6b46-45a5-94ef-f1a8add3a4ef",
+    "data": "2026-08-01",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.193Z"
+  },
+  {
+    "id": "1d8fc45a-7023-45fd-bba3-baefccdd95b7",
+    "data": "2026-07-01",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.194Z"
+  },
+  {
+    "id": "1bc68ca6-9ae1-4130-9776-6bc47529152f",
+    "data": "2026-07-01",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.194Z"
+  },
+  {
+    "id": "5156acfb-fdd4-4d0e-8319-c7e9f2f6c148",
+    "data": "2026-06-01",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.195Z"
+  },
+  {
+    "id": "0c4d7471-c007-49b5-864a-bac65cfd3a83",
+    "data": "2026-06-01",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.195Z"
+  },
+  {
+    "id": "1ed7afc9-29c3-4fb1-ab3b-8b86949dc284",
+    "data": "2026-05-01",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.196Z"
+  },
+  {
+    "id": "be95bf14-2678-448c-a485-ebfbecbc3c4a",
+    "data": "2026-05-01",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.196Z"
+  },
+  {
+    "id": "667de10f-5c54-4e34-a1fb-e00dd76dd73a",
+    "data": "2026-04-01",
+    "descrizione": "Canone Fausta",
+    "categoria": "Affitto",
+    "importo": 400,
+    "note": "",
+    "created_at": "2026-04-14T08:52:29.198Z"
+  },
+  {
+    "id": "fd76d71b-c7db-4688-91b6-8e0d04ede0bd",
+    "data": "2026-04-01",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.198Z"
+  },
+  {
+    "id": "2b7d453e-c6a3-409c-ae55-7b92a8f1948b",
+    "data": "2026-04-01",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.198Z"
+  },
+  {
+    "id": "fe50fb8c-040a-4574-a38c-59aef62eaae2",
+    "data": "2026-04-01",
+    "descrizione": "Gas",
+    "categoria": "Utenze",
+    "importo": 80.5,
+    "note": "AMG",
+    "created_at": "2026-04-14T08:52:29.198Z"
+  },
+  {
+    "id": "23811b95-e15f-46f8-8219-d193518886e3",
+    "data": "2026-04-01",
+    "descrizione": "Luce",
+    "categoria": "Utenze",
+    "importo": 66,
+    "note": "AMG",
+    "created_at": "2026-04-14T08:52:29.199Z"
+  },
+  {
+    "id": "c4bd1d1a-8e40-47af-ac4c-fd73040eaaaf",
+    "data": "2026-04-01",
+    "descrizione": "Google Ads",
+    "categoria": "Pubblicità",
+    "importo": 72.13,
+    "note": "AMG",
+    "created_at": "2026-04-14T08:52:29.199Z"
+  },
+  {
+    "id": "0e40b9d0-5ed5-434c-9447-64c87836025f",
+    "data": "2026-04-08",
+    "descrizione": "Anna",
+    "categoria": "Forniture",
+    "importo": 65,
+    "note": "",
+    "created_at": "2026-04-14T08:52:29.199Z"
+  },
+  {
+    "id": "c38b7257-edc1-4376-8730-52968fb48b54",
+    "data": "2026-03-20",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "4d485dfc-4648-492d-abad-5ef9b3bbfe81",
+    "data": "2026-03-20",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "f673ac35-0f58-4d6f-bfbc-d87b1c75990c",
+    "data": "2026-03-01",
+    "descrizione": "Gas",
+    "categoria": "Utenze",
+    "importo": 70,
+    "note": "AMG",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "943cfd43-1fbc-43be-8ba2-599ed3aea190",
+    "data": "2026-03-01",
+    "descrizione": "Infostrada 23€",
+    "categoria": "Utenze",
+    "importo": 23,
+    "note": "Wind 3",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "a4de2041-9298-4385-9891-6101c01325d8",
+    "data": "2026-03-01",
+    "descrizione": "Luce",
+    "categoria": "Utenze",
+    "importo": 138.5,
+    "note": "AMG",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "dc13ba89-6956-461f-9dc1-787508efad6a",
+    "data": "2026-03-08",
+    "descrizione": "Cameriera Adriana",
+    "categoria": "Forniture",
+    "importo": 28,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "2f90b089-6ce9-4cd7-a316-68b4d2c1c26b",
+    "data": "2026-03-08",
+    "descrizione": "Acqua",
+    "categoria": "Forniture",
+    "importo": 5,
+    "note": "",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "ebda9e8e-14e8-4adf-875d-5e019630c3db",
+    "data": "2026-03-10",
+    "descrizione": "Cameriera Giusi",
+    "categoria": "Forniture",
+    "importo": 40,
+    "note": "Giusi",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "5b3193f5-5bdb-4c26-adb5-d72c61166bff",
+    "data": "2026-03-13",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 77,
+    "note": "Sandro",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "420f40b3-c14b-4d91-8ea9-5bd4d31a9e68",
+    "data": "2026-03-24",
+    "descrizione": "Anna",
+    "categoria": "Forniture",
+    "importo": 21,
+    "note": "",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "870176d7-dd90-41ff-8b7b-e3fc8269c184",
+    "data": "2026-03-24",
+    "descrizione": "Detersivi",
+    "categoria": "Forniture",
+    "importo": 34,
+    "note": "",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "bd844bbd-b947-4672-a8c3-a9a5d96f089d",
+    "data": "2026-03-26",
+    "descrizione": "Giusi",
+    "categoria": "Forniture",
+    "importo": 15,
+    "note": "",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "60a3fca1-7b2b-4c28-874e-8d85b2de18ec",
+    "data": "2026-03-26",
+    "descrizione": "Riparazione serratura porta",
+    "categoria": "Forniture",
+    "importo": 45,
+    "note": "Salvo",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "01e84c55-f432-4224-b1f4-5baa85894815",
+    "data": "2026-03-27",
+    "descrizione": "Giusi",
+    "categoria": "Forniture",
+    "importo": 20,
+    "note": "",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "4a50efca-b39e-42b3-84ff-0b8c4c1d8cf9",
+    "data": "2026-03-27",
+    "descrizione": "Serratura",
+    "categoria": "Forniture",
+    "importo": 45,
+    "note": "",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "30e36fbd-e842-4cb6-abab-9a6d78b5240a",
+    "data": "2026-03-27",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 85,
+    "note": "Samif",
+    "created_at": "2026-04-14T08:52:29.200Z"
+  },
+  {
+    "id": "e1d00cec-34f6-45c6-b710-b4ead0a7cfbf",
+    "data": "2026-02-20",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "a9bf3525-5e34-45fc-95f5-cd1052204090",
+    "data": "2026-02-20",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "8863ee8b-9ef3-4cb6-b47d-346e6d24d63f",
+    "data": "2026-02-01",
+    "descrizione": "Lavatrice - 34€",
+    "categoria": "Arredamento",
+    "importo": 34,
+    "note": "Agos — 340€ 10 rate da 34€ data inizio 15/10",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "029e8366-02f1-48f8-8678-b558d275429e",
+    "data": "2026-02-01",
+    "descrizione": "Infostrada 23€",
+    "categoria": "Utenze",
+    "importo": 23,
+    "note": "Wind 3",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "dc749f53-9cc6-4fd6-8005-8c7e32423f40",
+    "data": "2026-02-01",
+    "descrizione": "Condominio",
+    "categoria": "Utenze",
+    "importo": 135,
+    "note": "Amm. Bologna",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "ff12175f-83e1-4e41-a812-b005b72d85e7",
+    "data": "2026-02-07",
+    "descrizione": "Cameriera Adriana",
+    "categoria": "Forniture",
+    "importo": 21,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "e7a7047a-ccc4-41f2-9215-daddb5839c46",
+    "data": "2026-02-07",
+    "descrizione": "Detersivi e cartigenica",
+    "categoria": "Forniture",
+    "importo": 10,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "3b1e445e-7441-4a43-a6bb-bfc30c588c79",
+    "data": "2026-02-08",
+    "descrizione": "Cameriera Adriana",
+    "categoria": "Forniture",
+    "importo": 15,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "57682f2c-5ac3-4098-a2be-20feaf5fb245",
+    "data": "2026-02-09",
+    "descrizione": "Cameriera Susi",
+    "categoria": "Forniture",
+    "importo": 16,
+    "note": "Susi",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "e5a747b8-d003-4fe6-9b68-c61c9610f59e",
+    "data": "2026-02-09",
+    "descrizione": "Detersivi e aspirapolvere",
+    "categoria": "Forniture",
+    "importo": 60,
+    "note": "Susi",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "2ebb70ba-af4d-4cb9-b800-f5eb3ae0d584",
+    "data": "2026-02-11",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 70,
+    "note": "Toni",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "332642d2-c4b1-4ec3-ac35-7d4699d694c6",
+    "data": "2026-02-13",
+    "descrizione": "Lenzola",
+    "categoria": "Forniture",
+    "importo": 60,
+    "note": "Prezzi pazzi",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "f5976a38-6912-417e-ae87-c7c954792faa",
+    "data": "2026-02-15",
+    "descrizione": "Cameriera Adriana",
+    "categoria": "Forniture",
+    "importo": 24,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "0661d01f-4fd0-4a6f-a392-f53a780c0906",
+    "data": "2026-02-21",
+    "descrizione": "Lenzola",
+    "categoria": "Forniture",
+    "importo": 56,
+    "note": "Prezzi pazzi",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "67bb0275-442e-40fe-b1df-697ee61dee42",
+    "data": "2026-02-21",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 70,
+    "note": "Prezzi pazzi",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "cf58baf2-91f3-4a46-8c04-496a54ddd803",
+    "data": "2026-02-22",
+    "descrizione": "Cameriera Adriana",
+    "categoria": "Forniture",
+    "importo": 39,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "56f4cd21-9850-4d4a-966e-6b45af58f34e",
+    "data": "2026-02-28",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 30,
+    "note": "Prezzi pazzi",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "ee570f11-9bfc-4954-9cf6-16fd3a3d06ac",
+    "data": "2026-03-01",
+    "descrizione": "Cameriera Adriana",
+    "categoria": "Forniture",
+    "importo": 30,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.202Z"
+  },
+  {
+    "id": "ec7ab848-ee9a-4d4f-99ff-5fcff8a88e89",
+    "data": "2026-01-20",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.203Z"
+  },
+  {
+    "id": "43d7924f-71ad-4177-bc0f-2582f05da1a1",
+    "data": "2026-01-20",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.203Z"
+  },
+  {
+    "id": "6d730908-8df5-41e9-a9b0-48c9facca3e9",
+    "data": "2026-01-01",
+    "descrizione": "Gas",
+    "categoria": "Utenze",
+    "importo": 74,
+    "note": "AMG — Attivazione contarore ago 25",
+    "created_at": "2026-04-14T08:52:29.203Z"
+  },
+  {
+    "id": "3c932bc9-0c0c-421b-ace5-0f4359d8de92",
+    "data": "2026-01-01",
+    "descrizione": "Infostrada 23€",
+    "categoria": "Utenze",
+    "importo": 23,
+    "note": "Wind 3 — Mese DIc 25",
+    "created_at": "2026-04-14T08:52:29.203Z"
+  },
+  {
+    "id": "80ac3c97-b371-4b38-b67c-367bb146002d",
+    "data": "2026-01-01",
+    "descrizione": "Condominio",
+    "categoria": "Utenze",
+    "importo": 130,
+    "note": "Amm. Bologna — Mese dic 25",
+    "created_at": "2026-04-14T08:52:29.203Z"
+  },
+  {
+    "id": "2cbf83bd-3570-4a8d-a91b-cf36846769e2",
+    "data": "2026-01-01",
+    "descrizione": "Luce",
+    "categoria": "Utenze",
+    "importo": 124.5,
+    "note": "AMG",
+    "created_at": "2026-04-14T08:52:29.203Z"
+  },
+  {
+    "id": "71603f0e-245d-4771-82b7-04bae2c8b6d7",
+    "data": "2025-01-02",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 30,
+    "note": "Lavanderia Toni",
+    "created_at": "2026-04-14T08:52:29.203Z"
+  },
+  {
+    "id": "5805bff8-4187-4088-aef4-293bdb50ec02",
+    "data": "2025-01-02",
+    "descrizione": "Cameriera",
+    "categoria": "Forniture",
+    "importo": 50,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.203Z"
+  },
+  {
+    "id": "a0f0b41b-20e6-42b5-a261-e54e6b169635",
+    "data": "2026-01-11",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 50,
+    "note": "Lavanderia Toni",
+    "created_at": "2026-04-14T08:52:29.203Z"
+  },
+  {
+    "id": "a8f530e5-6cad-4ac6-8e7e-79a4a4397234",
+    "data": "2026-01-11",
+    "descrizione": "Cameriera",
+    "categoria": "Forniture",
+    "importo": 28,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.203Z"
+  },
+  {
+    "id": "62f6da11-1a13-4ed3-9c5c-6596cd5f2d65",
+    "data": "2025-12-20",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "e23f9c00-7fb1-43ce-90d0-57e056272857",
+    "data": "2025-12-20",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "f014c111-a9bd-4547-ab71-7198bdf052c9",
+    "data": "2025-12-07",
+    "descrizione": "Gas",
+    "categoria": "Utenze",
+    "importo": 48,
+    "note": "AMG — Attivazione contarore ago 25",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "c619805c-7df8-40bf-ba27-967f9e8d9628",
+    "data": "2025-12-01",
+    "descrizione": "Condominio",
+    "categoria": "Utenze",
+    "importo": 130,
+    "note": "Amm. Bologna — Mese dic 25",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "d4ce0318-a0d6-402a-a657-478f07173bba",
+    "data": "2025-12-07",
+    "descrizione": "Luce",
+    "categoria": "Utenze",
+    "importo": 347,
+    "note": "AMG",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "e67f67f2-6298-41f8-a7b0-aa73574e96b5",
+    "data": "2025-12-09",
+    "descrizione": "TARI 4 bimestri",
+    "categoria": "Utenze",
+    "importo": 203,
+    "note": "Comune Palermo",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "ab1ae244-d8fc-47f4-9e99-e99e595fc06e",
+    "data": "2025-12-05",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 30,
+    "note": "Lavanderia Toni",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "3f8288b1-48ec-42fc-b384-bd8ddd8a8670",
+    "data": "2025-12-07",
+    "descrizione": "Guasto sanitrit",
+    "categoria": "Forniture",
+    "importo": 40,
+    "note": "Tonino — Camera Rossa",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "9484bca6-8425-4dcd-b584-e5bf3227c8d7",
+    "data": "2025-12-07",
+    "descrizione": "Cameriera",
+    "categoria": "Forniture",
+    "importo": 28,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "18f7387c-adc4-4951-af01-5d0fc6e34cb5",
+    "data": "2025-12-13",
+    "descrizione": "Cameriera",
+    "categoria": "Forniture",
+    "importo": 28,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "a6073fab-7c7d-4848-9d05-3b4e91fb5be5",
+    "data": "2025-12-14",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 30,
+    "note": "Lavanderia Toni",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "10f01e5f-4682-4b20-b779-d619e216222d",
+    "data": "2025-12-14",
+    "descrizione": "Cameriera",
+    "categoria": "Forniture",
+    "importo": 24,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "ee36651b-73b4-4f5e-bca6-82415b8935dc",
+    "data": "2025-12-27",
+    "descrizione": "Lenzuola e asciugamani e spesa",
+    "categoria": "Forniture",
+    "importo": 194,
+    "note": "Dumas",
+    "created_at": "2026-04-14T08:52:29.205Z"
+  },
+  {
+    "id": "9e6185a5-7a22-4180-aad0-11e5533657b1",
+    "data": "2025-11-20",
+    "descrizione": "Mobili Ikea - 208€",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "eae257b8-7ae3-4511-94bb-80f03cf9584d",
+    "data": "2025-11-20",
+    "descrizione": "Televisori e frigo 122€",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "b239fd01-81ec-454c-b151-5725b921d74c",
+    "data": "2025-11-03",
+    "descrizione": "Gas",
+    "categoria": "Utenze",
+    "importo": 125.5,
+    "note": "AMG — Attivazione contarore ago 25",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "4941f13c-568d-44a4-b8bb-8d6ccf6bcc9d",
+    "data": "2025-11-03",
+    "descrizione": "Infostrada",
+    "categoria": "Utenze",
+    "importo": 23,
+    "note": "Wind 3 — Mese Ott 25",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "8f006aeb-32ef-4c27-a07a-a3879a70ea2f",
+    "data": "2025-11-03",
+    "descrizione": "Piante",
+    "categoria": "Arredamento",
+    "importo": 50,
+    "note": "DeCo",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "2af26b31-38fb-41ba-98b1-e10faddafdeb",
+    "data": "2025-11-04",
+    "descrizione": "Presa lavatrice e fili per sendere",
+    "categoria": "Forniture",
+    "importo": 90,
+    "note": "Non solo elettricità",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "8351a357-3f1e-463c-823b-e9132a870a92",
+    "data": "2025-11-04",
+    "descrizione": "Detersivo",
+    "categoria": "Forniture",
+    "importo": 10,
+    "note": "Ferdico",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "a20be871-0b73-4b88-9692-1823ca5c8472",
+    "data": "2025-11-05",
+    "descrizione": "Tende",
+    "categoria": "Arredamento",
+    "importo": 150,
+    "note": "",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "c5be5c4f-15eb-4daf-8399-e5735fc45a9c",
+    "data": "2025-11-06",
+    "descrizione": "Piumoni",
+    "categoria": "Arredamento",
+    "importo": 45,
+    "note": "CasaNova — Bianca - Verde",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "7c71c150-eefe-4ec7-ac47-2e1029115fa1",
+    "data": "2025-11-08",
+    "descrizione": "Pianta e targhetta porta",
+    "categoria": "Forniture",
+    "importo": 20,
+    "note": "Lidl",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "7fa52e75-70a5-4966-8eab-80be67c067a9",
+    "data": "2025-11-11",
+    "descrizione": "Installazione caldaia",
+    "categoria": "Arredamento",
+    "importo": 127,
+    "note": "Cosmogas",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "d15a5bb9-b40e-48b9-b07b-225893c74403",
+    "data": "2025-11-15",
+    "descrizione": "Piante",
+    "categoria": "Arredamento",
+    "importo": 35,
+    "note": "Penny",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "9b29cab2-2c46-4d0a-894a-95a5dddd67e8",
+    "data": "2025-11-20",
+    "descrizione": "Piumoni",
+    "categoria": "Arredamento",
+    "importo": 220,
+    "note": "Demaun",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "88906f61-3536-49dc-8a52-d5ccf1d7cd0c",
+    "data": "2025-11-25",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 30,
+    "note": "Lavanderia Toni",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "f99532ea-8010-4575-90a5-692478bf6c45",
+    "data": "2025-11-25",
+    "descrizione": "Caffe",
+    "categoria": "Forniture",
+    "importo": 10,
+    "note": "Caffe via Terrasanta",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "84a42137-6548-4751-ae14-b6bc9185f709",
+    "data": "2025-11-25",
+    "descrizione": "Lenzuola e asciugamani e spesa",
+    "categoria": "Forniture",
+    "importo": 80,
+    "note": "GFC",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "1c8d2072-c45f-4d17-b873-9018b5fae947",
+    "data": "2025-11-28",
+    "descrizione": "Cameriera",
+    "categoria": "Forniture",
+    "importo": 28,
+    "note": "Adriana",
+    "created_at": "2026-04-14T08:52:29.206Z"
+  },
+  {
+    "id": "3f6a310e-5824-4572-ac43-d76db419c9a1",
+    "data": "2025-10-20",
+    "descrizione": "Mobili Ikea",
+    "categoria": "Arredamento",
+    "importo": 206,
+    "note": "Agos — 6.246€ 36 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "4b75bec7-32be-41c9-bf23-48a164fa808e",
+    "data": "2025-10-20",
+    "descrizione": "Televisori e frigo",
+    "categoria": "Arredamento",
+    "importo": 122,
+    "note": "Agos — 1.220€ 10 rate data inizio 15/09",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "99618032-ccc6-4f37-8bab-83edd64d8e45",
+    "data": "2025-10-10",
+    "descrizione": "Gas",
+    "categoria": "Utenze",
+    "importo": 125.5,
+    "note": "AMG — Attivazione contarore ago 25",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "3c45fb20-9d49-472c-aa83-ab3a490acbf2",
+    "data": "2025-10-02",
+    "descrizione": "Infostrada",
+    "categoria": "Utenze",
+    "importo": 23,
+    "note": "Wind 3 — Mese sett 25",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "1b881c67-19b1-4c84-b3bd-b32379aa8a42",
+    "data": "2025-10-02",
+    "descrizione": "Mensole stanze da letto",
+    "categoria": "Arredamento",
+    "importo": 122.97,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "0416fb64-96db-49e7-a7a6-f4996f05bbb0",
+    "data": "2025-10-02",
+    "descrizione": "Lenzuola",
+    "categoria": "Forniture",
+    "importo": 52.3,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "12c0df4d-893f-4303-9cca-78c0162a678a",
+    "data": "2025-10-03",
+    "descrizione": "Cuscini",
+    "categoria": "Forniture",
+    "importo": 145.86,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "d88903c9-fda4-496a-a53d-3b2443816336",
+    "data": "2025-10-03",
+    "descrizione": "Appendi accappatoio",
+    "categoria": "Arredamento",
+    "importo": 16.38,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "4ab617b7-5d23-4cf1-bcc6-b6af944f9a55",
+    "data": "2025-10-03",
+    "descrizione": "Porta frutta",
+    "categoria": "Arredamento",
+    "importo": 15.66,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "70b77786-a2fe-4a13-beb2-5c5205bd03ab",
+    "data": "2017-10-03",
+    "descrizione": "Luce",
+    "categoria": "Utenze",
+    "importo": 59,
+    "note": "AMG",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "ae8f2781-3ed3-41a6-a1e3-ef14008fe84e",
+    "data": "2025-10-04",
+    "descrizione": "Cappa cucina",
+    "categoria": "Arredamento",
+    "importo": 44.94,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "93835155-5318-4868-b8e0-c95bef17e802",
+    "data": "2025-10-04",
+    "descrizione": "Acquisto poltrona",
+    "categoria": "Arredamento",
+    "importo": 120,
+    "note": "Ikea",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "232fcca1-2abe-45db-a2ee-b12d18fc1a85",
+    "data": "2025-10-22",
+    "descrizione": "Cassetta medica",
+    "categoria": "Arredamento",
+    "importo": 19.9,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "00983f76-abd1-4126-8ce3-17d8446f0988",
+    "data": "2025-10-22",
+    "descrizione": "Rilevatore monossido",
+    "categoria": "Arredamento",
+    "importo": 19.5,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "41f4c233-5442-432e-86c7-3c4a0411b0e0",
+    "data": "2025-10-22",
+    "descrizione": "Pannello divisorio",
+    "categoria": "Arredamento",
+    "importo": 77.9,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "0c9118af-a033-4a07-9330-24e0825aaeec",
+    "data": "2025-10-22",
+    "descrizione": "Esitontori",
+    "categoria": "Arredamento",
+    "importo": 39.99,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "f4c2fed4-4a1b-4824-a866-311386c89ea7",
+    "data": "2025-10-24",
+    "descrizione": "Asciugamani",
+    "categoria": "Forniture",
+    "importo": 92.6,
+    "note": "Amazon",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "a02be218-abc8-4a2a-8566-f57df5b91d3a",
+    "data": "2025-10-25",
+    "descrizione": "Lenzuola e asciugamani",
+    "categoria": "Forniture",
+    "importo": 180,
+    "note": "Dumas",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "8d126154-0044-4c83-a10f-83d81c654039",
+    "data": "2025-10-28",
+    "descrizione": "Dosatori sapone bagno e cestini",
+    "categoria": "Forniture",
+    "importo": 42,
+    "note": "Ikea",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "22394e01-fa3a-4583-b7fc-b3cba840231d",
+    "data": "2025-10-30",
+    "descrizione": "Acquisto foni",
+    "categoria": "Forniture",
+    "importo": 40,
+    "note": "UniEuro",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "b1c9ef26-3a66-48e6-8400-e8fb4fa16939",
+    "data": "2025-10-30",
+    "descrizione": "Detersivi e shampo",
+    "categoria": "Forniture",
+    "importo": 100,
+    "note": "Ferdico",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "e46605ee-b739-4b19-9089-9123626220a5",
+    "data": "2025-10-30",
+    "descrizione": "Copia chiavi e varie ferramenta",
+    "categoria": "Forniture",
+    "importo": 50,
+    "note": "Non solo elettricità",
+    "created_at": "2026-04-14T08:52:29.207Z"
+  },
+  {
+    "id": "e0f73c27-d997-44ef-81e0-21fe336d7292",
+    "data": "2026-04-13",
+    "descrizione": "Lavanderia",
+    "categoria": "Forniture",
+    "importo": 70,
+    "note": "",
+    "created_at": "2026-04-14T09:43:19.496Z"
+  },
+  {
+    "id": "6ea5c8ae-3aaa-4f56-b3f5-3356aa30d690",
+    "data": "2026-02-28",
+    "descrizione": "Cedolare secca booking",
+    "categoria": "Tasse",
+    "importo": 197.78,
+    "note": "Febbraio",
+    "created_at": "2026-04-14T09:53:50.636Z"
+  },
+  {
+    "id": "8fa6095e-168c-4945-b0c0-f874a59e65f9",
+    "data": "2026-01-15",
+    "descrizione": "Cedolare secca booking",
+    "categoria": "Tasse",
+    "importo": 204.45,
+    "note": "Gennaio",
+    "created_at": "2026-04-14T09:53:50.638Z"
+  }
+]

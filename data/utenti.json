@@ -1,0 +1,14 @@
+[
+  {
+    "id": "1",
+    "username": "dario",
+    "salt": "giuadel2026s",
+    "hash": "2768b6b1ed70c7ebbcd83ef9d9c1a65fb3aeceb58135574a2866280ab7ed97ab"
+  },
+  {
+    "id": "e85f606e-94b4-422b-806b-3b5d2153687e",
+    "username": "ambra",
+    "salt": "7cdda500390d60b88c202d99",
+    "hash": "f0d2e872d8790636392a119f5fe3e95fa83095707e21570f256f2316779a9e0f"
+  }
+]

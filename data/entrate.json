@@ -1,0 +1,616 @@
+[
+  {
+    "id": "87655972-734c-4589-8adb-2c6c4dc6933f",
+    "data": "2026-04-07",
+    "descrizione": "Pagamento",
+    "categoria": "Booking.com",
+    "importo": 231.3,
+    "note": "",
+    "created_at": "2026-04-14T09:11:46.942Z"
+  },
+  {
+    "id": "5d84095d-219a-4ad7-8325-a40e61421398",
+    "data": "2026-04-10",
+    "descrizione": "Booking",
+    "categoria": "Booking.com",
+    "importo": 1628.9,
+    "note": "",
+    "created_at": "2026-04-14T09:12:12.810Z"
+  },
+  {
+    "id": "99d27082-8ad7-4280-912b-81c3cb3a0953",
+    "data": "2026-04-10",
+    "descrizione": "Moretti Walter",
+    "categoria": "Privato",
+    "importo": 70,
+    "note": "",
+    "created_at": "2026-04-14T09:12:47.569Z"
+  },
+  {
+    "id": "99bc8cca-c764-4964-b94c-bd1c78e44ae8",
+    "data": "2026-04-08",
+    "descrizione": "Giovanna amica sorella Giacomo",
+    "categoria": "Privato",
+    "importo": 270,
+    "note": "",
+    "created_at": "2026-04-14T09:15:16.722Z"
+  },
+  {
+    "id": "fed4bbbc-7ef7-4fe0-91c3-f62cc2abe514",
+    "data": "2026-01-05",
+    "descrizione": "Booking",
+    "categoria": "Booking.com",
+    "importo": 35.88,
+    "note": "",
+    "created_at": "2026-04-14T09:35:06.576Z"
+  },
+  {
+    "id": "77d3226e-e515-416c-9ec0-a6465bffc3bb",
+    "data": "2026-01-09",
+    "descrizione": "Booking",
+    "categoria": "Booking.com",
+    "importo": 670.62,
+    "note": "",
+    "created_at": "2026-04-14T09:35:33.282Z"
+  },
+  {
+    "id": "cd8ec984-62cc-44c0-855b-2255c48d084c",
+    "data": "2026-02-13",
+    "descrizione": "Booking",
+    "categoria": "Booking.com",
+    "importo": 182.69,
+    "note": "",
+    "created_at": "2026-04-14T09:36:07.057Z"
+  },
+  {
+    "id": "a8dfb004-8787-4908-b238-bec7d02d4d6a",
+    "data": "2026-02-20",
+    "descrizione": "Booking",
+    "categoria": "Booking.com",
+    "importo": 204.12,
+    "note": "",
+    "created_at": "2026-04-14T09:36:28.460Z"
+  },
+  {
+    "id": "3b9e53f8-726c-4746-90ee-11decc9558ed",
+    "data": "2026-02-27",
+    "descrizione": "Booking",
+    "categoria": "Booking.com",
+    "importo": 203.97,
+    "note": "",
+    "created_at": "2026-04-14T09:36:48.804Z"
+  },
+  {
+    "id": "ef549e88-7414-4155-9597-1573da541dfa",
+    "data": "2026-03-06",
+    "descrizione": "Booking",
+    "categoria": "Booking.com",
+    "importo": 72.32,
+    "note": "",
+    "created_at": "2026-04-14T09:37:09.307Z"
+  },
+  {
+    "id": "6b71774b-e0ed-4cea-8d14-6635a2f99d5b",
+    "data": "2026-03-20",
+    "descrizione": "Booking",
+    "categoria": "Booking.com",
+    "importo": 306.98,
+    "note": "",
+    "created_at": "2026-04-14T09:37:31.817Z"
+  },
+  {
+    "id": "32ea8a21-a426-4324-b221-19f96b64384d",
+    "data": "2026-03-27",
+    "descrizione": "Booking",
+    "categoria": "Booking.com",
+    "importo": 301.29,
+    "note": "",
+    "created_at": "2026-04-14T09:37:51.029Z"
+  },
+  {
+    "id": "e5a8e9b1-bcf1-466b-8dff-ee44668a38ad",
+    "data": "2026-04-08",
+    "descrizione": "Giovanna amica sorella Giacomo",
+    "categoria": "Privato",
+    "importo": 140,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.544Z",
+    "camera_id": 3
+  },
+  {
+    "id": "a25046e5-7896-418a-a90b-fed0ed890252",
+    "data": "2026-04-08",
+    "descrizione": "Giovanna amica sorella Giacomo",
+    "categoria": "Privato",
+    "importo": 140,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.544Z",
+    "camera_id": 2
+  },
+  {
+    "id": "818b883f-6967-42a8-a075-9a7edee88389",
+    "data": "2026-03-06",
+    "descrizione": "Francesca",
+    "categoria": "Privato",
+    "importo": 100,
+    "note": "Colazione al bar 3€ ciascuno",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 3
+  },
+  {
+    "id": "551551f9-3eed-4f2c-8a90-bd9b03e836f6",
+    "data": "2026-03-06",
+    "descrizione": "Francesca",
+    "categoria": "Privato",
+    "importo": 100,
+    "note": "Colazione al bar 3€ ciascuno",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 2
+  },
+  {
+    "id": "e533d71b-a61d-41ba-92f4-14a0144498a9",
+    "data": "2026-03-06",
+    "descrizione": "Francesca",
+    "categoria": "Privato",
+    "importo": 100,
+    "note": "Colazione al bar 3€ ciascuno",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 4
+  },
+  {
+    "id": "6af3d293-dbef-42a9-9358-4e273800727d",
+    "data": "2026-03-06",
+    "descrizione": "Francesca Quadrupla",
+    "categoria": "Privato",
+    "importo": 200,
+    "note": "Colazione al bar 3€ ciascuno",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 1
+  },
+  {
+    "id": "5a4a3166-3104-46fb-bb4f-b5cd4ceade01",
+    "data": "2026-03-08",
+    "descrizione": "Comande",
+    "categoria": "Privato",
+    "importo": 50,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 4
+  },
+  {
+    "id": "798a944f-8597-42a4-afb4-290a85005c97",
+    "data": "2026-03-10",
+    "descrizione": "Caroline",
+    "categoria": "Privato",
+    "importo": 60,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 3
+  },
+  {
+    "id": "ef4ee941-a558-4902-87b8-acd446946661",
+    "data": "2026-03-10",
+    "descrizione": "Caroline",
+    "categoria": "Privato",
+    "importo": 60,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 2
+  },
+  {
+    "id": "613463d5-7da1-4f00-be91-ecd0e7e4114a",
+    "data": "2026-03-10",
+    "descrizione": "Caroline",
+    "categoria": "Privato",
+    "importo": 60,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 4
+  },
+  {
+    "id": "9d3652b3-6124-4ded-a9bf-923f18afbd52",
+    "data": "2026-03-19",
+    "descrizione": "Sorella di Giacomo",
+    "categoria": "Privato",
+    "importo": 60,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 3
+  },
+  {
+    "id": "f1f12552-0cac-4f6b-93eb-25b998f3b1bd",
+    "data": "2026-03-19",
+    "descrizione": "Sorella di Giacomo",
+    "categoria": "Privato",
+    "importo": 60,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 2
+  },
+  {
+    "id": "cb3c10e9-91f9-4e19-8c9c-fd98d15eb18b",
+    "data": "2026-03-19",
+    "descrizione": "Sorella di Giacomo",
+    "categoria": "Privato",
+    "importo": 60,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 4
+  },
+  {
+    "id": "6b558553-cb57-451e-afec-9670d0226558",
+    "data": "2026-03-19",
+    "descrizione": "Casadei Natascia",
+    "categoria": "Privato",
+    "importo": 100,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 2
+  },
+  {
+    "id": "785b2990-f7f4-496a-94a7-66ed3ba53ad7",
+    "data": "2026-03-21",
+    "descrizione": "Roberta AirBnb",
+    "categoria": "Privato",
+    "importo": 110,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 4
+  },
+  {
+    "id": "91416622-a669-4241-8b96-26ddfc65b10b",
+    "data": "2026-03-21",
+    "descrizione": "Roberta AirBnb",
+    "categoria": "Privato",
+    "importo": 110,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 5
+  },
+  {
+    "id": "dc6c3708-d3da-407f-bbb0-d699b30927be",
+    "data": "2026-03-26",
+    "descrizione": "Dott.ssa di Agrigento ore 17",
+    "categoria": "Privato",
+    "importo": 50,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.547Z",
+    "camera_id": 3
+  },
+  {
+    "id": "3615eb44-8f54-42b0-9035-8f7052fb2b0b",
+    "data": "2026-02-07",
+    "descrizione": "Famiglia Canicatti",
+    "categoria": "Privato",
+    "importo": 80,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.548Z",
+    "camera_id": 1
+  },
+  {
+    "id": "6b3771b5-9b75-48b1-90de-3a6b47a00947",
+    "data": "2026-02-13",
+    "descrizione": "Laura",
+    "categoria": "Privato",
+    "importo": 280,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.548Z",
+    "camera_id": 1
+  },
+  {
+    "id": "a9777347-feda-455b-8a61-76bba0dc56bb",
+    "data": "2026-02-14",
+    "descrizione": "Paola Carollo",
+    "categoria": "Privato",
+    "importo": 70,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.548Z",
+    "camera_id": 3
+  },
+  {
+    "id": "506cac52-1fd3-46c1-9289-8c3cc607cdc5",
+    "data": "2026-02-14",
+    "descrizione": "Cristina Boriana e figlia",
+    "categoria": "Privato",
+    "importo": 210,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.548Z",
+    "camera_id": 4
+  },
+  {
+    "id": "5b7fb986-6998-4a78-b647-867007656259",
+    "data": "2026-02-19",
+    "descrizione": "Dellabruna Giuliana",
+    "categoria": "Privato",
+    "importo": 110,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.548Z",
+    "camera_id": 5
+  },
+  {
+    "id": "2c51d1dc-9914-40e8-ba3a-f93546aa622a",
+    "data": "2026-02-21",
+    "descrizione": "De Mariano Dario",
+    "categoria": "Privato",
+    "importo": 50,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.548Z",
+    "camera_id": 5
+  },
+  {
+    "id": "06d18007-6b0f-4af0-a5de-12a6666cf66b",
+    "data": "2026-02-25",
+    "descrizione": "Leonardo",
+    "categoria": "Privato",
+    "importo": 160,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.548Z",
+    "camera_id": 2
+  },
+  {
+    "id": "8eaca371-ce03-4b03-929f-03fe8810931d",
+    "data": "2026-02-27",
+    "descrizione": "Matellini Maruska",
+    "categoria": "Privato",
+    "importo": 60,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.548Z",
+    "camera_id": 1
+  },
+  {
+    "id": "e575caa2-8109-4933-9a24-c8b12d2c8c78",
+    "data": "2026-02-27",
+    "descrizione": "Matellini Maruska",
+    "categoria": "Privato",
+    "importo": 60,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.548Z",
+    "camera_id": 5
+  },
+  {
+    "id": "c1d41b4c-effa-4b9f-967b-3500ccda7c7c",
+    "data": "2026-02-27",
+    "descrizione": "Matellini Maruska",
+    "categoria": "Privato",
+    "importo": 60,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.548Z",
+    "camera_id": 4
+  },
+  {
+    "id": "491f521e-2708-46a2-84b8-9d9db78f3483",
+    "data": "2025-01-01",
+    "descrizione": "Mery Veronese 300€ + 48€",
+    "categoria": "Privato",
+    "importo": 300,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.550Z",
+    "camera_id": 1
+  },
+  {
+    "id": "cf1cb0bc-0ff1-442c-9515-138e378a130b",
+    "data": "2025-01-01",
+    "descrizione": "Radina 67€ + 2 = 134€ + 16€ tax",
+    "categoria": "Privato",
+    "importo": 134,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.550Z",
+    "camera_id": 3
+  },
+  {
+    "id": "9fc70dd9-92ee-4c0e-9b49-bd6e14dd6822",
+    "data": "2026-01-03",
+    "descrizione": "Claudio Novara",
+    "categoria": "Privato",
+    "importo": 210,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.550Z",
+    "camera_id": 1
+  },
+  {
+    "id": "1dfbc734-2e83-44be-85d1-8493349edc5d",
+    "data": "2026-01-04",
+    "descrizione": "Danilo",
+    "categoria": "Privato",
+    "importo": 120,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.550Z",
+    "camera_id": 4
+  },
+  {
+    "id": "312f4b91-9534-4192-86e5-5923ce330195",
+    "data": "2025-12-05",
+    "descrizione": "Fabrizio Mele 200€",
+    "categoria": "Privato",
+    "importo": 200,
+    "note": "Tre stanze",
+    "created_at": "2026-04-14T09:40:01.551Z"
+  },
+  {
+    "id": "6f276aca-57ae-4b42-b229-739f30987e64",
+    "data": "2025-12-05",
+    "descrizione": "Greco Mari",
+    "categoria": "Privato",
+    "importo": 116,
+    "note": "Tre stanze",
+    "created_at": "2026-04-14T09:40:01.551Z"
+  },
+  {
+    "id": "bd59303c-a250-4285-9ed0-9ca80454f8e8",
+    "data": "2025-12-14",
+    "descrizione": "Greco Mari",
+    "categoria": "Privato",
+    "importo": 63,
+    "note": "Camere verde",
+    "created_at": "2026-04-14T09:40:01.551Z",
+    "camera_id": 4
+  },
+  {
+    "id": "4435a0a6-a5c9-4663-9344-ebd0a2b9b932",
+    "data": "2025-12-30",
+    "descrizione": "Barbara Pennisi",
+    "categoria": "Privato",
+    "importo": 80,
+    "note": "Camere Gialla",
+    "created_at": "2026-04-14T09:40:01.551Z",
+    "camera_id": 2
+  },
+  {
+    "id": "514b82dc-f7fb-46f1-9a70-56f71ff4af5f",
+    "data": "2025-12-30",
+    "descrizione": "Vincenzo Piraneo",
+    "categoria": "Privato",
+    "importo": 150,
+    "note": "Camera Verde",
+    "created_at": "2026-04-14T09:40:01.551Z",
+    "camera_id": 4
+  },
+  {
+    "id": "ae0e38a1-c5ac-470a-82ab-b6555b0f4b79",
+    "data": "2025-12-31",
+    "descrizione": "Riccobono",
+    "categoria": "Privato",
+    "importo": 98,
+    "note": "Camere Bianca",
+    "created_at": "2026-04-14T09:40:01.551Z",
+    "camera_id": 1
+  },
+  {
+    "id": "c073d95e-3297-463e-abee-0b9c04eaf198",
+    "data": "2025-11-06",
+    "descrizione": "Krzysztof Kurilec",
+    "categoria": "Privato",
+    "importo": 55,
+    "note": "Doppia",
+    "created_at": "2026-04-14T09:40:01.552Z",
+    "camera_id": 2
+  },
+  {
+    "id": "5a854362-985a-40ab-b87a-ded820991f98",
+    "data": "2025-11-08",
+    "descrizione": "Croazza Giacominia",
+    "categoria": "Privato",
+    "importo": 70,
+    "note": "Doppia",
+    "created_at": "2026-04-14T09:40:01.552Z",
+    "camera_id": 1
+  },
+  {
+    "id": "52c21ca2-d280-46e6-9354-515757363734",
+    "data": "2025-11-14",
+    "descrizione": "Marco Iliad",
+    "categoria": "Privato",
+    "importo": 68,
+    "note": "Doppia",
+    "created_at": "2026-04-14T09:40:01.552Z",
+    "camera_id": 1
+  },
+  {
+    "id": "a2d8d376-935f-42f4-a7b4-a084ae1be3a7",
+    "data": "2025-11-19",
+    "descrizione": "Americano - 60€ + 4",
+    "categoria": "Privato",
+    "importo": 64,
+    "note": "Doppia",
+    "created_at": "2026-04-14T09:40:01.552Z",
+    "camera_id": 2
+  },
+  {
+    "id": "d11ab0ec-fb36-4e27-afe7-d5e3e28bbde7",
+    "data": "2025-11-23",
+    "descrizione": "Olivier Darcissac",
+    "categoria": "Privato",
+    "importo": 68,
+    "note": "Doppia",
+    "created_at": "2026-04-14T09:40:01.552Z",
+    "camera_id": 2
+  },
+  {
+    "id": "534b9f8b-6dc4-4829-a32f-5caece4de101",
+    "data": "2025-11-23",
+    "descrizione": "Sabysachi",
+    "categoria": "Privato",
+    "importo": 112,
+    "note": "Doppia + Singola",
+    "created_at": "2026-04-14T09:40:01.552Z"
+  },
+  {
+    "id": "9ba1b68e-be61-4da1-bdf3-52471c25c89e",
+    "data": "2025-11-28",
+    "descrizione": "Tutte 45€X3X2=270+70= 340€",
+    "categoria": "Privato",
+    "importo": 400,
+    "note": "3 camere doppie e una singola",
+    "created_at": "2026-04-14T09:40:01.552Z"
+  },
+  {
+    "id": "fb4e07bc-a0be-4fd1-858d-345463556704",
+    "data": "2025-10-19",
+    "descrizione": "Danilo Ragusa",
+    "categoria": "Privato",
+    "importo": 50,
+    "note": "",
+    "created_at": "2026-04-14T09:40:01.554Z",
+    "camera_id": 1
+  },
+  {
+    "id": "9cc5bbd2-468b-4313-bb91-8ad625c6c919",
+    "data": "2026-06-01",
+    "descrizione": "Claudio cugino Ambra",
+    "categoria": "Privato",
+    "importo": 400,
+    "note": "",
+    "created_at": "2026-04-14T10:57:00.635Z",
+    "camera_id": 5
+  },
+  {
+    "id": "e4be1635-8f63-4f91-92e1-d384c1502332",
+    "data": "2026-05-23",
+    "descrizione": "Walter Moretti",
+    "categoria": "Privato",
+    "importo": 190,
+    "note": "",
+    "created_at": "2026-04-14T10:57:00.637Z",
+    "camera_id": 2
+  },
+  {
+    "id": "9487e2b5-b2e0-45f6-9b55-8a151216cd5f",
+    "data": "2026-05-23",
+    "descrizione": "Walter Moretti",
+    "categoria": "Privato",
+    "importo": 190,
+    "note": "",
+    "created_at": "2026-04-14T10:57:00.637Z",
+    "camera_id": 4
+  },
+  {
+    "id": "75a65fdf-316f-4791-8e3b-dad31d002cf8",
+    "data": "2026-05-26",
+    "descrizione": "Claudio cugino Ambra",
+    "categoria": "Privato",
+    "importo": 300,
+    "note": "",
+    "created_at": "2026-04-14T10:57:00.637Z",
+    "camera_id": 5
+  },
+  {
+    "id": "05362568-f406-4cdc-83bb-ceb344b89106",
+    "data": "2026-05-31",
+    "descrizione": "Alessio Vinci",
+    "categoria": "Privato",
+    "importo": 160,
+    "note": "",
+    "created_at": "2026-04-14T10:57:00.637Z",
+    "camera_id": 3
+  },
+  {
+    "id": "6757b660-5194-4efc-b8c6-bd88d5c0abe5",
+    "data": "2026-05-31",
+    "descrizione": "Alessio Vinci",
+    "categoria": "Privato",
+    "importo": 160,
+    "note": "",
+    "created_at": "2026-04-14T10:57:00.637Z",
+    "camera_id": 5
+  }
+]
