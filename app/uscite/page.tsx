@@ -296,7 +296,7 @@ export default function PrimaNotaPage() {
       {tabAttivo === 'foglio' && (
         <div className="hidden sm:block bg-white rounded-lg shadow-sm overflow-hidden" style={{ height: 'calc(100vh - 160px)' }}>
           <iframe
-            src="https://docs.google.com/spreadsheets/d/1WMDZ4tNNTvjwKn41bS_6dlVVhmlQF8eR/htmlview?gid=229089447"
+            src="https://docs.google.com/spreadsheets/d/1t8sY-JBkSDAnIBhQA_xwotRjxAzRCJ1XMUrxbpHlJpM/htmlview?gid=1457435591"
             className="w-full h-full border-0"
             title="Foglio Google Prima Nota"
           />

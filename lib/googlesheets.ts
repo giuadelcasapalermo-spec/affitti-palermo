@@ -5,8 +5,8 @@ import { leggiEntrate, scriviEntrate } from './entrate';
 import { leggiUscite, scriviUscite } from './uscite';
 import { randomUUID } from 'crypto';
 
-const SPREADSHEET_ID = '1WMDZ4tNNTvjwKn41bS_6dlVVhmlQF8eR';
-const GID = 229089447;
+const SPREADSHEET_ID = '1t8sY-JBkSDAnIBhQA_xwotRjxAzRCJ1XMUrxbpHlJpM';
+const GID = 1457435591;
 
 // Colonne: ID | Tipo | Data | Descrizione | Categoria | Importo | CameraID | Note
 const HEADER = ['ID', 'Tipo', 'Data', 'Descrizione', 'Categoria', 'Importo', 'CameraID', 'Note'];
