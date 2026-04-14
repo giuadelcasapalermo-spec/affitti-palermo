@@ -2777,21 +2777,6 @@
     "fonte": "manuale"
   },
   {
-    "id": "50677652-7b12-4d13-a1b1-d20a19b07ba7",
-    "camera_id": 0,
-    "ospite_nome": "Bojana Gabelic",
-    "ospite_telefono": "",
-    "ospite_email": "",
-    "check_in": "2026-04-26",
-    "check_out": "2026-04-28",
-    "importo_totale": 153,
-    "tassa_soggiorno": 16,
-    "stato": "confermata",
-    "note": "",
-    "created_at": "2026-04-14T19:15:52.083Z",
-    "fonte": "manuale"
-  },
-  {
     "id": "f4fdf36d-896d-4502-af60-26a686dd3f57",
     "camera_id": 1,
     "ospite_nome": "Mery Veronese 300€ + 48€",
