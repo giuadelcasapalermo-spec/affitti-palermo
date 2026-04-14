@@ -5,7 +5,7 @@ import { Entrata } from './types';
 const PATH = path.join(process.cwd(), 'data', 'entrate.json');
 
 export function leggiEntrate(): Entrata[] {
-  if (!fs.existsSync(PATH)) fs.writeFileSync(PATH, '[]');
+  if (!fs.existsSync(PATH)) return [];
   return JSON.parse(fs.readFileSync(PATH, 'utf-8'));
 }
 

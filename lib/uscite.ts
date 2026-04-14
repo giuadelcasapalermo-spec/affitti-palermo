@@ -5,9 +5,7 @@ import { Uscita } from './types';
 const PATH = path.join(process.cwd(), 'data', 'uscite.json');
 
 export function leggiUscite(): Uscita[] {
-  if (!fs.existsSync(PATH)) {
-    fs.writeFileSync(PATH, '[]');
-  }
+  if (!fs.existsSync(PATH)) return [];
   return JSON.parse(fs.readFileSync(PATH, 'utf-8'));
 }
 
