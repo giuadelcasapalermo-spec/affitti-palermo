@@ -237,8 +237,24 @@ export default function PrimaNotaPage() {
         </div>
       </div>
 
-      {/* KPI */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {/* KPI mobile compatto */}
+      <div className="sm:hidden bg-white rounded-lg shadow-sm px-4 py-3 grid grid-cols-3 divide-x divide-gray-100">
+        <div className="text-center">
+          <div className="text-[11px] text-gray-400 uppercase tracking-wide">Entrate</div>
+          <div className="text-base font-bold text-green-700">+€{totEntrate.toFixed(0)}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[11px] text-gray-400 uppercase tracking-wide">Uscite</div>
+          <div className="text-base font-bold text-red-600">-€{totUscite.toFixed(0)}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[11px] text-gray-400 uppercase tracking-wide">Saldo</div>
+          <div className={`text-base font-bold ${saldo >= 0 ? 'text-green-700' : 'text-red-700'}`}>{saldo >= 0 ? '+' : ''}€{saldo.toFixed(0)}</div>
+        </div>
+      </div>
+
+      {/* KPI desktop */}
+      <div className="hidden sm:grid sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
           <div className="bg-green-100 rounded-full p-2"><TrendingUp size={20} className="text-green-600" /></div>
           <div>
