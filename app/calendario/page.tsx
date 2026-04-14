@@ -106,60 +106,36 @@ export default function CalendarioPage() {
   return (
     <div className="space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center gap-3">
         <h1 className="text-2xl font-bold text-gray-800">Calendario</h1>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setMese((m) => subMonths(m, 1))}
-              className="p-1.5 rounded hover:bg-gray-200"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <span className="font-semibold text-gray-700 capitalize w-36 text-center">
-              {format(mese, 'MMMM yyyy', { locale: it })}
-            </span>
-            <button
-              onClick={() => setMese((m) => addMonths(m, 1))}
-              className="p-1.5 rounded hover:bg-gray-200"
-            >
-              <ChevronRight size={18} />
-            </button>
-          </div>
-          <span className="w-px h-5 bg-gray-200" />
-          <span className="text-sm font-semibold text-blue-700 capitalize">
+        <div className="flex items-center gap-1">
+          <button onClick={() => setMese((m) => subMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
+            <ChevronLeft size={18} />
+          </button>
+          <span className="font-semibold text-gray-700 capitalize w-36 text-center">
+            {format(mese, 'MMMM yyyy', { locale: it })}
+          </span>
+          <button onClick={() => setMese((m) => addMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
+            <ChevronRight size={18} />
+          </button>
+        </div>
+        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 ml-auto">
+          <span className="font-semibold text-blue-700 capitalize hidden sm:inline">
             {format(giornoSelezionato, 'EEEE d MMMM', { locale: it })}
           </span>
           {!isSameDay(giornoSelezionato, today) && (
-            <button
-              onClick={() => setGiornoSelezionato(today)}
-              className="text-xs text-gray-400 hover:text-blue-600 hover:underline"
-            >
+            <button onClick={() => setGiornoSelezionato(today)} className="text-xs text-gray-400 hover:text-blue-600 hover:underline">
               Oggi
             </button>
           )}
-        </div>
-        <div className="flex items-center gap-4 text-sm text-gray-600">
-          <span>
-            Entrate mese: <strong className="text-green-700">€{entrateDelMese.toFixed(2)}</strong>
-          </span>
-          <span className="w-px h-4 bg-gray-200" />
-          <span>
-            <strong className="text-blue-700">{camereDelGiorno}</strong>
-            <span className="text-gray-400"> camere</span>
-          </span>
-          <span>
-            <strong className="text-purple-700">{ospititDelGiorno}</strong>
-            <span className="text-gray-400"> ospiti</span>
-          </span>
-          <span>
-            <strong className="text-green-700">€{valoreDelGiorno.toFixed(2)}</strong>
-          </span>
+          <span>Entrate: <strong className="text-green-700">€{entrateDelMese.toFixed(2)}</strong></span>
+          <span><strong className="text-blue-700">{camereDelGiorno}</strong> <span className="text-gray-400">cam</span></span>
+          <span><strong className="text-purple-700">{ospititDelGiorno}</strong> <span className="text-gray-400">osp</span></span>
         </div>
       </div>
 
       {/* Griglia mini-calendari */}
-      <div className="grid grid-cols-2 gap-4 xl:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 xl:grid-cols-3">
         {camere.map((camera) => {
           const stile = STILE_CAMERA[camera.id] ?? STILE_CAMERA[1];
           return (

@@ -136,7 +136,7 @@ function PrenotazioniInner() {
       </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
           <div className="bg-blue-100 rounded-full p-2"><BookOpen size={20} className="text-blue-600" /></div>
           <div><div className="text-sm text-gray-500">Prenotazioni</div><div className="text-lg font-bold text-gray-800">{kpiPrenotazioni}</div></div>
@@ -231,7 +231,7 @@ function PrenotazioniInner() {
       </div>
 
       {/* Tabella */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
         {filtrate.length === 0 ? (
           <div className="text-center text-gray-400 py-12">Nessuna prenotazione trovata</div>
         ) : (

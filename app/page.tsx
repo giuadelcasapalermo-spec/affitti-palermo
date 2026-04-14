@@ -126,7 +126,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
         <div className="flex gap-2">
           <button
@@ -142,7 +142,7 @@ export default function Dashboard() {
             href="/prenotazioni?nuova=1"
             className="bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700"
           >
-            + Nuova prenotazione
+            + Nuova
           </Link>
         </div>
       </div>
@@ -188,7 +188,7 @@ export default function Dashboard() {
       </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
           <div className="bg-blue-100 rounded-full p-2">
             <BedDouble size={20} className="text-blue-600" />
@@ -252,7 +252,7 @@ export default function Dashboard() {
       {/* Stato camere nel periodo */}
       <div className="bg-white rounded-lg shadow-sm p-5">
         <h2 className="font-semibold text-gray-700 mb-4">Camere nel periodo</h2>
-        <div className="grid grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {camere
             .filter((c) => filtroCamera === 'tutte' || c.id === filtroCamera)
             .map((camera) => {

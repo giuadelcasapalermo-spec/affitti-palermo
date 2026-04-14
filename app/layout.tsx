@@ -33,7 +33,7 @@ export default function RootLayout({
       <body className={`${geist.className} bg-gray-50 min-h-screen`}>
         <RegisterSW />
         <Navbar />
-        <main className="max-w-5xl mx-auto px-4 py-6">{children}</main>
+        <main className="max-w-5xl mx-auto px-4 py-6 pb-24 md:pb-6">{children}</main>
       </body>
     </html>
   );

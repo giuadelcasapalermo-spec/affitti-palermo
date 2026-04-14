@@ -218,9 +218,9 @@ export default function PrimaNotaPage() {
     <div className="space-y-5">
 
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-2xl font-bold text-gray-800">Prima Nota</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <input type="month" value={filtroMese} onChange={e => setFiltroMese(e.target.value)} className="border rounded px-3 py-1.5 text-sm" />
           <button
             onClick={() => setFormAperto(f => f === 'entrata' ? null : 'entrata')}
@@ -238,7 +238,7 @@ export default function PrimaNotaPage() {
       </div>
 
       {/* KPI */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
           <div className="bg-green-100 rounded-full p-2"><TrendingUp size={20} className="text-green-600" /></div>
           <div>
@@ -376,7 +376,7 @@ export default function PrimaNotaPage() {
       )}
 
       {/* Lista unificata */}
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
         {righe.length === 0 ? (
           <div className="text-center text-gray-400 py-12">Nessun movimento registrato</div>
         ) : (
