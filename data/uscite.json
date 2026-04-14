@@ -1084,7 +1084,7 @@
     "data": "2026-04-13",
     "descrizione": "Lavanderia",
     "categoria": "Forniture",
-    "importo": 75,
+    "importo": 70,
     "note": "",
     "created_at": "2026-04-14T09:43:19.496Z"
   },
@@ -1105,41 +1105,5 @@
     "importo": 204.45,
     "note": "Gennaio",
     "created_at": "2026-04-14T09:53:50.638Z"
-  },
-  {
-    "id": "813d9694-baf7-4598-a304-e704ab016041",
-    "data": "2026-04-13",
-    "descrizione": "Prova",
-    "categoria": "Forniture",
-    "importo": 5,
-    "note": "",
-    "created_at": "2026-04-14T19:15:52.083Z"
-  },
-  {
-    "id": "ba11225d-1301-4837-8856-d0ae7ba5ee52",
-    "data": "2025-12-31",
-    "descrizione": "Quota del 15% a Ferrotti",
-    "categoria": "Altro",
-    "importo": 47.25,
-    "note": "",
-    "created_at": "2026-04-14T19:15:52.083Z"
-  },
-  {
-    "id": "f01c1777-db11-432a-9234-dc9ea883cdb2",
-    "data": "2025-11-30",
-    "descrizione": "Quota del 15% a Ferrotti",
-    "categoria": "Altro",
-    "importo": 118.8,
-    "note": "",
-    "created_at": "2026-04-14T19:15:52.083Z"
-  },
-  {
-    "id": "464ad22b-a945-498e-9dfb-7252e82f2428",
-    "data": "2025-10-31",
-    "descrizione": "Cameriera",
-    "categoria": "Altro",
-    "importo": 40,
-    "note": "",
-    "created_at": "2026-04-14T19:15:52.083Z"
   }
 ]
