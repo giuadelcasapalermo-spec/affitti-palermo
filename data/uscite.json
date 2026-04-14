@@ -1105,5 +1105,50 @@
     "importo": 204.45,
     "note": "Gennaio",
     "created_at": "2026-04-14T09:53:50.638Z"
+  },
+  {
+    "id": "65fb363a-1fdf-4e7f-9902-0f2e21f435ad",
+    "data": "2026-04-08",
+    "descrizione": "Anna",
+    "categoria": "Forniture",
+    "importo": 70,
+    "note": "",
+    "created_at": "2026-04-14T20:13:22.017Z"
+  },
+  {
+    "id": "02e001b8-a0cc-46c8-ba8b-523d8941cedd",
+    "data": "2025-12-31",
+    "descrizione": "Quota del 15% a Ferrotti",
+    "categoria": "Altro",
+    "importo": 47.25,
+    "note": "",
+    "created_at": "2026-04-14T20:13:22.017Z"
+  },
+  {
+    "id": "1a5f6636-dea2-49c7-b181-3c75c69f4379",
+    "data": "2025-11-30",
+    "descrizione": "Quota del 15% a Ferrotti",
+    "categoria": "Altro",
+    "importo": 118.8,
+    "note": "",
+    "created_at": "2026-04-14T20:13:22.017Z"
+  },
+  {
+    "id": "6ad01b9a-6202-4f8c-bfcb-2e3410ff281c",
+    "data": "2025-10-03",
+    "descrizione": "Cuscini",
+    "categoria": "Forniture",
+    "importo": 145.85999999999999,
+    "note": "",
+    "created_at": "2026-04-14T20:13:22.017Z"
+  },
+  {
+    "id": "1689ddb2-5b8c-459f-87ec-669aa43a8de8",
+    "data": "2025-10-31",
+    "descrizione": "Cameriera",
+    "categoria": "Altro",
+    "importo": 40,
+    "note": "",
+    "created_at": "2026-04-14T20:13:22.017Z"
   }
 ]
