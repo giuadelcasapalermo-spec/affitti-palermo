@@ -220,8 +220,8 @@ export default function PrimaNotaPage() {
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-2xl font-bold text-gray-800">Prima Nota</h1>
-        <div className="flex flex-wrap items-center gap-2">
-          <input type="month" value={filtroMese} onChange={e => setFiltroMese(e.target.value)} className="border rounded px-3 py-1.5 text-sm" />
+        <div className="flex items-center gap-2">
+          <input type="month" value={filtroMese} onChange={e => setFiltroMese(e.target.value)} className="border rounded px-2 py-1.5 text-sm w-28 sm:w-auto" />
           <button
             onClick={() => setFormAperto(f => f === 'entrata' ? null : 'entrata')}
             className="flex items-center gap-1.5 bg-green-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-green-700"
