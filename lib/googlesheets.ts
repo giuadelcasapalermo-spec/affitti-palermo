@@ -6,7 +6,8 @@ import { leggiUscite, scriviUscite } from './uscite';
 import { randomUUID } from 'crypto';
 
 const SPREADSHEET_ID = '1t8sY-JBkSDAnIBhQA_xwotRjxAzRCJ1XMUrxbpHlJpM';
-const GID = 1457435591;
+// Nome del foglio di destinazione (tab) dentro il documento
+const SHEET_NAME = process.env.GOOGLE_SHEET_NAME ?? 'Prima Nota App';
 
 // Colonne: ID | Tipo | Data | Descrizione | Categoria | Importo | CameraID | Note
 const HEADER = ['ID', 'Tipo', 'Data', 'Descrizione', 'Categoria', 'Importo', 'CameraID', 'Note'];
@@ -32,11 +33,19 @@ function getAuth() {
   });
 }
 
-async function getSheetName(sheets: ReturnType<typeof google.sheets>): Promise<string> {
+/** Restituisce il nome del foglio di destinazione, creandolo se non esiste. */
+async function ensureSheet(sheets: ReturnType<typeof google.sheets>): Promise<string> {
   const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
-  const sheet = meta.data.sheets?.find((s) => s.properties?.sheetId === GID);
-  if (!sheet?.properties?.title) throw new Error(`Foglio con GID ${GID} non trovato`);
-  return sheet.properties.title;
+  const exists = meta.data.sheets?.some((s) => s.properties?.title === SHEET_NAME);
+  if (!exists) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SPREADSHEET_ID,
+      requestBody: {
+        requests: [{ addSheet: { properties: { title: SHEET_NAME } } }],
+      },
+    });
+  }
+  return SHEET_NAME;
 }
 
 function entrataToRow(e: Entrata): string[] {
@@ -57,7 +66,7 @@ async function getSheetsClient() {
 // App → Google Sheets
 export async function exportToSheets(): Promise<void> {
   const sheets = await getSheetsClient();
-  const sheetName = await getSheetName(sheets);
+  const sheetName = await ensureSheet(sheets);
   const range = `'${sheetName}'!A:H`;
 
   const entrate = await leggiEntrate();
@@ -84,7 +93,7 @@ export async function exportToSheets(): Promise<void> {
 // Google Sheets → App
 export async function importFromSheets(): Promise<{ importate: number; ignorate: number }> {
   const sheets = await getSheetsClient();
-  const sheetName = await getSheetName(sheets);
+  const sheetName = await ensureSheet(sheets);
   const range = `'${sheetName}'!A:H`;
 
   const res = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range });
