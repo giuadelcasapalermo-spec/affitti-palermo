@@ -141,6 +141,7 @@ export default function PrimaNotaPage() {
   const [editingU, setEditingU] = useState<Uscita | null>(null);
   const [filtroMese, setFiltroMese] = useState(() => oggi.slice(0, 7));
   const [filtriFiltriAperti, setFiltriFiltriAperti] = useState(false);
+  const [tabAttivo, setTabAttivo] = useState<'movimenti' | 'foglio'>('movimenti');
   const [filtroE, setFiltroE] = useState<Set<string>>(new Set(CATEGORIE_ENTRATA));
   const [filtroU, setFiltroU] = useState<Set<string>>(new Set(CATEGORIE_USCITA));
 
@@ -217,6 +218,36 @@ export default function PrimaNotaPage() {
 
   return (
     <div className="space-y-5">
+
+      {/* Tab switcher — solo desktop */}
+      <div className="hidden sm:flex border-b border-gray-200 -mb-1">
+        <button
+          onClick={() => setTabAttivo('movimenti')}
+          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tabAttivo === 'movimenti' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+        >
+          Movimenti
+        </button>
+        <button
+          onClick={() => setTabAttivo('foglio')}
+          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tabAttivo === 'foglio' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+        >
+          Foglio Google
+        </button>
+      </div>
+
+      {/* Foglio Google — solo desktop */}
+      {tabAttivo === 'foglio' && (
+        <div className="hidden sm:block bg-white rounded-lg shadow-sm overflow-hidden" style={{ height: 'calc(100vh - 160px)' }}>
+          <iframe
+            src="https://docs.google.com/spreadsheets/d/1WMDZ4tNNTvjwKn41bS_6dlVVhmlQF8eR/htmlview?gid=229089447"
+            className="w-full h-full border-0"
+            title="Foglio Google Prima Nota"
+          />
+        </div>
+      )}
+
+      {/* Contenuto movimenti */}
+      {(tabAttivo === 'movimenti') && <>
 
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-2">
@@ -503,6 +534,8 @@ export default function PrimaNotaPage() {
           </table>
         )}
       </div>
+
+      </> }
     </div>
   );
 }
