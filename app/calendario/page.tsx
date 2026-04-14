@@ -14,11 +14,13 @@ import {
   isWithinInterval,
   addMonths,
   subMonths,
+  addDays,
   getDay,
   differenceInDays,
 } from 'date-fns';
 import { it } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import PrenotazioneForm from '@/components/PrenotazioneForm';
 
 // Colors matching room names: Bianca(1), Gialla(2), Rossa(3), Verde(4), Blue(5)
 const STILE_CAMERA: Record<number, { dot: string; pieno: string; leggero: string }> = {
@@ -56,10 +58,23 @@ export default function CalendarioPage() {
   const [prenotazioni, setPrenotazioni] = useState<Prenotazione[]>([]);
   const [mese, setMese] = useState(new Date());
   const [giornoSelezionato, setGiornoSelezionato] = useState<Date>(new Date());
+  const [nuovaPrenotazione, setNuovaPrenotazione] = useState<{ cameraId: number; checkIn: string } | null>(null);
 
-  useEffect(() => {
+  function caricaPrenotazioni() {
     fetch('/api/prenotazioni').then((r) => r.json()).then(setPrenotazioni);
-  }, []);
+  }
+
+  useEffect(() => { caricaPrenotazioni(); }, []);
+
+  async function creaPrenotazione(data: Partial<Prenotazione>) {
+    await fetch('/api/prenotazioni', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    setNuovaPrenotazione(null);
+    caricaPrenotazioni();
+  }
 
   const today = new Date();
   const settimane = buildWeeks(mese);
@@ -181,8 +196,12 @@ export default function CalendarioPage() {
                     return (
                       <div key={di} className="flex items-center justify-center py-0.5">
                         <div
-                          title={pren ? `${pren.ospite_nome}` : ''}
+                          title={pren ? pren.ospite_nome : 'Doppio click per nuova prenotazione'}
                           onClick={() => setGiornoSelezionato(day)}
+                          onDoubleClick={() => setNuovaPrenotazione({
+                            cameraId: camera.id,
+                            checkIn: format(day, 'yyyy-MM-dd'),
+                          })}
                           className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors cursor-pointer
                             ${circleClass}
                             ${!occupied ? 'hover:bg-gray-100' : ''}
@@ -267,6 +286,42 @@ export default function CalendarioPage() {
           );
         })()}
       </div>
+
+      {/* Modale nuova prenotazione */}
+      {nuovaPrenotazione && (() => {
+        const camera = camere.find((c) => c.id === nuovaPrenotazione.cameraId);
+        const checkOut = format(addDays(parseISO(nuovaPrenotazione.checkIn), 1), 'yyyy-MM-dd');
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" onClick={() => setNuovaPrenotazione(null)}>
+            <div className="bg-white rounded-xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between px-6 py-4 border-b">
+                <div>
+                  <h2 className="font-semibold text-gray-800">Nuova prenotazione</h2>
+                  {camera && (
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      {camera.nome} — check-in {fData(nuovaPrenotazione.checkIn)}
+                    </p>
+                  )}
+                </div>
+                <button onClick={() => setNuovaPrenotazione(null)} className="text-gray-400 hover:text-gray-600">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="px-6 py-4">
+                <PrenotazioneForm
+                  iniziale={{
+                    camera_id: nuovaPrenotazione.cameraId,
+                    check_in: nuovaPrenotazione.checkIn,
+                    check_out: checkOut,
+                  }}
+                  onSalva={creaPrenotazione}
+                  onAnnulla={() => setNuovaPrenotazione(null)}
+                />
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
