@@ -7,7 +7,7 @@ import {
 } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
 import { fData } from '@/lib/utils';
-import { Plus, Pencil, Trash2, X, TrendingDown, TrendingUp } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, TrendingDown, TrendingUp, ChevronDown } from 'lucide-react';
 
 /* ── colori ───────────────────────────────────────────── */
 const COL_USCITA: Record<CategoriaUscita, string> = {
@@ -140,6 +140,7 @@ export default function PrimaNotaPage() {
   const [editingE, setEditingE] = useState<Entrata | null>(null);
   const [editingU, setEditingU] = useState<Uscita | null>(null);
   const [filtroMese, setFiltroMese] = useState(() => oggi.slice(0, 7));
+  const [filtriFiltriAperti, setFiltriFiltriAperti] = useState(false);
   const [filtroE, setFiltroE] = useState<Set<string>>(new Set(CATEGORIE_ENTRATA));
   const [filtroU, setFiltroU] = useState<Set<string>>(new Set(CATEGORIE_USCITA));
 
@@ -283,70 +284,70 @@ export default function PrimaNotaPage() {
       </div>
 
       {/* Filtro categorie */}
-      <div className="bg-white rounded-lg shadow-sm p-4 space-y-2.5">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Filtro categorie</span>
-          <div className="flex gap-3">
-            {filtroAttivo && (
-              <button
-                onClick={() => { setFiltroE(new Set(CATEGORIE_ENTRATA)); setFiltroU(new Set(CATEGORIE_USCITA)); }}
-                className="text-xs text-blue-600 hover:underline"
-              >
-                Seleziona tutti
-              </button>
-            )}
+      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <button
+          onClick={() => setFiltriFiltriAperti(v => !v)}
+          className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Filtro categorie</span>
+            {filtroAttivo && <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-medium">attivo</span>}
           </div>
-        </div>
+          <ChevronDown size={16} className={`text-gray-400 transition-transform ${filtriFiltriAperti ? 'rotate-180' : ''}`} />
+        </button>
 
-        {/* Entrate */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-gray-400 w-14 shrink-0">Entrate</span>
-          <button
-            onClick={() => setFiltroE(tuttiE ? new Set() : new Set(CATEGORIE_ENTRATA))}
-            className={`text-xs px-2 py-0.5 rounded-full border font-medium transition-colors ${tuttiE ? 'border-gray-300 text-gray-500 hover:bg-gray-50' : 'border-blue-400 text-blue-600 bg-blue-50'}`}
-          >
-            {tuttiE ? 'Deseleziona tutti' : 'Seleziona tutti'}
-          </button>
-          {CATEGORIE_ENTRATA.map(cat => {
-            const attivo = filtroE.has(cat);
-            return (
-              <button
-                key={cat}
-                onClick={() => toggleCatE(cat)}
-                className={`text-xs px-2.5 py-0.5 rounded-full font-medium transition-opacity ${
-                  attivo ? COL_ENTRATA[cat] : 'bg-gray-100 text-gray-400 line-through'
-                }`}
-              >
-                {cat}
-              </button>
-            );
-          })}
-        </div>
+        {filtriFiltriAperti && (
+          <div className="px-4 pb-4 space-y-2.5 border-t border-gray-100">
+            <div className="flex justify-end pt-2">
+              {filtroAttivo && (
+                <button
+                  onClick={() => { setFiltroE(new Set(CATEGORIE_ENTRATA)); setFiltroU(new Set(CATEGORIE_USCITA)); }}
+                  className="text-xs text-blue-600 hover:underline"
+                >
+                  Seleziona tutti
+                </button>
+              )}
+            </div>
 
-        {/* Uscite */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-xs text-gray-400 w-14 shrink-0">Uscite</span>
-          <button
-            onClick={() => setFiltroU(tuttiU ? new Set() : new Set(CATEGORIE_USCITA))}
-            className={`text-xs px-2 py-0.5 rounded-full border font-medium transition-colors ${tuttiU ? 'border-gray-300 text-gray-500 hover:bg-gray-50' : 'border-blue-400 text-blue-600 bg-blue-50'}`}
-          >
-            {tuttiU ? 'Deseleziona tutti' : 'Seleziona tutti'}
-          </button>
-          {CATEGORIE_USCITA.map(cat => {
-            const attivo = filtroU.has(cat);
-            return (
+            {/* Entrate */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-gray-400 w-14 shrink-0">Entrate</span>
               <button
-                key={cat}
-                onClick={() => toggleCatU(cat)}
-                className={`text-xs px-2.5 py-0.5 rounded-full font-medium transition-opacity ${
-                  attivo ? COL_USCITA[cat] : 'bg-gray-100 text-gray-400 line-through'
-                }`}
+                onClick={() => setFiltroE(tuttiE ? new Set() : new Set(CATEGORIE_ENTRATA))}
+                className={`text-xs px-2 py-0.5 rounded-full border font-medium transition-colors ${tuttiE ? 'border-gray-300 text-gray-500 hover:bg-gray-50' : 'border-blue-400 text-blue-600 bg-blue-50'}`}
               >
-                {cat}
+                {tuttiE ? 'Deseleziona tutti' : 'Seleziona tutti'}
               </button>
-            );
-          })}
-        </div>
+              {CATEGORIE_ENTRATA.map(cat => {
+                const attivo = filtroE.has(cat);
+                return (
+                  <button key={cat} onClick={() => toggleCatE(cat)}
+                    className={`text-xs px-2.5 py-0.5 rounded-full font-medium transition-opacity ${attivo ? COL_ENTRATA[cat] : 'bg-gray-100 text-gray-400 line-through'}`}
+                  >{cat}</button>
+                );
+              })}
+            </div>
+
+            {/* Uscite */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs text-gray-400 w-14 shrink-0">Uscite</span>
+              <button
+                onClick={() => setFiltroU(tuttiU ? new Set() : new Set(CATEGORIE_USCITA))}
+                className={`text-xs px-2 py-0.5 rounded-full border font-medium transition-colors ${tuttiU ? 'border-gray-300 text-gray-500 hover:bg-gray-50' : 'border-blue-400 text-blue-600 bg-blue-50'}`}
+              >
+                {tuttiU ? 'Deseleziona tutti' : 'Seleziona tutti'}
+              </button>
+              {CATEGORIE_USCITA.map(cat => {
+                const attivo = filtroU.has(cat);
+                return (
+                  <button key={cat} onClick={() => toggleCatU(cat)}
+                    className={`text-xs px-2.5 py-0.5 rounded-full font-medium transition-opacity ${attivo ? COL_USCITA[cat] : 'bg-gray-100 text-gray-400 line-through'}`}
+                  >{cat}</button>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Form nuova entrata */}
