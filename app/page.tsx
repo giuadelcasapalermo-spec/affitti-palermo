@@ -187,50 +187,68 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* KPI cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      {/* KPI mobile compatto */}
+      {(() => { const saldo = entrateEffettive - usciteDelPeriodo; return (
+      <div className="sm:hidden bg-white rounded-lg shadow-sm px-4 py-3 grid grid-cols-3 gap-y-3 divide-x divide-gray-100">
+        <div className="text-center">
+          <div className="text-[11px] text-gray-400">Camere</div>
+          <div className="text-base font-bold text-gray-800">{camereImpegnate.length}/{filtroCamera === 'tutte' ? camere.length : 1}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[11px] text-gray-400">Previsionali</div>
+          <div className="text-base font-bold text-gray-800">€{entrateDelPeriodo.toFixed(0)}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[11px] text-gray-400">Ospiti</div>
+          <div className="text-base font-bold text-gray-800">{totalOspiti}</div>
+        </div>
+        <div className="text-center pt-2">
+          <div className="text-[11px] text-gray-400">Uscite</div>
+          <div className="text-base font-bold text-red-600">-€{usciteDelPeriodo.toFixed(0)}</div>
+        </div>
+        <div className="text-center pt-2">
+          <div className="text-[11px] text-gray-400">Entrate</div>
+          <div className="text-base font-bold text-green-700">+€{entrateEffettive.toFixed(0)}</div>
+        </div>
+        <div className="text-center pt-2">
+          <div className="text-[11px] text-gray-400">Saldo</div>
+          <div className={`text-base font-bold ${saldo >= 0 ? 'text-green-700' : 'text-red-600'}`}>€{saldo.toFixed(0)}</div>
+        </div>
+      </div>
+      ); })()}
+
+      {/* KPI cards desktop */}
+      <div className="hidden sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
-          <div className="bg-blue-100 rounded-full p-2">
-            <BedDouble size={20} className="text-blue-600" />
-          </div>
+          <div className="bg-blue-100 rounded-full p-2"><BedDouble size={20} className="text-blue-600" /></div>
           <div>
             <div className="text-sm text-gray-500">Camere nel periodo</div>
-            <div className="text-lg font-bold text-gray-800">
-              {camereImpegnate.length} / {filtroCamera === 'tutte' ? camere.length : 1}
-            </div>
+            <div className="text-lg font-bold text-gray-800">{camereImpegnate.length} / {filtroCamera === 'tutte' ? camere.length : 1}</div>
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
-          <div className="bg-green-100 rounded-full p-2">
-            <Euro size={20} className="text-green-600" />
-          </div>
+          <div className="bg-green-100 rounded-full p-2"><Euro size={20} className="text-green-600" /></div>
           <div>
             <div className="text-sm text-gray-500">Prenotazioni (previsionali)</div>
             <div className="text-lg font-bold text-gray-800">€{entrateDelPeriodo.toFixed(2)}</div>
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
-          <div className="bg-purple-100 rounded-full p-2">
-            <Users size={20} className="text-purple-600" />
-          </div>
+          <div className="bg-purple-100 rounded-full p-2"><Users size={20} className="text-purple-600" /></div>
           <div>
             <div className="text-sm text-gray-500">Ospiti nel periodo</div>
             <div className="text-lg font-bold text-gray-800">{totalOspiti}</div>
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
-          <div className="bg-red-100 rounded-full p-2">
-            <TrendingDown size={20} className="text-red-600" />
-          </div>
+          <div className="bg-red-100 rounded-full p-2"><TrendingDown size={20} className="text-red-600" /></div>
           <div>
             <div className="text-sm text-gray-500">Uscite del periodo</div>
             <div className="text-lg font-bold text-red-600">-€{usciteDelPeriodo.toFixed(2)}</div>
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
-          <div className="bg-green-100 rounded-full p-2">
-            <TrendingUp size={20} className="text-green-600" />
-          </div>
+          <div className="bg-green-100 rounded-full p-2"><TrendingUp size={20} className="text-green-600" /></div>
           <div>
             <div className="text-sm text-gray-500">Entrate effettive</div>
             <div className="text-lg font-bold text-green-700">+€{entrateEffettive.toFixed(2)}</div>
@@ -250,50 +268,51 @@ export default function Dashboard() {
       </div>
 
       {/* Stato camere nel periodo */}
-      <div className="bg-white rounded-lg shadow-sm p-5">
-        <h2 className="font-semibold text-gray-700 mb-4">Camere nel periodo</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {camere
-            .filter((c) => filtroCamera === 'tutte' || c.id === filtroCamera)
-            .map((camera) => {
-              const prenotazioniCamera = prenNelPeriodo.filter((p) => p.camera_id === camera.id);
-              const impegnata = prenotazioniCamera.length > 0;
-              const nottiTotali = prenotazioniCamera.reduce(
-                (s, p) => s + differenceInDays(parseISO(p.check_out), parseISO(p.check_in)),
-                0
-              );
-              const stimaCamera = prenotazioniCamera
-                .filter((p) => p.fonte !== 'ical')
-                .reduce((s, p) => s + p.importo_totale, 0);
-              const occupazioneOggi = isCameraOccupata(prenotazioni, camera.id);
-              return (
-                <div
-                  key={camera.id}
-                  className={`rounded-lg p-3 text-center border-2 ${
-                    impegnata ? 'border-red-300 bg-red-50' : 'border-green-300 bg-green-50'
-                  }`}
-                >
-                  <div className="font-semibold text-sm text-gray-700">{camera.nome}</div>
-                  <div className={`text-xs font-medium mt-1 ${impegnata ? 'text-red-700' : 'text-green-700'}`}>
-                    {impegnata ? `${prenotazioniCamera.length} prenotaz.` : 'Libera'}
-                  </div>
-                  {impegnata && (
-                    <div className="text-xs text-gray-500 mt-1">{nottiTotali} notti</div>
-                  )}
-                  {stimaCamera > 0 && (
-                    <div className="text-xs font-semibold text-green-700 mt-1">€{stimaCamera.toFixed(2)}</div>
-                  )}
-                  {occupazioneOggi && (
-                    <div className="text-xs text-blue-600 mt-0.5 truncate font-medium">
-                      ● {occupazioneOggi.ospite_nome.split(' ')[0]} oggi
+      {(() => {
+        const COLORI: Record<number, { bg: string; border: string; testo: string }> = {
+          1: { bg: 'bg-sky-100',    border: 'border-sky-300',    testo: 'text-sky-800' },
+          2: { bg: 'bg-amber-100',  border: 'border-amber-300',  testo: 'text-amber-800' },
+          3: { bg: 'bg-red-100',    border: 'border-red-300',    testo: 'text-red-800' },
+          4: { bg: 'bg-green-100',  border: 'border-green-300',  testo: 'text-green-800' },
+          5: { bg: 'bg-blue-100',   border: 'border-blue-300',   testo: 'text-blue-800' },
+        };
+        const camFiltrate = camere.filter((c) => filtroCamera === 'tutte' || c.id === filtroCamera);
+        return (
+          <div className="bg-white rounded-lg shadow-sm p-3 sm:p-5">
+            <h2 className="font-semibold text-gray-700 mb-3 sm:mb-4 text-sm sm:text-base">Camere nel periodo</h2>
+            <div className={`grid gap-1.5 sm:gap-3 ${camFiltrate.length === 1 ? 'grid-cols-1' : 'grid-cols-5'}`}>
+              {camFiltrate.map((camera) => {
+                const prenotazioniCamera = prenNelPeriodo.filter((p) => p.camera_id === camera.id);
+                const impegnata = prenotazioniCamera.length > 0;
+                const nottiTotali = prenotazioniCamera.reduce(
+                  (s, p) => s + differenceInDays(parseISO(p.check_out), parseISO(p.check_in)), 0
+                );
+                const stimaCamera = prenotazioniCamera
+                  .filter((p) => p.fonte !== 'ical')
+                  .reduce((s, p) => s + p.importo_totale, 0);
+                const occupazioneOggi = isCameraOccupata(prenotazioni, camera.id);
+                const col = COLORI[camera.id] ?? COLORI[1];
+                return (
+                  <div key={camera.id} className={`rounded-lg p-1.5 sm:p-3 text-center border ${col.bg} ${col.border}`}>
+                    <div className={`font-bold text-xs sm:text-sm ${col.testo}`}>{camera.nome}</div>
+                    <div className={`text-[10px] sm:text-xs font-medium mt-0.5 ${impegnata ? 'text-red-700' : 'text-green-700'}`}>
+                      {impegnata ? `${prenotazioniCamera.length} pren.` : 'Libera'}
                     </div>
-                  )}
-                  <div className="text-xs text-gray-400 mt-1">€{camera.prezzo_notte.toFixed(2)}/n</div>
-                </div>
-              );
-            })}
-        </div>
-      </div>
+                    {impegnata && <div className="hidden sm:block text-xs text-gray-500 mt-1">{nottiTotali} notti</div>}
+                    {stimaCamera > 0 && <div className="hidden sm:block text-xs font-semibold text-green-700 mt-1">€{stimaCamera.toFixed(2)}</div>}
+                    {occupazioneOggi && (
+                      <div className={`text-[10px] sm:text-xs mt-0.5 truncate font-medium ${col.testo}`}>
+                        {occupazioneOggi.ospite_nome.split(' ')[0]}
+                      </div>
+                    )}
+                    <div className="hidden sm:block text-xs text-gray-400 mt-1">€{camera.prezzo_notte.toFixed(2)}/n</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Arrivi nel periodo */}
       <div className="bg-white rounded-lg shadow-sm p-5">
