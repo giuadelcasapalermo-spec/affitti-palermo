@@ -4,13 +4,13 @@ import { Prenotazione } from '@/lib/types';
 import { randomUUID } from 'crypto';
 
 export async function GET() {
-  const prenotazioni = leggiPrenotazioni();
+  const prenotazioni = await leggiPrenotazioni();
   return NextResponse.json(prenotazioni);
 }
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const prenotazioni = leggiPrenotazioni();
+  const prenotazioni = await leggiPrenotazioni();
 
   const nuova: Prenotazione = {
     id: randomUUID(),

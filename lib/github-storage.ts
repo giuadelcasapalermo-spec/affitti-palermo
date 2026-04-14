@@ -30,6 +30,16 @@ async function githubGet(filePath: string) {
 }
 
 /**
+ * Legge il contenuto (testo UTF-8) di un file dal repo GitHub.
+ */
+export async function githubRead(filePath: string): Promise<string> {
+  if (!GITHUB_TOKEN) throw new Error('GITHUB_TOKEN non configurato');
+  const file = await githubGet(filePath);
+  // Il contenuto è in base64 con \n; Buffer.from gestisce entrambi
+  return Buffer.from(file.content.replace(/\n/g, ''), 'base64').toString('utf-8');
+}
+
+/**
  * Aggiorna (o crea) un file nel repo GitHub.
  * content: stringa UTF-8 del nuovo contenuto.
  */

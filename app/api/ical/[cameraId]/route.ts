@@ -23,7 +23,7 @@ export async function GET(
     return new NextResponse('Camera non trovata', { status: 404 });
   }
 
-  const prenotazioni = leggiPrenotazioni().filter(
+  const prenotazioni = (await leggiPrenotazioni()).filter(
     (p) => p.camera_id === cameraIdNum && p.stato !== 'cancellata'
   );
 

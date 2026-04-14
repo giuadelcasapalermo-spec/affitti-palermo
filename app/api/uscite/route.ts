@@ -4,12 +4,12 @@ import { Uscita } from '@/lib/types';
 import { randomUUID } from 'crypto';
 
 export async function GET() {
-  return NextResponse.json(leggiUscite());
+  return NextResponse.json(await leggiUscite());
 }
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const uscite = leggiUscite();
+  const uscite = await leggiUscite();
 
   const nuova: Uscita = {
     id: randomUUID(),

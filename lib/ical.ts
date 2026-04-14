@@ -106,7 +106,7 @@ export async function sincronizzaCalendario(
   }
 
   const eventiRemoti = parseIcal(testo);
-  const prenotazioni = leggiPrenotazioni();
+  const prenotazioni = await leggiPrenotazioni();
   const esistentiIcal = prenotazioni.filter(
     (p) => p.camera_id === cameraId && p.fonte === 'ical'
   );

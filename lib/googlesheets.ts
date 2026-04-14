@@ -60,8 +60,8 @@ export async function exportToSheets(): Promise<void> {
   const sheetName = await getSheetName(sheets);
   const range = `'${sheetName}'!A:H`;
 
-  const entrate = leggiEntrate();
-  const uscite = leggiUscite();
+  const entrate = await leggiEntrate();
+  const uscite = await leggiUscite();
 
   const righe = [
     HEADER,
@@ -94,8 +94,8 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   // Salta header
   const dataRows = rows.slice(1).filter((r) => r[0] && r[1] && r[2] && r[3]);
 
-  const entrate = leggiEntrate();
-  const uscite = leggiUscite();
+  const entrate = await leggiEntrate();
+  const uscite = await leggiUscite();
   const idsEntrate = new Set(entrate.map((e) => e.id));
   const idsUscite = new Set(uscite.map((u) => u.id));
 
