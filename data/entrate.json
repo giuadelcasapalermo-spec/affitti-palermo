@@ -106,14 +106,5 @@
     "importo": 301.29,
     "note": "",
     "created_at": "2026-04-14T09:37:51.029Z"
-  },
-  {
-    "id": "9af34cc2-a5f7-4031-aade-d399c2e72fc4",
-    "data": "2026-04-14",
-    "descrizione": "prova",
-    "categoria": "Altro",
-    "importo": 12,
-    "note": "",
-    "created_at": "2026-04-14T19:53:55.529Z"
   }
 ]
