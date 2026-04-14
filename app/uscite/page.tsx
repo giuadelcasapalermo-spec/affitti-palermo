@@ -7,7 +7,7 @@ import {
 } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
 import { fData } from '@/lib/utils';
-import { Plus, Pencil, Trash2, X, TrendingDown, TrendingUp, ChevronDown } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, TrendingDown, TrendingUp, ChevronDown, RefreshCw, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
 
 /* ── colori ───────────────────────────────────────────── */
 const COL_USCITA: Record<CategoriaUscita, string> = {
@@ -142,6 +142,27 @@ export default function PrimaNotaPage() {
   const [filtroMese, setFiltroMese] = useState(() => oggi.slice(0, 7));
   const [filtriFiltriAperti, setFiltriFiltriAperti] = useState(false);
   const [tabAttivo, setTabAttivo] = useState<'movimenti' | 'foglio'>('movimenti');
+  const [syncing, setSyncing] = useState<'export' | 'import' | 'both' | null>(null);
+  const [syncMsg, setSyncMsg] = useState<{ ok: boolean; testo: string } | null>(null);
+
+  async function syncSheets(direzione: 'export' | 'import' | 'both') {
+    setSyncing(direzione);
+    setSyncMsg(null);
+    try {
+      const res = await fetch('/api/sync-sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ direzione }),
+      });
+      const json = await res.json();
+      setSyncMsg({ ok: json.ok, testo: json.messaggio ?? json.errore ?? 'Errore' });
+      if (json.ok && (direzione === 'import' || direzione === 'both')) carica();
+    } catch {
+      setSyncMsg({ ok: false, testo: 'Errore di rete' });
+    } finally {
+      setSyncing(null);
+    }
+  }
   const [filtroE, setFiltroE] = useState<Set<string>>(new Set(CATEGORIE_ENTRATA));
   const [filtroU, setFiltroU] = useState<Set<string>>(new Set(CATEGORIE_USCITA));
 
@@ -233,6 +254,42 @@ export default function PrimaNotaPage() {
         >
           Foglio Google
         </button>
+      </div>
+
+      {/* Pulsanti sync Google Sheets */}
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => syncSheets('export')}
+          disabled={!!syncing}
+          title="Esporta movimenti → Google Sheets"
+          className="flex items-center gap-1.5 border border-gray-300 bg-white px-3 py-1.5 rounded text-xs font-medium hover:bg-gray-50 disabled:opacity-50"
+        >
+          {syncing === 'export' ? <RefreshCw size={13} className="animate-spin" /> : <ArrowUpFromLine size={13} />}
+          App → Sheets
+        </button>
+        <button
+          onClick={() => syncSheets('import')}
+          disabled={!!syncing}
+          title="Importa movimenti ← Google Sheets"
+          className="flex items-center gap-1.5 border border-gray-300 bg-white px-3 py-1.5 rounded text-xs font-medium hover:bg-gray-50 disabled:opacity-50"
+        >
+          {syncing === 'import' ? <RefreshCw size={13} className="animate-spin" /> : <ArrowDownToLine size={13} />}
+          Sheets → App
+        </button>
+        <button
+          onClick={() => syncSheets('both')}
+          disabled={!!syncing}
+          title="Sincronizza in entrambi i versi"
+          className="flex items-center gap-1.5 border border-blue-300 bg-blue-50 text-blue-700 px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-100 disabled:opacity-50"
+        >
+          {syncing === 'both' ? <RefreshCw size={13} className="animate-spin" /> : <RefreshCw size={13} />}
+          Sync bidirezionale
+        </button>
+        {syncMsg && (
+          <span className={`text-xs px-2 py-1 rounded ${syncMsg.ok ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+            {syncMsg.testo}
+          </span>
+        )}
       </div>
 
       {/* Foglio Google — solo desktop */}
