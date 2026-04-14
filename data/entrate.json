@@ -612,5 +612,1132 @@
     "note": "",
     "created_at": "2026-04-14T10:57:00.637Z",
     "camera_id": 5
+  },
+  {
+    "id": "b391af8a-d382-4671-9d01-057831eabd89",
+    "data": "2026-10-20",
+    "descrizione": "Man Ting Cheng",
+    "categoria": "Booking.com",
+    "importo": 92.95,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "b7d698d9-f554-49c0-941e-4db80b283e9e",
+    "data": "2026-09-01",
+    "descrizione": "Michela Giulia",
+    "categoria": "Booking.com",
+    "importo": 140.25,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "3c94bfdb-4479-4a87-a00c-340feece1b8c",
+    "data": "2026-09-12",
+    "descrizione": "Oil Fawett",
+    "categoria": "Booking.com",
+    "importo": 118.3875,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "0780384d-ca98-4108-bc2e-101b8afb12a2",
+    "data": "2026-09-20",
+    "descrizione": "Anne Dowling",
+    "categoria": "Booking.com",
+    "importo": 108.9,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "a4c92dfe-5acb-4616-a7d3-0a53aeb0584d",
+    "data": "2026-09-23",
+    "descrizione": "Marius Halfer",
+    "categoria": "Booking.com",
+    "importo": 74.25,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "7d8f0fce-6bec-4fa6-b3a9-999cb0f3cf19",
+    "data": "2026-09-29",
+    "descrizione": "Renata Kowalkoska",
+    "categoria": "Booking.com",
+    "importo": 206.9375,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "87a3ee7a-438c-4382-86ac-65bd24bcb215",
+    "data": "2026-08-06",
+    "descrizione": "Claudia Terpolli",
+    "categoria": "Booking.com",
+    "importo": 105.1875,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "da93e42d-3732-4fc2-a950-46aa16ff4033",
+    "data": "2026-08-10",
+    "descrizione": "Manca Matilde",
+    "categoria": "Booking.com",
+    "importo": 124.575,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "91efdba5-8882-4c2e-a5ff-1069447726d5",
+    "data": "2026-08-13",
+    "descrizione": "Giorgos Rellias",
+    "categoria": "Booking.com",
+    "importo": 124.575,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "b1b4139d-bd40-4bf6-bb95-d40c9cda88a5",
+    "data": "2026-08-16",
+    "descrizione": "Claudio Ruggiero",
+    "categoria": "Booking.com",
+    "importo": 148.5,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "12944dc7-05f6-40ee-8328-9df09357bca3",
+    "data": "2026-08-20",
+    "descrizione": "Sara Vitolo",
+    "categoria": "Booking.com",
+    "importo": 70.125,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "eedb4127-edda-4497-b9eb-869db6332346",
+    "data": "2026-08-22",
+    "descrizione": "Besem Zammouri",
+    "categoria": "Booking.com",
+    "importo": 70.125,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "7407721b-2412-4aeb-8151-6e89ac3c83d6",
+    "data": "2026-08-25",
+    "descrizione": "Jeffrey Dennis",
+    "categoria": "Booking.com",
+    "importo": 70.125,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "3333a833-4dd8-411f-af99-66e571eaf734",
+    "data": "2026-08-27",
+    "descrizione": "Maria Rita Figueiredo",
+    "categoria": "Booking.com",
+    "importo": 126.236,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "fea876b3-4653-4a89-a2f7-37de338b3925",
+    "data": "2026-07-01",
+    "descrizione": "Davide Bartolozzo",
+    "categoria": "Booking.com",
+    "importo": 70.125,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "4e3edd5b-31c1-4d59-b07b-d029505f06f3",
+    "data": "2026-07-03",
+    "descrizione": "Gianpio Palladino",
+    "categoria": "Booking.com",
+    "importo": 118.3875,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "d7c2e529-0381-4976-bc57-f4b10feb32d5",
+    "data": "2026-07-07",
+    "descrizione": "Veronica Flammia",
+    "categoria": "Booking.com",
+    "importo": 118.3875,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "2d76fd2f-12da-4b1c-8e12-8369a2cda997",
+    "data": "2026-07-12",
+    "descrizione": "Flona Bourke",
+    "categoria": "Booking.com",
+    "importo": 70.125,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "9fb30d1a-1548-4ea0-9539-328570e190b3",
+    "data": "2026-07-17",
+    "descrizione": "Landini Aldo",
+    "categoria": "Booking.com",
+    "importo": 255,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "f4fa5776-3e91-456c-940f-bff3e8682b4c",
+    "data": "2026-07-18",
+    "descrizione": "Carolien Raadgers",
+    "categoria": "Booking.com",
+    "importo": 65,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "e30028ee-5a00-467d-a41d-778d87e63d79",
+    "data": "2026-07-30",
+    "descrizione": "Arianna Bentivogli",
+    "categoria": "Booking.com",
+    "importo": 65,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "ebf2587a-8af5-4517-aede-5389f3890142",
+    "data": "2026-06-25",
+    "descrizione": "Esra Karabulut",
+    "categoria": "Booking.com",
+    "importo": 70.125,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "6e96dd0a-65d0-4596-ae1a-3391b8d67ac5",
+    "data": "2026-06-27",
+    "descrizione": "Shen Nannan",
+    "categoria": "Booking.com",
+    "importo": 140.25,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "88452019-07e3-42c8-87b8-d832471e97ba",
+    "data": "2026-05-01",
+    "descrizione": "Nicola Natali",
+    "categoria": "Booking.com",
+    "importo": 102.85,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "4597332f-46c0-4c61-88d3-77ead2287724",
+    "data": "2026-05-01",
+    "descrizione": "Anna Fomasa",
+    "categoria": "Booking.com",
+    "importo": 168.3,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "866b176d-0428-482c-9c28-d703204bb318",
+    "data": "2026-05-07",
+    "descrizione": "Giuseppe Castore",
+    "categoria": "Booking.com",
+    "importo": 140.25,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "530c3bc0-1fec-45cb-9945-5d8419278249",
+    "data": "2026-05-07",
+    "descrizione": "Giuseppe Castore",
+    "categoria": "Booking.com",
+    "importo": 140.25,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "93eb8258-677f-414b-841c-5f99c6c44bf7",
+    "data": "2026-05-07",
+    "descrizione": "Kamila Czaban (tripla)",
+    "categoria": "Booking.com",
+    "importo": 173.91,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "43e3215b-7737-4fa6-bfdc-f2f56b4b791f",
+    "data": "2026-05-09",
+    "descrizione": "Andrea Berrafato",
+    "categoria": "Booking.com",
+    "importo": 84.15,
+    "camera_id": 5,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "55f92e16-78af-4e41-b92f-d942138c8e9b",
+    "data": "2026-05-09",
+    "descrizione": "Carla Gomes dos Santos",
+    "categoria": "Booking.com",
+    "importo": 146.85,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "28db7914-fdbb-493b-bd8f-b559d17c2a61",
+    "data": "2026-05-13",
+    "descrizione": "Maria del Carmen Leston Alves",
+    "categoria": "Booking.com",
+    "importo": 126.225,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "bf71ff4d-8844-459c-87d5-45d2d2b57710",
+    "data": "2026-05-13",
+    "descrizione": "Francesca Luccardini (tripla)",
+    "categoria": "Booking.com",
+    "importo": 193.71,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "1c9c239d-c53a-4b6b-93b1-2e5d4d991757",
+    "data": "2026-05-14",
+    "descrizione": "Daniela Valkova",
+    "categoria": "Booking.com",
+    "importo": 205.15,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "bd54a844-3760-489f-bdad-cd6464e41d65",
+    "data": "2026-05-14",
+    "descrizione": "Daniela Valkova",
+    "categoria": "Booking.com",
+    "importo": 205.15,
+    "camera_id": 5,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "becde3be-7514-4ef6-b905-da9713b7b4bd",
+    "data": "2026-05-14",
+    "descrizione": "Michalina Palus",
+    "categoria": "Booking.com",
+    "importo": 227.975,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "7beb98d6-6880-4dc9-83b6-653772fb04dc",
+    "data": "2026-05-16",
+    "descrizione": "Mariiia Rybitckiaia (quadrupla)",
+    "categoria": "Booking.com",
+    "importo": 173.91,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "9383ff2e-0647-4fb5-a004-5c7dc159c282",
+    "data": "2026-05-19",
+    "descrizione": "Patryk Adamczak",
+    "categoria": "Booking.com",
+    "importo": 173.91,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "5f49fcfe-17c9-49f6-a122-bf0314312900",
+    "data": "2026-05-29",
+    "descrizione": "Livia Amato",
+    "categoria": "Booking.com",
+    "importo": 71.5,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "41d1cf0c-fdca-4fc2-9b35-50e37c60e735",
+    "data": "2026-05-30",
+    "descrizione": "Anna Siminska",
+    "categoria": "Booking.com",
+    "importo": 135.575,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "d0769c74-dab5-48f1-91ff-2839aac5a952",
+    "data": "2026-04-04",
+    "descrizione": "Theodora Salonidou",
+    "categoria": "Booking.com",
+    "importo": 89.1,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "73d15212-f30f-40da-8877-78d421950f36",
+    "data": "2026-04-04",
+    "descrizione": "Theodora Salonidou",
+    "categoria": "Booking.com",
+    "importo": 89.1,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "65b3985f-3384-4c6c-bd52-866f3f5e7138",
+    "data": "2026-04-04",
+    "descrizione": "Theodora Salonidou",
+    "categoria": "Booking.com",
+    "importo": 89.1,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "e9f9a293-9c67-4333-a251-e6a981e80e11",
+    "data": "2026-04-04",
+    "descrizione": "Theodora Salonidou",
+    "categoria": "Booking.com",
+    "importo": 89.1,
+    "camera_id": 5,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "9e38e5f7-acc2-48a4-a217-6d848f69b568",
+    "data": "2026-04-05",
+    "descrizione": "Giuseppe Gallicchio (quadrupla)",
+    "categoria": "Booking.com",
+    "importo": 115.94,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "4edc48fe-b47e-47f6-b39d-4952695faaf0",
+    "data": "2026-04-09",
+    "descrizione": "Silvia Preis-Maier",
+    "categoria": "Booking.com",
+    "importo": 142.12,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "c7af75d0-ab7d-491f-8504-771ff0cfac80",
+    "data": "2026-04-09",
+    "descrizione": "Silvia Preis-Maier (quadrupla)",
+    "categoria": "Booking.com",
+    "importo": 142.12,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "1ae54e48-3ebb-48aa-a756-90e43cc37c25",
+    "data": "2026-04-09",
+    "descrizione": "Silvia Preis-Maier",
+    "categoria": "Booking.com",
+    "importo": 142.12,
+    "camera_id": 5,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "b2168d92-e2b8-4f6a-942c-a4b9969f8dec",
+    "data": "2026-04-10",
+    "descrizione": "Daniele Brianza",
+    "categoria": "Booking.com",
+    "importo": 92.95,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "86a0da69-89fa-4a44-8a3c-df0837b06c90",
+    "data": "2026-04-11",
+    "descrizione": "Laura Oreto",
+    "categoria": "Booking.com",
+    "importo": 92.95,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "838a9daf-712f-480f-8ed0-2146dfe4fc06",
+    "data": "2026-04-16",
+    "descrizione": "Ana Gonzalez Gil",
+    "categoria": "Booking.com",
+    "importo": 133.65,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "1520c143-1264-4edb-a0fa-aaa90ebe614e",
+    "data": "2026-04-16",
+    "descrizione": "Ana Gonzalez Gil",
+    "categoria": "Booking.com",
+    "importo": 133.65,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "10ed0967-69fc-4728-bcb4-d5689121edc2",
+    "data": "2026-04-16",
+    "descrizione": "Ana Gonzalez Gil",
+    "categoria": "Booking.com",
+    "importo": 133.65,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "8378ac4b-5737-453f-9174-18d73adb7285",
+    "data": "2026-04-16",
+    "descrizione": "Ana Gonzalez Gil",
+    "categoria": "Booking.com",
+    "importo": 133.65,
+    "camera_id": 5,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "e6b60194-665b-438a-a5ba-59e07d2547b4",
+    "data": "2026-04-17",
+    "descrizione": "Leila Kasseh (quadrupla)",
+    "categoria": "Booking.com",
+    "importo": 122.76,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "eb30e3ec-f6e3-4c90-abc4-759d1904930a",
+    "data": "2026-04-19",
+    "descrizione": "Juanita singola",
+    "categoria": "Booking.com",
+    "importo": 89.1,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "7de44d90-d68f-4eea-bf50-2211b23d6e42",
+    "data": "2026-04-21",
+    "descrizione": "Jeron ven der WeiJde",
+    "categoria": "Booking.com",
+    "importo": 80.135,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "9daf29c8-ccb0-4876-98b8-1726eb7caee9",
+    "data": "2026-04-23",
+    "descrizione": "Gionatham Lunetta tripla",
+    "categoria": "Booking.com",
+    "importo": 138.05,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "2862c24b-355d-4afe-88a8-05f54df0e6d9",
+    "data": "2026-04-23",
+    "descrizione": "Gionatham Lunetta",
+    "categoria": "Booking.com",
+    "importo": 138.05,
+    "camera_id": 5,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "9d2fb217-e413-4965-baa4-1fe3387bb245",
+    "data": "2026-04-23",
+    "descrizione": "Gionatham Lunetta",
+    "categoria": "Booking.com",
+    "importo": 138.05,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "eae111df-7bc2-43f5-91cb-4e9d66135a55",
+    "data": "2026-04-23",
+    "descrizione": "Gionatham Lunetta",
+    "categoria": "Booking.com",
+    "importo": 138.05,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "7a6f1769-56df-43b0-8248-89f5a6ce7c1a",
+    "data": "2026-04-23",
+    "descrizione": "Verde Roberto",
+    "categoria": "Booking.com",
+    "importo": 89.1,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "dd56807b-9739-4a4e-a86c-2529dd529994",
+    "data": "2026-04-25",
+    "descrizione": "Antonio Gioiello",
+    "categoria": "Booking.com",
+    "importo": 84.15,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "435037ec-f334-4a24-bcd2-f7fa6f8d240f",
+    "data": "2026-04-26",
+    "descrizione": "Bojana Gabelic",
+    "categoria": "Booking.com",
+    "importo": 84.15,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "875f73e5-0867-4ebc-94e3-ba5cae2c04e6",
+    "data": "2026-04-26",
+    "descrizione": "Bojana Gabelic",
+    "categoria": "Booking.com",
+    "importo": 84.15,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "40ae2f6e-8620-4125-a473-3fee547cf0ef",
+    "data": "2026-04-29",
+    "descrizione": "Luca Girelli",
+    "categoria": "Booking.com",
+    "importo": 210.375,
+    "camera_id": 5,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "fdbbb8b8-b0b8-4d8c-bec3-fc3a16ead4a3",
+    "data": "2026-04-30",
+    "descrizione": "Silvana Pasini",
+    "categoria": "Booking.com",
+    "importo": 185.9,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "c9fd5c29-2446-4e57-87b4-6bc09bced294",
+    "data": "2026-04-30",
+    "descrizione": "Caterina Segantin - quadrupla",
+    "categoria": "Booking.com",
+    "importo": 184.14,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "edff8f42-6394-4111-845c-09ba7ff686c3",
+    "data": "2026-03-12",
+    "descrizione": "Asia Ferlinga",
+    "categoria": "Booking.com",
+    "importo": 69.575,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "601bf534-bc21-4c0d-85a8-f4766599c511",
+    "data": "2026-03-13",
+    "descrizione": "Desse Quentin",
+    "categoria": "Booking.com",
+    "importo": 32.175,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "fff1dda9-f572-45c8-914e-a1bedf0e8d53",
+    "data": "2026-03-13",
+    "descrizione": "Eridano Liberti (quadrupla)",
+    "categoria": "Booking.com",
+    "importo": 101.75,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "11aae3a7-89fd-4be2-bf27-37ac3514a51e",
+    "data": "2026-03-13",
+    "descrizione": "Nicola Murgia",
+    "categoria": "Booking.com",
+    "importo": 96.525,
+    "camera_id": 5,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "0648467f-8e56-470c-870e-b68467dd788a",
+    "data": "2026-03-15",
+    "descrizione": "Desse Quentin",
+    "categoria": "Booking.com",
+    "importo": 32.175,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "41eaf546-ab82-4063-b6e1-7025d26b4dc6",
+    "data": "2026-03-15",
+    "descrizione": "Marco Verri",
+    "categoria": "Booking.com",
+    "importo": 146.3,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "9c7d7c41-f27f-4954-ba75-f21553f45174",
+    "data": "2026-03-20",
+    "descrizione": "Karin Chen",
+    "categoria": "Booking.com",
+    "importo": 30.3875,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "14bac70a-059a-49f4-a4e6-b31a34e89a75",
+    "data": "2026-03-21",
+    "descrizione": "Teresa Alice (quadrupla)",
+    "categoria": "Booking.com",
+    "importo": 53.35,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "a4a559e8-9c64-455e-a81e-ef33e80311d9",
+    "data": "2026-03-21",
+    "descrizione": "Ebe Krotutchinio Ghilsainn",
+    "categoria": "Booking.com",
+    "importo": 32.175,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "8f241669-33b6-4bf6-8ed9-5ca74824ea0d",
+    "data": "2026-03-21",
+    "descrizione": "ILSE RUSSOMANDO",
+    "categoria": "Booking.com",
+    "importo": 64.35,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "d1261f3d-f53f-49a6-b65a-2592900f656b",
+    "data": "2026-03-23",
+    "descrizione": "Alberghini Lara",
+    "categoria": "Booking.com",
+    "importo": 104.3625,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "b8e19a71-ba4d-4838-aa27-9590f392ed14",
+    "data": "2026-03-24",
+    "descrizione": "Michal Borsik",
+    "categoria": "Booking.com",
+    "importo": 64.35,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "7d6cf696-cb98-4247-9ff0-f870747ead74",
+    "data": "2026-03-26",
+    "descrizione": "Manuela Verducci",
+    "categoria": "Booking.com",
+    "importo": 30.3875,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "30c9f9e9-48ae-4883-9d1c-a88a3aa01380",
+    "data": "2026-03-27",
+    "descrizione": "Macchi Roberta (Qudrupla)",
+    "categoria": "Booking.com",
+    "importo": 51.15,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "74e1dda7-3014-432b-9060-e83be21173d7",
+    "data": "2026-03-27",
+    "descrizione": "Thomas Kraner 2 Dinel Sakic &Tien Kramer",
+    "categoria": "Booking.com",
+    "importo": 282.7,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "a7d2e612-36e9-4209-a6b3-64f85e5b4fd6",
+    "data": "2026-03-27",
+    "descrizione": "Thomas Kraner 2 Tabea Dindic & Ermin Gutic",
+    "categoria": "Booking.com",
+    "importo": 188.1,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "ad258bbd-413f-4a79-8d3a-0b8a3515bc0a",
+    "data": "2026-03-28",
+    "descrizione": "Thomas Kraner 1 Neila Dindic",
+    "categoria": "Booking.com",
+    "importo": 127.6,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "651cccb7-d59d-4a6a-b8ea-2b637bb48479",
+    "data": "2026-03-28",
+    "descrizione": "Thomas Kraner 2 Zahida Sakic & Tom Kramer",
+    "categoria": "Booking.com",
+    "importo": 382.8,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "c24c6746-b25e-4784-87a0-492ceb8af505",
+    "data": "2026-03-28",
+    "descrizione": "Thomas Kraner 2 Metka & Safet Dindic",
+    "categoria": "Booking.com",
+    "importo": 288.2,
+    "camera_id": 5,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "4d89b991-6496-4613-be10-49305b9393b9",
+    "data": "2026-02-03",
+    "descrizione": "Jhon Spiteri",
+    "categoria": "Booking.com",
+    "importo": 106.99,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "a75e048e-de68-4f4b-b58e-e0bd124fc55d",
+    "data": "2026-02-07",
+    "descrizione": "Salvatore Casertano",
+    "categoria": "Booking.com",
+    "importo": 35.67,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "7ebd2ec2-5532-4f24-a92f-d13e33d914b0",
+    "data": "2026-02-07",
+    "descrizione": "Panfalone",
+    "categoria": "Booking.com",
+    "importo": 71.34,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "e56aba3f-002d-4841-92ff-2b5513602d57",
+    "data": "2026-02-07",
+    "descrizione": "Margarita",
+    "categoria": "Booking.com",
+    "importo": 71.34,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "c3f6adbb-894d-4703-b0eb-f9e9a9b9eb56",
+    "data": "2026-02-11",
+    "descrizione": "Rebecca Lang",
+    "categoria": "Booking.com",
+    "importo": 249.67,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "3a7cbce5-352d-4c54-9e6d-ca1349ebfa8d",
+    "data": "2026-02-13",
+    "descrizione": "Carla Falzone",
+    "categoria": "Booking.com",
+    "importo": 32.1,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "34822e6b-f035-4c48-a528-b9ea5b6e754e",
+    "data": "2026-02-20",
+    "descrizione": "Rosaria D'Apote",
+    "categoria": "Booking.com",
+    "importo": 32.1,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "647b14bb-164e-400d-a631-6a45935c6aa2",
+    "data": "2026-02-20",
+    "descrizione": "Alessandro Frusco",
+    "categoria": "Booking.com",
+    "importo": 96,
+    "camera_id": 1,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "f01f6f06-53ac-40d6-a065-58f07e4b34d5",
+    "data": "2026-02-20",
+    "descrizione": "Claudio Mario Di Vita",
+    "categoria": "Booking.com",
+    "importo": 71.34,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "eecd90b0-5ebb-4f6e-a7e6-04a3cf3d3de4",
+    "data": "2026-02-21",
+    "descrizione": "Taehyo Kim",
+    "categoria": "Booking.com",
+    "importo": 42,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "37f69167-a78b-4122-a4ab-bba123ea9269",
+    "data": "2026-02-21",
+    "descrizione": "Giulia Katia",
+    "categoria": "Booking.com",
+    "importo": 32.1,
+    "camera_id": 4,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "7310ce8e-0d23-4472-bacc-4a98ebe6940d",
+    "data": "2026-02-27",
+    "descrizione": "Alicja Kozera",
+    "categoria": "Booking.com",
+    "importo": 68,
+    "camera_id": 3,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "9dd93428-e85e-4a16-bf3a-199692907105",
+    "data": "2026-02-28",
+    "descrizione": "Colin Veses",
+    "categoria": "Booking.com",
+    "importo": 32.1,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "e5847e1e-9452-48a0-b536-7ffb757261a6",
+    "data": "2025-12-31",
+    "descrizione": "Alessandra Gaglio 108€",
+    "categoria": "Booking.com",
+    "importo": 76.21,
+    "camera_id": 1,
+    "note": "Camere Bianca",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "47a2fd73-8acc-4d04-b3cb-72b200682e3d",
+    "data": "2025-12-31",
+    "descrizione": "Rashid Tahani 73€",
+    "categoria": "Booking.com",
+    "importo": 49.53,
+    "camera_id": 2,
+    "note": "Camera Verde",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "0946dabf-d51a-4ae4-81b4-8a56ef3df064",
+    "data": "2025-12-31",
+    "descrizione": "Elisa Castellini 66,5€",
+    "categoria": "Booking.com",
+    "importo": 44.58,
+    "camera_id": 3,
+    "note": "Camera Verde",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "7b4738b2-8b65-4a53-aba7-9789ab186b98",
+    "data": "2026-01-01",
+    "descrizione": "Luca Ferrero",
+    "categoria": "Booking.com",
+    "importo": 401.24,
+    "camera_id": 5,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "9bc76673-07da-40fd-be59-f573fce5896d",
+    "data": "2026-01-03",
+    "descrizione": "Antonella Scibetta 146€",
+    "categoria": "Booking.com",
+    "importo": 99.06,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "c8c6c40f-68d7-49f3-a8e8-b0b470a87afd",
+    "data": "2026-01-17",
+    "descrizione": "Maciej Menakiewic",
+    "categoria": "Booking.com",
+    "importo": 71.34,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "8885b40e-d6a5-40f9-9935-b543670d13a7",
+    "data": "2026-01-31",
+    "descrizione": "Giovanni Condorelli",
+    "categoria": "Booking.com",
+    "importo": 32.1,
+    "camera_id": 2,
+    "note": "",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "d2c0951a-b365-416e-a7da-e276dbaee3bb",
+    "data": "2025-12-01",
+    "descrizione": "Franco",
+    "categoria": "Airbnb",
+    "importo": 65,
+    "camera_id": 1,
+    "note": "Camera verde",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "553e4fa6-2737-49a1-b832-7fba4bc7ca2d",
+    "data": "2025-12-07",
+    "descrizione": "Russo Federica 65€ + 8€",
+    "categoria": "Booking.com",
+    "importo": 43.88,
+    "camera_id": 5,
+    "note": "Camera Rossa",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "7a9065d8-2662-437d-9e68-00d00a881564",
+    "data": "2025-12-13",
+    "descrizione": "Tiziana de Dimone 158,5€ + 16€",
+    "categoria": "Booking.com",
+    "importo": 103.51,
+    "note": "Camera Rossa - Gialla - Blue",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "6ff16a06-7c1e-4602-9714-1fe02905e773",
+    "data": "2025-11-01",
+    "descrizione": "Francesco Cagnino - 46,8€",
+    "categoria": "Booking.com",
+    "importo": 24,
+    "camera_id": 1,
+    "note": "Doppia",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "e2a309b5-cc33-4d2f-b015-13fb258bc357",
+    "data": "2025-11-01",
+    "descrizione": "Cristofalo Giardina - 52€",
+    "categoria": "Booking.com",
+    "importo": 30,
+    "camera_id": 2,
+    "note": "Doppia",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "46a6e525-dff8-44c3-b0bf-3767886a717d",
+    "data": "2025-11-23",
+    "descrizione": "Maciej Luczkiewicz - 52,14€",
+    "categoria": "Booking.com",
+    "importo": 52.14,
+    "camera_id": 1,
+    "note": "Doppia",
+    "created_at": "2026-04-14T19:15:52.083Z"
+  },
+  {
+    "id": "a7597acf-0d5a-47ba-a4e8-cce60d3beae4",
+    "data": "2025-11-23",
+    "descrizione": "Maciej Luczkiewicz - 52,14€",
+    "categoria": "Booking.com",
+    "importo": 52.14,
+    "camera_id": 3,
+    "note": "Doppia",
+    "created_at": "2026-04-14T19:15:52.083Z"
   }
 ]
