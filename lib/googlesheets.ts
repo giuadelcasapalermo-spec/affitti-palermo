@@ -1,4 +1,5 @@
 import { google } from 'googleapis';
+import { GoogleAuth } from 'google-auth-library';
 import { Entrata, Uscita, CATEGORIE_ENTRATA, CATEGORIE_USCITA } from './types';
 import { leggiEntrate, scriviEntrate } from './entrate';
 import { leggiUscite, scriviUscite } from './uscite';
@@ -49,7 +50,7 @@ function uscitaToRow(u: Uscita): string[] {
 async function getSheetsClient() {
   const auth = getAuth();
   // GoogleAuth ha getClient(), OAuth2Client è già un auth diretto
-  const resolvedAuth = 'getClient' in auth ? await (auth as google.auth.GoogleAuth).getClient() : auth;
+  const resolvedAuth = auth instanceof GoogleAuth ? await auth.getClient() : auth;
   return google.sheets({ version: 'v4', auth: resolvedAuth as never });
 }
 
