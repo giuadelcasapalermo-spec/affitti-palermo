@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const SECRET = process.env.AUTH_SECRET || 'giuadel-fallback-secret';
 
-const PUBLIC = ['/login', '/api/auth/login'];
+const PUBLIC = ['/login', '/api/auth/login', '/api/debug-env'];
 
 async function tokenValido(token: string): Promise<boolean> {
   try {
