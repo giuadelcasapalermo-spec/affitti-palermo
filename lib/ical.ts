@@ -154,7 +154,7 @@ export async function sincronizzaCalendario(
     ...daAggiungere,
   ];
 
-  scriviPrenotazioni(aggiornate);
+  await scriviPrenotazioni(aggiornate);
 
   return {
     camera_id: cameraId,

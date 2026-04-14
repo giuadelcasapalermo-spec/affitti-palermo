@@ -121,7 +121,7 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
     }
   }
 
-  scriviEntrate(entrate);
-  scriviUscite(uscite);
+  await scriviEntrate(entrate);
+  await scriviUscite(uscite);
   return { importate, ignorate };
 }

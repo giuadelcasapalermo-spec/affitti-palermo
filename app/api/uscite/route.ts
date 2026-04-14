@@ -23,6 +23,6 @@ export async function POST(req: NextRequest) {
   };
 
   uscite.push(nuova);
-  scriviUscite(uscite);
+  await scriviUscite(uscite);
   return NextResponse.json(nuova, { status: 201 });
 }

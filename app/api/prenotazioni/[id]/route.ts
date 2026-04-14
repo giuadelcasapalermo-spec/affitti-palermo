@@ -16,7 +16,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const idx = prenotazioni.findIndex((x) => x.id === id);
   if (idx === -1) return NextResponse.json({ error: 'Non trovata' }, { status: 404 });
   prenotazioni[idx] = { ...prenotazioni[idx], ...body };
-  scriviPrenotazioni(prenotazioni);
+  await scriviPrenotazioni(prenotazioni);
   return NextResponse.json(prenotazioni[idx]);
 }
 
@@ -26,6 +26,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const nuove = prenotazioni.filter((x) => x.id !== id);
   if (nuove.length === prenotazioni.length)
     return NextResponse.json({ error: 'Non trovata' }, { status: 404 });
-  scriviPrenotazioni(nuove);
+  await scriviPrenotazioni(nuove);
   return NextResponse.json({ ok: true });
 }

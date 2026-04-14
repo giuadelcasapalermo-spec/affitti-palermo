@@ -8,7 +8,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const idx = uscite.findIndex((u) => u.id === id);
   if (idx === -1) return NextResponse.json({ error: 'Non trovata' }, { status: 404 });
   uscite[idx] = { ...uscite[idx], ...body, importo: Number(body.importo ?? uscite[idx].importo) };
-  scriviUscite(uscite);
+  await scriviUscite(uscite);
   return NextResponse.json(uscite[idx]);
 }
 
@@ -17,6 +17,6 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   const uscite = leggiUscite();
   const nuove = uscite.filter((u) => u.id !== id);
   if (nuove.length === uscite.length) return NextResponse.json({ error: 'Non trovata' }, { status: 404 });
-  scriviUscite(nuove);
+  await scriviUscite(nuove);
   return NextResponse.json({ ok: true });
 }

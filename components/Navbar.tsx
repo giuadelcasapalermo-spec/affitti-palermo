@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Home, CalendarDays, BookOpen, BookMarked, Settings, LogOut } from 'lucide-react';
+import Image from 'next/image';
 
 const links = [
   { href: '/calendario', label: 'Calendario', icon: CalendarDays },
@@ -25,16 +26,19 @@ export default function Navbar() {
   return (
     <>
       {/* Desktop navbar */}
-      <nav className="hidden md:block bg-blue-700 text-white shadow-md">
+      <nav className="hidden md:block bg-white border-b border-gray-200 shadow-sm">
         <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
-          <span className="font-bold text-lg tracking-tight">GiuAdel casa Palermo</span>
+          <div className="flex items-center gap-2">
+            <Image src="/logo.png" alt="Logo" width={32} height={32} className="object-contain" />
+            <span className="font-bold text-lg tracking-tight text-gray-900">GiuAdel casa Palermo</span>
+          </div>
           <div className="flex items-center gap-1">
             {links.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ${
-                  pathname === href ? 'bg-white/20' : 'hover:bg-white/10'
+                  pathname === href ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
               >
                 <Icon size={15} />
@@ -44,7 +48,7 @@ export default function Navbar() {
             <button
               onClick={logout}
               title="Esci"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium hover:bg-white/10 transition-colors ml-2 border-l border-white/20 pl-4"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors ml-2 border-l border-gray-200 pl-4"
             >
               <LogOut size={15} />
               Esci
@@ -54,10 +58,13 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile top bar */}
-      <nav className="md:hidden bg-blue-700 text-white shadow-md">
+      <nav className="md:hidden bg-white border-b border-gray-200 shadow-sm">
         <div className="px-4 flex items-center justify-between h-12">
-          <span className="font-bold text-base tracking-tight">GiuAdel casa Palermo</span>
-          <button onClick={logout} className="p-1.5 rounded hover:bg-white/10">
+          <div className="flex items-center gap-2">
+            <Image src="/logo.png" alt="Logo" width={26} height={26} className="object-contain" />
+            <span className="font-bold text-base tracking-tight text-gray-900">GiuAdel casa Palermo</span>
+          </div>
+          <button onClick={logout} className="p-1.5 rounded hover:bg-gray-100 text-gray-600">
             <LogOut size={18} />
           </button>
         </div>

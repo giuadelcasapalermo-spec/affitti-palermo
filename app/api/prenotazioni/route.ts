@@ -29,6 +29,6 @@ export async function POST(req: NextRequest) {
   };
 
   prenotazioni.push(nuova);
-  scriviPrenotazioni(prenotazioni);
+  await scriviPrenotazioni(prenotazioni);
   return NextResponse.json(nuova, { status: 201 });
 }
