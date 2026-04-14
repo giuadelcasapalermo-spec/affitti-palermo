@@ -135,8 +135,36 @@ function PrenotazioniInner() {
         </div>
       </div>
 
-      {/* KPI cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+      {/* KPI mobile compatto */}
+      <div className="sm:hidden bg-white rounded-lg shadow-sm px-4 py-3 grid grid-cols-3 gap-y-3 divide-x divide-gray-100">
+        <div className="text-center">
+          <div className="text-[11px] text-gray-400">Prenotazioni</div>
+          <div className="text-base font-bold text-gray-800">{kpiPrenotazioni}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[11px] text-gray-400">Previsionali</div>
+          <div className="text-base font-bold text-gray-800">€{kpiImporto.toFixed(0)}</div>
+        </div>
+        <div className="text-center">
+          <div className="text-[11px] text-gray-400">Tassa sogg.</div>
+          <div className="text-base font-bold text-amber-600">€{kpiTassa.toFixed(0)}</div>
+        </div>
+        <div className="text-center pt-2">
+          <div className="text-[11px] text-gray-400">Uscite</div>
+          <div className="text-base font-bold text-red-600">-€{kpiUscite.toFixed(0)}</div>
+        </div>
+        <div className="text-center pt-2">
+          <div className="text-[11px] text-gray-400">Entrate</div>
+          <div className="text-base font-bold text-green-700">+€{kpiEntrate.toFixed(0)}</div>
+        </div>
+        <div className="text-center pt-2">
+          <div className="text-[11px] text-gray-400">Saldo</div>
+          <div className={`text-base font-bold ${kpiSaldo >= 0 ? 'text-green-700' : 'text-red-600'}`}>€{kpiSaldo.toFixed(0)}</div>
+        </div>
+      </div>
+
+      {/* KPI cards desktop */}
+      <div className="hidden sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">
           <div className="bg-blue-100 rounded-full p-2"><BookOpen size={20} className="text-blue-600" /></div>
           <div><div className="text-sm text-gray-500">Prenotazioni</div><div className="text-lg font-bold text-gray-800">{kpiPrenotazioni}</div></div>
