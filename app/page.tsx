@@ -5,7 +5,7 @@ import { Prenotazione, Uscita, Entrata } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
 import { isWithinInterval, parseISO, differenceInDays, format, startOfMonth, endOfMonth } from 'date-fns';
 import { fData } from '@/lib/utils';
-import { BedDouble, Euro, BarChart2, Users, RefreshCw, TrendingDown, TrendingUp } from 'lucide-react';
+import { BedDouble, Euro, Users, RefreshCw, TrendingDown, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 
 const COLORI_CAMERA: Record<number, { bg: string; border: string; testo: string; bar: string }> = {
@@ -325,43 +325,84 @@ export default function Dashboard() {
         );
       })()}
 
-      {/* Grafico notti per stanza */}
-      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
-        <div className="flex items-center gap-2 mb-4">
-          <BarChart2 size={18} className="text-blue-600" />
-          <h2 className="font-semibold text-gray-700">Notti per stanza</h2>
-        </div>
-        {statsCamera.every((s) => s.notti === 0) ? (
-          <p className="text-gray-400 text-sm">Nessuna prenotazione nel periodo selezionato</p>
-        ) : (
-          <div className="flex items-end gap-2 sm:gap-5" style={{ height: '120px' }}>
-            {statsCamera
-              .filter((s) => filtroCamera === 'tutte' || s.camera.id === filtroCamera)
-              .map(({ camera, notti, ricavo }) => {
-                const col = COLORI_CAMERA[camera.id] ?? COLORI_CAMERA[1];
-                const heightPct = Math.round((notti / maxNotti) * 100);
-                return (
-                  <div key={camera.id} className="flex flex-col items-center flex-1 h-full justify-end">
-                    {notti > 0 && (
-                      <div className="text-[10px] sm:text-xs font-semibold text-gray-600 mb-1">{notti}n</div>
-                    )}
-                    <div className="w-full flex flex-col justify-end" style={{ height: '80px' }}>
-                      <div
-                        className={`w-full rounded-t-md transition-all ${col.bar}`}
-                        style={{ height: notti > 0 ? `${heightPct}%` : '3px', minHeight: '3px', opacity: notti > 0 ? 1 : 0.15 }}
-                      />
+      {/* Andamento prenotazioni per stanza — solo desktop */}
+      {(() => {
+        const start  = new Date(filtroDal + 'T00:00:00Z');
+        const nDays  = differenceInDays(new Date(filtroAl + 'T00:00:00Z'), start) + 1;
+        const days   = Array.from({ length: nDays }, (_, i) => {
+          const d = new Date(start);
+          d.setUTCDate(d.getUTCDate() + i);
+          return d.toISOString().split('T')[0];
+        });
+        const camFiltrate = camere.filter(c => filtroCamera === 'tutte' || c.id === filtroCamera);
+        const getPren = (cameraId: number, day: string) =>
+          prenotazioni.find(p =>
+            p.camera_id === cameraId &&
+            p.stato !== 'cancellata' &&
+            p.check_in <= day &&
+            p.check_out > day
+          ) ?? null;
+
+        return (
+          <div className="hidden md:block bg-white rounded-lg shadow-sm p-5">
+            <h2 className="font-semibold text-gray-700 mb-3">Andamento prenotazioni per stanza</h2>
+            <div className="overflow-x-auto">
+              <div style={{ minWidth: 'max-content' }}>
+                {/* Header: numeri giorno */}
+                <div className="flex mb-1" style={{ paddingLeft: '92px' }}>
+                  {days.map(day => {
+                    const dow = new Date(day + 'T00:00:00Z').getUTCDay();
+                    const isWe = dow === 0 || dow === 6;
+                    return (
+                      <div key={day} className={`text-center text-[10px] leading-none select-none ${isWe ? 'text-blue-500 font-semibold' : 'text-gray-400'}`} style={{ width: '26px' }}>
+                        {parseInt(day.slice(8))}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Riga per stanza */}
+                {camFiltrate.map(camera => {
+                  const col = COLORI_CAMERA[camera.id] ?? COLORI_CAMERA[1];
+                  return (
+                    <div key={camera.id} className="flex items-center mb-1">
+                      <div className={`text-xs font-semibold flex-shrink-0 ${col.testo}`} style={{ width: '92px' }}>
+                        {camera.nome}
+                      </div>
+                      <div className="flex gap-px">
+                        {days.map((day, idx) => {
+                          const pren     = getPren(camera.id, day);
+                          const prevPren = idx > 0 ? getPren(camera.id, days[idx - 1]) : null;
+                          const isStart  = pren && (!prevPren || prevPren.id !== pren.id);
+                          const isEnd    = pren && (idx === days.length - 1 || !getPren(camera.id, days[idx + 1]));
+                          return (
+                            <div
+                              key={day}
+                              title={pren ? `${pren.ospite_nome}  ${pren.check_in} → ${pren.check_out}` : ''}
+                              className={`relative flex items-center overflow-hidden ${
+                                pren
+                                  ? `${col.bar} ${isStart && isEnd ? 'rounded' : isStart ? 'rounded-l' : isEnd ? 'rounded-r' : ''}`
+                                  : 'bg-gray-100 rounded-sm'
+                              }`}
+                              style={{ width: '26px', height: '22px' }}
+                            >
+                              {isStart && (
+                                <span className="text-white text-[8px] font-bold pl-1 truncate leading-none select-none">
+                                  {pren!.ospite_nome.split(' ')[0]}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                    <div className={`text-[10px] sm:text-xs font-bold mt-1.5 ${col.testo}`}>{camera.nome}</div>
-                    {ricavo > 0
-                      ? <div className="text-[9px] sm:text-[11px] text-green-700 font-medium">€{ricavo.toFixed(0)}</div>
-                      : <div className="text-[9px] sm:text-[11px] text-gray-300">—</div>
-                    }
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+        );
+      })()}
     </div>
   );
 }
