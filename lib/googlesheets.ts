@@ -2,7 +2,6 @@ import { google } from 'googleapis';
 import { Entrata, Uscita, CATEGORIE_ENTRATA, CATEGORIE_USCITA } from './types';
 import { leggiEntrate, scriviEntrate } from './entrate';
 import { leggiUscite, scriviUscite } from './uscite';
-import { leggiImpostazioni } from './ical';
 import { randomUUID } from 'crypto';
 
 const SPREADSHEET_ID = '1WMDZ4tNNTvjwKn41bS_6dlVVhmlQF8eR';
@@ -12,8 +11,19 @@ const GID = 229089447;
 const HEADER = ['ID', 'Tipo', 'Data', 'Descrizione', 'Categoria', 'Importo', 'CameraID', 'Note'];
 
 function getAuth() {
+  // Modalità OAuth2 (se configurata)
+  const clientId     = process.env.GOOGLE_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+  const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
+  if (clientId && clientSecret && refreshToken) {
+    const oauth2 = new google.auth.OAuth2(clientId, clientSecret);
+    oauth2.setCredentials({ refresh_token: refreshToken });
+    return oauth2;
+  }
+
+  // Modalità Service Account (fallback)
   const raw = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-  if (!raw) throw new Error('GOOGLE_SERVICE_ACCOUNT_JSON non configurata');
+  if (!raw) throw new Error('Configura GOOGLE_CLIENT_ID+SECRET+REFRESH_TOKEN oppure GOOGLE_SERVICE_ACCOUNT_JSON');
   const credentials = JSON.parse(raw);
   return new google.auth.GoogleAuth({
     credentials,
@@ -36,17 +46,21 @@ function uscitaToRow(u: Uscita): string[] {
   return [u.id, 'uscita', u.data, u.descrizione, u.categoria, String(u.importo), String(u.camera_id ?? ''), u.note ?? ''];
 }
 
+async function getSheetsClient() {
+  const auth = getAuth();
+  // GoogleAuth ha getClient(), OAuth2Client è già un auth diretto
+  const resolvedAuth = 'getClient' in auth ? await (auth as google.auth.GoogleAuth).getClient() : auth;
+  return google.sheets({ version: 'v4', auth: resolvedAuth as never });
+}
+
 // App → Google Sheets
 export async function exportToSheets(): Promise<void> {
-  const auth = await getAuth().getClient();
-  const sheets = google.sheets({ version: 'v4', auth: auth as never });
+  const sheets = await getSheetsClient();
   const sheetName = await getSheetName(sheets);
   const range = `'${sheetName}'!A:H`;
 
   const entrate = leggiEntrate();
   const uscite = leggiUscite();
-  const imp = leggiImpostazioni();
-  const nomi = imp.nomi_camere ?? {};
 
   const righe = [
     HEADER,
@@ -68,8 +82,7 @@ export async function exportToSheets(): Promise<void> {
 
 // Google Sheets → App
 export async function importFromSheets(): Promise<{ importate: number; ignorate: number }> {
-  const auth = await getAuth().getClient();
-  const sheets = google.sheets({ version: 'v4', auth: auth as never });
+  const sheets = await getSheetsClient();
   const sheetName = await getSheetName(sheets);
   const range = `'${sheetName}'!A:H`;
 
