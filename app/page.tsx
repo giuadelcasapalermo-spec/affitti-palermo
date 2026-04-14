@@ -5,8 +5,16 @@ import { Prenotazione, Uscita, Entrata } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
 import { isWithinInterval, parseISO, differenceInDays, format, startOfMonth, endOfMonth } from 'date-fns';
 import { fData } from '@/lib/utils';
-import { BedDouble, Euro, CalendarCheck, Users, RefreshCw, TrendingDown, TrendingUp } from 'lucide-react';
+import { BedDouble, Euro, BarChart2, Users, RefreshCw, TrendingDown, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+
+const COLORI_CAMERA: Record<number, { bg: string; border: string; testo: string; bar: string }> = {
+  1: { bg: 'bg-sky-100',   border: 'border-sky-300',   testo: 'text-sky-800',   bar: 'bg-sky-400' },
+  2: { bg: 'bg-amber-100', border: 'border-amber-300', testo: 'text-amber-800', bar: 'bg-amber-400' },
+  3: { bg: 'bg-red-100',   border: 'border-red-300',   testo: 'text-red-800',   bar: 'bg-red-500' },
+  4: { bg: 'bg-green-100', border: 'border-green-300', testo: 'text-green-800', bar: 'bg-green-500' },
+  5: { bg: 'bg-blue-100',  border: 'border-blue-300',  testo: 'text-blue-800',  bar: 'bg-blue-600' },
+};
 
 function isCameraOccupata(prenotazioni: Prenotazione[], cameraId: number): Prenotazione | null {
   const oggi = new Date();
@@ -111,10 +119,13 @@ export default function Dashboard() {
     prenNelPeriodo.some((p) => p.camera_id === c.id)
   );
 
-  const arriviNelPeriodo = prenNelPeriodo
-    .filter((p) => p.check_in >= filtroDal && p.check_in <= filtroAl)
-    .sort((a, b) => parseISO(a.check_in).getTime() - parseISO(b.check_in).getTime())
-    .slice(0, 10);
+  const statsCamera = camere.map((camera) => {
+    const pren = prenNelPeriodo.filter((p) => p.camera_id === camera.id);
+    const notti = pren.reduce((s, p) => s + differenceInDays(parseISO(p.check_out), parseISO(p.check_in)), 0);
+    const ricavo = pren.filter((p) => p.fonte !== 'ical').reduce((s, p) => s + p.importo_totale, 0);
+    return { camera, notti, ricavo };
+  });
+  const maxNotti = Math.max(1, ...statsCamera.map((s) => s.notti));
 
   if (loading) {
     return (
@@ -291,21 +302,21 @@ export default function Dashboard() {
                   .filter((p) => p.fonte !== 'ical')
                   .reduce((s, p) => s + p.importo_totale, 0);
                 const occupazioneOggi = isCameraOccupata(prenotazioni, camera.id);
-                const col = COLORI[camera.id] ?? COLORI[1];
+                const col = COLORI_CAMERA[camera.id] ?? COLORI_CAMERA[1];
                 return (
                   <div key={camera.id} className={`rounded-lg p-1.5 sm:p-3 text-center border ${col.bg} ${col.border}`}>
-                    <div className={`font-bold text-xs sm:text-sm ${col.testo}`}>{camera.nome}</div>
-                    <div className={`text-[10px] sm:text-xs font-medium mt-0.5 ${impegnata ? 'text-red-700' : 'text-green-700'}`}>
+                    <div className={`font-bold text-[10px] sm:text-sm ${col.testo}`}>{camera.nome}</div>
+                    <div className={`text-[9px] sm:text-xs font-medium mt-0.5 ${impegnata ? 'text-red-700' : 'text-green-700'}`}>
                       {impegnata ? `${prenotazioniCamera.length} pren.` : 'Libera'}
                     </div>
-                    {impegnata && <div className="hidden sm:block text-xs text-gray-500 mt-1">{nottiTotali} notti</div>}
-                    {stimaCamera > 0 && <div className="hidden sm:block text-xs font-semibold text-green-700 mt-1">€{stimaCamera.toFixed(2)}</div>}
+                    {impegnata && <div className="text-[9px] sm:text-xs text-gray-500 mt-0.5">{nottiTotali}n</div>}
+                    {stimaCamera > 0 && <div className="text-[9px] sm:text-xs font-semibold text-green-700 mt-0.5">€{stimaCamera.toFixed(0)}</div>}
                     {occupazioneOggi && (
-                      <div className={`text-[10px] sm:text-xs mt-0.5 truncate font-medium ${col.testo}`}>
+                      <div className={`text-[9px] sm:text-xs mt-0.5 truncate font-medium ${col.testo}`}>
                         {occupazioneOggi.ospite_nome.split(' ')[0]}
                       </div>
                     )}
-                    <div className="hidden sm:block text-xs text-gray-400 mt-1">€{camera.prezzo_notte.toFixed(2)}/n</div>
+                    <div className="text-[9px] sm:text-xs text-gray-400 mt-0.5">€{camera.prezzo_notte.toFixed(0)}/n</div>
                   </div>
                 );
               })}
@@ -314,49 +325,40 @@ export default function Dashboard() {
         );
       })()}
 
-      {/* Arrivi nel periodo */}
-      <div className="bg-white rounded-lg shadow-sm p-5">
+      {/* Grafico notti per stanza */}
+      <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
         <div className="flex items-center gap-2 mb-4">
-          <CalendarCheck size={18} className="text-blue-600" />
-          <h2 className="font-semibold text-gray-700">Arrivi nel periodo</h2>
+          <BarChart2 size={18} className="text-blue-600" />
+          <h2 className="font-semibold text-gray-700">Notti per stanza</h2>
         </div>
-        {arriviNelPeriodo.length === 0 ? (
+        {statsCamera.every((s) => s.notti === 0) ? (
           <p className="text-gray-400 text-sm">Nessuna prenotazione nel periodo selezionato</p>
         ) : (
-          <div className="space-y-2">
-            {arriviNelPeriodo.map((p) => {
-              const notti = differenceInDays(parseISO(p.check_out), parseISO(p.check_in));
-              const camera = camere.find((c) => c.id === p.camera_id);
-              return (
-                <div
-                  key={p.id}
-                  className="flex items-center justify-between py-2 border-b last:border-b-0"
-                >
-                  <div>
-                    <span className="font-medium text-sm text-gray-800">{p.ospite_nome}</span>
-                    <span className="text-xs text-gray-500 ml-2">{camera?.nome}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-gray-500">
-                      {fData(p.check_in)} → {fData(p.check_out)} ({notti}n)
-                    </span>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${statoColore(p.stato)}`}>
-                      {statoLabel(p.stato)}
-                    </span>
-                    {p.fonte !== 'ical' && (
-                      <span className="text-sm font-semibold text-gray-700">
-                        €{p.importo_totale.toFixed(2)}
-                        {p.tassa_soggiorno ? (
-                          <span className="ml-1 text-xs font-normal text-amber-600">
-                            +€{p.tassa_soggiorno.toFixed(2)} tds
-                          </span>
-                        ) : null}
-                      </span>
+          <div className="flex items-end gap-2 sm:gap-5" style={{ height: '120px' }}>
+            {statsCamera
+              .filter((s) => filtroCamera === 'tutte' || s.camera.id === filtroCamera)
+              .map(({ camera, notti, ricavo }) => {
+                const col = COLORI_CAMERA[camera.id] ?? COLORI_CAMERA[1];
+                const heightPct = Math.round((notti / maxNotti) * 100);
+                return (
+                  <div key={camera.id} className="flex flex-col items-center flex-1 h-full justify-end">
+                    {notti > 0 && (
+                      <div className="text-[10px] sm:text-xs font-semibold text-gray-600 mb-1">{notti}n</div>
                     )}
+                    <div className="w-full flex flex-col justify-end" style={{ height: '80px' }}>
+                      <div
+                        className={`w-full rounded-t-md transition-all ${col.bar}`}
+                        style={{ height: notti > 0 ? `${heightPct}%` : '3px', minHeight: '3px', opacity: notti > 0 ? 1 : 0.15 }}
+                      />
+                    </div>
+                    <div className={`text-[10px] sm:text-xs font-bold mt-1.5 ${col.testo}`}>{camera.nome}</div>
+                    {ricavo > 0
+                      ? <div className="text-[9px] sm:text-[11px] text-green-700 font-medium">€{ricavo.toFixed(0)}</div>
+                      : <div className="text-[9px] sm:text-[11px] text-gray-300">—</div>
+                    }
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         )}
       </div>
