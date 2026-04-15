@@ -6,7 +6,6 @@ import { useCamere } from '@/hooks/useCamere';
 import { isWithinInterval, parseISO, differenceInDays, format, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns';
 import { fData } from '@/lib/utils';
 import { BedDouble, Euro, Users, RefreshCw, TrendingDown, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
 import { ComposedChart, Bar, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const COLORI_CAMERA: Record<number, {
@@ -58,6 +57,7 @@ export default function Dashboard() {
   const [entrate, setEntrate] = useState<Entrata[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
+  const [syncSheetsMsg, setSyncSheetsMsg] = useState<string | null>(null);
   const [filtroDal, setFiltroDal] = useState(DEFAULT_DAL);
   const [filtroAl, setFiltroAl] = useState(DEFAULT_AL);
   const [filtroCamera, setFiltroCamera] = useState<number | 'tutte'>('tutte');
@@ -83,6 +83,26 @@ export default function Dashboard() {
     carica();
     setSyncing(false);
   }, [carica]);
+
+  async function syncSheetsBidirezionale() {
+    setSyncing(true);
+    setSyncSheetsMsg(null);
+    try {
+      const res = await fetch('/api/sync-sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ direzione: 'both' }),
+      });
+      const json = await res.json();
+      setSyncSheetsMsg(json.messaggio ?? json.errore ?? 'Errore');
+      carica();
+    } catch {
+      setSyncSheetsMsg('Errore di rete');
+    } finally {
+      setSyncing(false);
+      setTimeout(() => setSyncSheetsMsg(null), 4000);
+    }
+  }
 
   useEffect(() => {
     carica();
@@ -180,22 +200,28 @@ export default function Dashboard() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
+          {syncSheetsMsg && (
+            <span className="text-xs text-gray-500 max-w-xs truncate">{syncSheetsMsg}</span>
+          )}
           <button
             onClick={syncIcal}
             disabled={syncing}
-            title="Sincronizza Booking.com"
+            title="Sincronizza Booking.com iCal"
             className="flex items-center gap-1.5 border border-gray-300 bg-white px-3 py-2 rounded text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
           >
             <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
             {syncing ? 'Sync...' : 'Sync iCal'}
           </button>
-          <Link
-            href="/prenotazioni?nuova=1"
-            className="bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700"
+          <button
+            onClick={syncSheetsBidirezionale}
+            disabled={syncing}
+            title="Sincronizza bidirezionale con Google Sheets"
+            className="flex items-center gap-1.5 border border-blue-300 bg-blue-50 text-blue-700 px-3 py-2 rounded text-sm font-medium hover:bg-blue-100 disabled:opacity-50"
           >
-            + Nuova
-          </Link>
+            <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
+            Sync Sheets
+          </button>
         </div>
       </div>
 
