@@ -3,9 +3,10 @@
 import { useEffect, useState, useCallback, Fragment } from 'react';
 import { Prenotazione, Uscita, Entrata } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
-import { differenceInDays, parseISO, format, startOfMonth, endOfMonth } from 'date-fns';
+import { differenceInDays, parseISO, format, startOfMonth, endOfMonth, isToday, isTomorrow } from 'date-fns';
+import { it } from 'date-fns/locale';
 import { fData } from '@/lib/utils';
-import { Pencil, Trash2, Plus, X, Euro, TrendingDown, TrendingUp, BookOpen, Landmark, Check, Sparkles } from 'lucide-react';
+import { Pencil, Trash2, Plus, X, Euro, TrendingDown, TrendingUp, BookOpen, Landmark, Check, Sparkles, Moon, MessageCircle, User, CalendarRange } from 'lucide-react';
 import PrenotazioneForm from '@/components/PrenotazioneForm';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
@@ -19,6 +20,20 @@ function statoColore(stato: Prenotazione['stato']) {
 const oggi = new Date();
 const DEFAULT_DAL = format(startOfMonth(oggi), 'yyyy-MM-dd');
 const DEFAULT_AL  = format(endOfMonth(oggi),   'yyyy-MM-dd');
+
+function getLabelData(dateStr: string): string {
+  const date = parseISO(dateStr);
+  if (isToday(date)) return 'Oggi';
+  if (isTomorrow(date)) return 'Domani';
+  const label = format(date, 'EEEE d MMMM yyyy', { locale: it });
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+function formatDateRange(checkIn: string, checkOut: string): string {
+  const ci = parseISO(checkIn);
+  const co = parseISO(checkOut);
+  return `${format(ci, 'd MMM', { locale: it })} - ${format(co, 'd MMM yyyy', { locale: it })}`;
+}
 
 const INPUT = 'border border-gray-300 rounded px-1.5 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-400';
 const INPUT_RIGHT = INPUT + ' text-right';
@@ -98,6 +113,15 @@ function PrenotazioniInner() {
     if (filtroAl  && p.check_in > filtroAl)  return false;
     return true;
   });
+
+  // Raggruppamento per data check-in (usato nella vista mobile)
+  const groupedEntries = Object.entries(
+    filtrate.reduce((acc, p) => {
+      if (!acc[p.check_in]) acc[p.check_in] = [];
+      acc[p.check_in].push(p);
+      return acc;
+    }, {} as Record<string, Prenotazione[]>)
+  ).sort((a, b) => a[0].localeCompare(b[0]));
 
   const confermate = prenotazioni.filter(
     p => p.stato === 'confermata' && p.fonte !== 'ical' && p.check_in >= filtroDal && p.check_in <= filtroAl
@@ -258,8 +282,83 @@ function PrenotazioniInner() {
         </div>
       </div>
 
-      {/* Tabella */}
-      <div className="bg-white rounded-lg shadow-sm overflow-x-auto">
+      {/* ── Lista mobile dark stile Booking.com ── */}
+      <div className="sm:hidden -mx-4 bg-[#0f172a] pb-8 pt-1">
+        {filtrate.length === 0 ? (
+          <div className="text-center text-gray-500 py-12 text-sm">Nessuna prenotazione trovata</div>
+        ) : (
+          groupedEntries.map(([dateStr, prenotazioniGruppo]) => (
+            <div key={dateStr}>
+              {/* Intestazione gruppo data */}
+              <div className="px-4 pt-4 pb-2 text-blue-400 font-semibold text-sm">
+                {getLabelData(dateStr)}
+              </div>
+              {/* Card prenotazione */}
+              {prenotazioniGruppo.map(p => {
+                const cam = camere.find(c => c.id === p.camera_id);
+                const notiMob = (p.check_in && p.check_out)
+                  ? differenceInDays(parseISO(p.check_out), parseISO(p.check_in))
+                  : 0;
+                return (
+                  <div
+                    key={p.id}
+                    className="mx-3 mb-3 bg-[#1e293b] rounded-xl p-4 relative"
+                    onDoubleClick={() => startEdit(p)}
+                  >
+                    {/* Nome + badge */}
+                    <div className="flex items-center gap-2 mb-3 pr-10 flex-wrap">
+                      <span className="font-bold text-white text-[15px]">{p.ospite_nome}</span>
+                      {p.fonte === 'ical' && (
+                        <span className="bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">
+                          Booking
+                        </span>
+                      )}
+                      {p.stato === 'pending' && (
+                        <span className="bg-yellow-500 text-black text-[11px] font-bold px-2 py-0.5 rounded">
+                          In attesa
+                        </span>
+                      )}
+                      {p.stato === 'cancellata' && (
+                        <span className="bg-red-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">
+                          Cancellata
+                        </span>
+                      )}
+                    </div>
+                    {/* Icona chat in alto a destra */}
+                    <button className="absolute top-4 right-4 text-gray-500 active:text-gray-300">
+                      <MessageCircle size={22} strokeWidth={1.5} />
+                    </button>
+                    {/* Date range */}
+                    <div className="flex items-center gap-2 text-sm text-gray-300 mb-1.5">
+                      <CalendarRange size={15} className="text-gray-500 flex-shrink-0" />
+                      <span>{formatDateRange(p.check_in, p.check_out)}</span>
+                    </div>
+                    {/* Notti */}
+                    <div className="flex items-center gap-2 text-sm text-gray-300 mb-1.5">
+                      <Moon size={15} className="text-gray-500 flex-shrink-0" />
+                      <span>{notiMob} {notiMob === 1 ? 'notte' : 'notti'}</span>
+                    </div>
+                    {/* Telefono o note */}
+                    {(p.ospite_telefono || p.note) && (
+                      <div className="flex items-center gap-2 text-sm text-gray-300 mb-1.5">
+                        <User size={15} className="text-gray-500 flex-shrink-0" />
+                        <span className="truncate">{p.ospite_telefono || p.note}</span>
+                      </div>
+                    )}
+                    {/* Nome camera / proprietà */}
+                    <div className="text-sm text-gray-500 mt-2">
+                      {cam?.nome ?? 'GiuAdel casa Palermo'}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Tabella (solo desktop) */}
+      <div className="hidden sm:block bg-white rounded-lg shadow-sm overflow-x-auto">
         {filtrate.length === 0 ? (
           <div className="text-center text-gray-400 py-12">Nessuna prenotazione trovata</div>
         ) : (

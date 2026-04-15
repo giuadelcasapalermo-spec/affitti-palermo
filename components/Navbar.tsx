@@ -9,7 +9,7 @@ const links = [
   { href: '/calendario', label: 'Calendario', icon: CalendarDays },
   { href: '/prenotazioni', label: 'Prenotazioni', icon: BookOpen },
   { href: '/uscite', label: 'Prima Nota', icon: BookMarked },
-  { href: '/', label: 'Dashboard', icon: Home },
+  { href: '/dashboard', label: 'Dashboard', icon: Home },
   { href: '/impostazioni', label: 'Impostazioni', icon: Settings },
 ];
 
