@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, CalendarDays, BookOpen, BookMarked, Settings, LogOut } from 'lucide-react';
+import { Home, CalendarDays, BookOpen, BookMarked, Settings, LogOut, RefreshCw } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
 
 const links = [
   { href: '/calendario', label: 'Calendario', icon: CalendarDays },
@@ -16,11 +17,31 @@ const links = [
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [syncing, setSyncing] = useState(false);
+  const [syncOk, setSyncOk] = useState<boolean | null>(null);
+
+  const isPrimaNota = pathname === '/uscite';
 
   async function logout() {
     await fetch('/api/auth/logout', { method: 'POST' });
     router.push('/login');
     router.refresh();
+  }
+
+  async function syncIcal() {
+    setSyncing(true);
+    setSyncOk(null);
+    try {
+      const res = await fetch('/api/sync', { method: 'POST' });
+      const json = await res.json();
+      setSyncOk(json.ok !== false);
+      router.refresh();
+    } catch {
+      setSyncOk(false);
+    } finally {
+      setSyncing(false);
+      setTimeout(() => setSyncOk(null), 3000);
+    }
   }
 
   return (
@@ -47,6 +68,19 @@ export default function Navbar() {
                 {label}
               </Link>
             ))}
+            {!isPrimaNota && (
+              <button
+                onClick={syncIcal}
+                disabled={syncing}
+                title="Sincronizza iCal da Booking.com"
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-colors ml-1 ${
+                  syncOk === true ? 'bg-green-500/30' : syncOk === false ? 'bg-red-500/30' : 'hover:bg-white/10'
+                }`}
+              >
+                <RefreshCw size={15} className={syncing ? 'animate-spin' : ''} />
+                Sync iCal
+              </button>
+            )}
             <button
               onClick={logout}
               title="Esci"
@@ -68,9 +102,23 @@ export default function Navbar() {
             </div>
             <span className="font-bold text-base tracking-tight">GiuAdel casa Palermo</span>
           </div>
-          <button onClick={logout} className="p-1.5 rounded hover:bg-white/10">
-            <LogOut size={18} />
-          </button>
+          <div className="flex items-center gap-1">
+            {!isPrimaNota && (
+              <button
+                onClick={syncIcal}
+                disabled={syncing}
+                title="Sync iCal"
+                className={`p-1.5 rounded transition-colors ${
+                  syncOk === true ? 'bg-green-500/30' : syncOk === false ? 'bg-red-500/30' : 'hover:bg-white/10'
+                }`}
+              >
+                <RefreshCw size={18} className={syncing ? 'animate-spin' : ''} />
+              </button>
+            )}
+            <button onClick={logout} className="p-1.5 rounded hover:bg-white/10">
+              <LogOut size={18} />
+            </button>
+          </div>
         </div>
       </nav>
 
