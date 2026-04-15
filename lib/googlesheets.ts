@@ -1,6 +1,6 @@
 import { google } from 'googleapis';
 import { GoogleAuth } from 'google-auth-library';
-import { Entrata, Uscita, CATEGORIE_USCITA } from './types';
+import { Entrata, Uscita, CATEGORIE_USCITA, Impostazioni } from './types';
 import { leggiEntrate, scriviEntrate } from './entrate';
 import { leggiUscite, scriviUscite } from './uscite';
 import { leggiPrenotazioni, scriviPrenotazioni } from './db';
@@ -34,13 +34,13 @@ const TIPO_AMMESSI_TABS = new Set([
   'arredamento', 'utenze', 'manutenzione', 'acquisti varie', 'spese varie', 'pulizie',
 ]);
 const STANZA_ID: Record<string, number> = {
-  'bianca': 1, 'camera 1': 1, '1': 1,
+  'rossa': 1, 'camera 1': 1, '1': 1,
   'gialla': 2, 'camera 2': 2, '2': 2,
-  'rossa': 3, 'camera 3': 3, '3': 3,
-  'verde': 4, 'camera 4': 4, '4': 4,
+  'verde': 3, 'camera 3': 3, '3': 3,
+  'bianca': 4, 'camera 4': 4, '4': 4,
   'blue': 5, 'blu': 5, 'camera 5': 5, '5': 5,
 };
-const STANZA_NOME: Record<number, string> = { 1:'Bianca', 2:'Gialla', 3:'Rossa', 4:'Verde', 5:'Blue' };
+const STANZA_NOME: Record<number, string> = { 1:'Rossa', 2:'Gialla', 3:'Verde', 4:'Bianca', 5:'Blue' };
 
 // ── Helpers data ───────────────────────────────────────────────────────────
 function isoToSerial(iso: string): number {
@@ -270,14 +270,23 @@ export async function syncToSheets(): Promise<void> {
 // ── Dedup prenotazioni iCal: rimuove Booking-duplicate di prenotazioni manuali ──
 export async function dedupPrenotazioniIcal(): Promise<number> {
   const prenotazioni = await leggiPrenotazioni();
-  const chiaviManuali = new Set(
-    prenotazioni
-      .filter(p => !p.ical_uid && p.stato !== 'cancellata')
-      .map(p => `${p.camera_id}|${p.check_in}|${p.check_out}`)
+  const manuali = prenotazioni.filter(p => !p.ical_uid && p.stato !== 'cancellata');
+  // Chiave 1: camera + date (corrispondenza esatta)
+  const chiaviCamera = new Set(manuali.map(p => `${p.camera_id}|${p.check_in}|${p.check_out}`));
+  // Chiave 2: nome ospite + date (gestisce discrepanze camera_id tra iCal ed Excel)
+  const chiaviNome = new Set(
+    manuali
+      .filter(p => p.ospite_nome?.trim())
+      .map(p => `${p.ospite_nome.toLowerCase().trim()}|${p.check_in}|${p.check_out}`)
   );
-  const doppioni = prenotazioni.filter(
-    p => !!p.ical_uid && chiaviManuali.has(`${p.camera_id}|${p.check_in}|${p.check_out}`)
-  );
+  const doppioni = prenotazioni.filter(p => {
+    if (!p.ical_uid) return false;
+    return (
+      chiaviCamera.has(`${p.camera_id}|${p.check_in}|${p.check_out}`) ||
+      (p.ospite_nome?.trim() &&
+        chiaviNome.has(`${p.ospite_nome.toLowerCase().trim()}|${p.check_in}|${p.check_out}`))
+    );
+  });
   if (doppioni.length > 0) {
     const idsRimuovere = new Set(doppioni.map(p => p.id));
     await scriviPrenotazioni(prenotazioni.filter(p => !idsRimuovere.has(p.id)));
@@ -407,4 +416,74 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   const prenotazioniArricchite = await arricchisciPrenotazioniDaSheets(sheets, tabEsistenti);
 
   return { importate, ignorate, doppioniRimossi, prenotazioniArricchite };
+}
+
+// ── Impostazioni su Google Sheets (tab "Impostazioni") ────────────────────
+const IMP_SHEET = 'Impostazioni';
+
+async function ensureImpostazioniSheet(sheets: ReturnType<typeof google.sheets>): Promise<void> {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+  const exists = meta.data.sheets?.some((s) => s.properties?.title === IMP_SHEET);
+  if (!exists) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SPREADSHEET_ID,
+      requestBody: { requests: [{ addSheet: { properties: { title: IMP_SHEET } } }] },
+    });
+  }
+}
+
+export async function leggiImpostazioniSheets(): Promise<Impostazioni> {
+  const sheets = await getSheetsClient();
+  await ensureImpostazioniSheet(sheets);
+
+  let rows: (string | number)[][];
+  try {
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `'${IMP_SHEET}'!A:C`,
+    });
+    rows = (res.data.values ?? []) as (string | number)[][];
+  } catch {
+    return { ical_urls: {}, nomi_camere: {} };
+  }
+
+  const imp: Impostazioni = { ical_urls: {}, nomi_camere: {} };
+  for (const row of rows.slice(1)) {
+    const tipo   = String(row[0] ?? '').trim();
+    const id     = String(row[1] ?? '').trim();
+    const valore = String(row[2] ?? '').trim();
+    if (!tipo || !id) continue;
+    const idNum = Number(id);
+    if (tipo === 'camera' && !isNaN(idNum)) imp.nomi_camere[idNum] = valore;
+    else if (tipo === 'ical' && !isNaN(idNum)) imp.ical_urls[idNum] = valore;
+    else if (tipo === 'sync' && id === 'ultimo_sync') imp.ultimo_sync = valore;
+  }
+  return imp;
+}
+
+export async function scriviImpostazioniSheets(imp: Impostazioni): Promise<void> {
+  const sheets = await getSheetsClient();
+  await ensureImpostazioniSheet(sheets);
+
+  const rows: string[][] = [['Tipo', 'ID', 'Valore']];
+  for (const [id, nome] of Object.entries(imp.nomi_camere ?? {})) {
+    rows.push(['camera', id, nome]);
+  }
+  for (const [id, url] of Object.entries(imp.ical_urls ?? {})) {
+    rows.push(['ical', id, url ?? '']);
+  }
+  if (imp.ultimo_sync) {
+    rows.push(['sync', 'ultimo_sync', imp.ultimo_sync]);
+  }
+
+  await sheets.spreadsheets.values.clear({
+    spreadsheetId: SPREADSHEET_ID,
+    range: `'${IMP_SHEET}'!A:C`,
+  });
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: SPREADSHEET_ID,
+    range: `'${IMP_SHEET}'!A1`,
+    valueInputOption: 'RAW',
+    requestBody: { values: rows },
+  });
 }

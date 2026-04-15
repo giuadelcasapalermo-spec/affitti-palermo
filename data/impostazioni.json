@@ -7,10 +7,10 @@
     "5": "https://ical.booking.com/v1/export?t=8e8dc352-8ad2-4e2e-bf1c-49978d1cebb6"
   },
   "nomi_camere": {
-    "1": "Bianca",
+    "1": "Rossa",
     "2": "Gialla",
-    "3": "Rossa",
-    "4": "Verde",
+    "3": "Verde",
+    "4": "Bianca",
     "5": "Blue"
   },
   "ultimo_sync": "2026-04-14T10:16:26.371Z"

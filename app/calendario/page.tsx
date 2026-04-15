@@ -139,7 +139,7 @@ export default function CalendarioPage() {
   // JSX della lista prenotazioni del giorno (riusata in due posizioni)
   const listaGiornoJSX = (
     <>
-      <h2 className="font-semibold text-gray-700 mb-3 capitalize">
+      <h2 className="font-semibold text-gray-700 text-sm mb-2 capitalize">
         {format(giornoSelezionato, 'EEEE d MMMM yyyy', { locale: it })}
       </h2>
       {(() => {
@@ -154,10 +154,10 @@ export default function CalendarioPage() {
           .sort((a, b) => a.camera_id - b.camera_id);
 
         if (delGiorno.length === 0)
-          return <p className="text-gray-400 text-sm">Nessun ospite presente in questo giorno</p>;
+          return <p className="text-gray-400 text-xs">Nessun ospite presente in questo giorno</p>;
 
         return (
-          <div className="space-y-2">
+          <div className="space-y-1">
             {delGiorno.map((p) => {
               const cam = camere.find((c) => c.id === p.camera_id);
               const st  = STILE_CAMERA[p.camera_id] ?? STILE_CAMERA[1];
@@ -167,22 +167,22 @@ export default function CalendarioPage() {
               const isCO = isSameDay(giornoSelezionato, co);
               const notti = differenceInDays(co, ci);
               return (
-                <div key={p.id} className="flex items-center justify-between py-1.5 border-b last:border-0 text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${st.dot}`} />
+                <div key={p.id} className="flex items-center justify-between py-1 border-b last:border-0 text-xs">
+                  <div className="flex items-center gap-1.5">
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${st.dot}`} />
                     <span className="font-medium">{p.ospite_nome}</span>
                     <span className="text-gray-400">{cam?.nome}</span>
-                    {isCI && <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-medium">check-in</span>}
-                    {isCO && <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-medium">check-out</span>}
+                    {isCI && <span className="text-[10px] bg-green-100 text-green-700 px-1 py-0.5 rounded font-medium">CI</span>}
+                    {isCO && <span className="text-[10px] bg-orange-100 text-orange-700 px-1 py-0.5 rounded font-medium">CO</span>}
                   </div>
-                  <div className="flex items-center gap-3 text-gray-500">
-                    <span className="text-xs">{fData(p.check_in)} → {fData(p.check_out)} ({notti}n)</span>
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <span className="text-[10px]">{fData(p.check_in)}→{fData(p.check_out)} ({notti}n)</span>
                     {p.importo_totale > 0 && (
                       <span className="font-semibold text-gray-700">
-                        €{p.importo_totale.toFixed(2)}
+                        €{p.importo_totale.toFixed(0)}
                         {p.tassa_soggiorno ? (
-                          <span className="ml-1 text-xs font-normal text-amber-600">
-                            +€{p.tassa_soggiorno.toFixed(2)} tds
+                          <span className="ml-0.5 text-[10px] font-normal text-amber-600">
+                            +€{p.tassa_soggiorno.toFixed(0)}tds
                           </span>
                         ) : null}
                       </span>
@@ -365,7 +365,7 @@ export default function CalendarioPage() {
             </div>
             {/* Lista del giorno: dopo cam 4 e 5 → occupa la cella sotto cam 3 */}
             {idx === 4 && (
-              <div className="hidden md:block bg-white rounded-xl shadow-sm p-5 overflow-y-auto">
+              <div className="hidden md:block bg-white rounded-xl shadow-sm p-4 overflow-y-auto max-h-72">
                 {listaGiornoJSX}
               </div>
             )}

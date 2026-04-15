@@ -3,7 +3,7 @@ import { CAMERE } from '@/lib/types';
 import { leggiImpostazioni } from '@/lib/ical';
 
 export async function GET() {
-  const imp = leggiImpostazioni();
+  const imp = await leggiImpostazioni();
   const nomi = imp.nomi_camere ?? {};
 
   const camere = CAMERE.map((c) => ({

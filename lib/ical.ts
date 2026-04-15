@@ -1,20 +1,29 @@
 import { format } from 'date-fns';
 import { Prenotazione, Impostazioni } from './types';
 import { leggiPrenotazioni, scriviPrenotazioni } from './db';
+import { onVercel } from './github-storage';
+import { leggiImpostazioniSheets, scriviImpostazioniSheets } from './googlesheets';
 import fs from 'fs';
 import path from 'path';
 import { randomUUID } from 'crypto';
 
 const IMPOSTAZIONI_PATH = path.join(process.cwd(), 'data', 'impostazioni.json');
 
-export function leggiImpostazioni(): Impostazioni {
+export async function leggiImpostazioni(): Promise<Impostazioni> {
+  if (onVercel) {
+    return leggiImpostazioniSheets();
+  }
   if (!fs.existsSync(IMPOSTAZIONI_PATH)) {
     return { ical_urls: {}, nomi_camere: {} };
   }
   return JSON.parse(fs.readFileSync(IMPOSTAZIONI_PATH, 'utf-8'));
 }
 
-export function scriviImpostazioni(imp: Impostazioni) {
+export async function scriviImpostazioni(imp: Impostazioni): Promise<void> {
+  if (onVercel) {
+    await scriviImpostazioniSheets(imp);
+    return;
+  }
   fs.writeFileSync(IMPOSTAZIONI_PATH, JSON.stringify(imp, null, 2));
 }
 
@@ -164,7 +173,7 @@ export async function sincronizzaCalendario(
 }
 
 export async function sincronizzaTutti(): Promise<SyncResult[]> {
-  const imp = leggiImpostazioni();
+  const imp = await leggiImpostazioni();
   const risultati: SyncResult[] = [];
 
   for (const [idStr, url] of Object.entries(imp.ical_urls)) {
@@ -173,8 +182,12 @@ export async function sincronizzaTutti(): Promise<SyncResult[]> {
     risultati.push(res);
   }
 
-  imp.ultimo_sync = new Date().toISOString();
-  scriviImpostazioni(imp);
+  try {
+    imp.ultimo_sync = new Date().toISOString();
+    await scriviImpostazioni(imp);
+  } catch {
+    // Ignora errori di scrittura timestamp
+  }
 
   return risultati;
 }
