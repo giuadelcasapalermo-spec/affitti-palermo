@@ -198,7 +198,7 @@ export default function CalendarioPage() {
   );
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* Header */}
       <div className="flex flex-wrap items-center gap-2">
         <h1 className="text-xl font-bold text-gray-800">Calendario</h1>
@@ -241,24 +241,24 @@ export default function CalendarioPage() {
       </div>
 
       {/* Griglia mini-calendari */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xl:grid-cols-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 xl:grid-cols-3">
         {camere.map((camera, idx) => {
           const stile = STILE_CAMERA[camera.id] ?? STILE_CAMERA[1];
           return (
             <Fragment key={camera.id}>
-            <div className="bg-white rounded-xl shadow-sm p-3">
+            <div className="bg-white rounded-xl shadow-sm px-2 pt-2 pb-1">
               {/* Camera header */}
-              <div className="flex items-center gap-2 mb-2">
-                <div className={`w-2.5 h-2.5 rounded-full ${stile.dot}`} />
-                <span className="font-semibold text-gray-800 text-sm">{camera.nome}</span>
-                <span className="text-xs text-gray-400 ml-auto">€{camera.prezzo_notte.toFixed(2)}/n</span>
+              <div className="flex items-center gap-1.5 mb-1">
+                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${stile.dot}`} />
+                <span className="font-semibold text-gray-800 text-xs">{camera.nome}</span>
+                <span className="text-[10px] text-gray-400 ml-auto">€{camera.prezzo_notte.toFixed(2)}/n</span>
               </div>
 
               {/* Intestazione giorni settimana */}
               <div className="grid grid-cols-7">
                 {GIORNI_SETTIMANA.map((g, i) => (
                   <div key={i} className="flex items-center justify-center">
-                    <span className="text-[10px] font-semibold text-gray-400 w-7 text-center py-0.5">
+                    <span className="text-[9px] font-semibold text-gray-400 text-center">
                       {g}
                     </span>
                   </div>
@@ -309,12 +309,12 @@ export default function CalendarioPage() {
                 return (
                   <div key={si}>
                     {/* Riga pillole prenotazione */}
-                    <div className="grid grid-cols-7 h-4 pointer-events-none" aria-hidden="true">
+                    <div className="grid grid-cols-7 h-3 pointer-events-none" aria-hidden="true">
                       {pills.map(({ pren, colStart, colSpan, isStart, isEnd }) => (
                         <div
                           key={pren.id}
                           title={pren.ospite_nome}
-                          className={`h-3 self-center overflow-hidden flex items-center text-[8px] font-semibold text-white
+                          className={`h-2.5 self-center overflow-hidden flex items-center text-[7px] font-semibold text-white
                             ${stile.pieno}
                             ${isStart && isEnd  ? 'mx-0.5 rounded-full' : ''}
                             ${isStart && !isEnd ? 'ml-0.5 rounded-l-full' : ''}
@@ -323,7 +323,7 @@ export default function CalendarioPage() {
                           style={{ gridColumnStart: colStart, gridColumnEnd: colStart + colSpan }}
                         >
                           {isStart && (
-                            <span className="ml-1.5 truncate leading-none">
+                            <span className="ml-1 truncate leading-none">
                               {pren.ospite_nome.split(' ')[0]}
                             </span>
                           )}
@@ -334,7 +334,7 @@ export default function CalendarioPage() {
                     {/* Riga numeri giorni */}
                     <div className="grid grid-cols-7">
                       {settimana.map((day, di) => {
-                        if (!day) return <div key={di} className="h-7" />;
+                        if (!day) return <div key={di} className="h-6" />;
                         const { pren } = getDayInfo(day, camera.id);
                         const isToday    = isSameDay(day, today);
                         const isSelected = isSameDay(day, giornoSelezionato);
@@ -347,7 +347,7 @@ export default function CalendarioPage() {
                                 cameraId: camera.id,
                                 checkIn: format(day, 'yyyy-MM-dd'),
                               })}
-                              className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-medium transition-colors cursor-pointer
+                              className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-medium transition-colors cursor-pointer
                                 text-gray-700 hover:bg-black/5
                                 ${isToday    ? 'ring-2 ring-offset-1 ring-blue-400' : ''}
                                 ${isSelected ? 'outline outline-2 outline-offset-1 outline-gray-500' : ''}
