@@ -18,7 +18,7 @@ function statoColore(stato: Prenotazione['stato']) {
 }
 
 const oggi = new Date();
-const DEFAULT_DAL = format(startOfMonth(oggi), 'yyyy-MM-dd');
+const DEFAULT_DAL = format(oggi, 'yyyy-MM-dd');
 const DEFAULT_AL  = format(endOfMonth(oggi),   'yyyy-MM-dd');
 
 function getLabelData(dateStr: string): string {
