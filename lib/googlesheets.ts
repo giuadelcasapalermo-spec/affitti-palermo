@@ -1,6 +1,6 @@
 import { google } from 'googleapis';
 import { GoogleAuth } from 'google-auth-library';
-import { Entrata, Uscita, CATEGORIE_ENTRATA, CATEGORIE_USCITA } from './types';
+import { Entrata, Uscita, CATEGORIE_USCITA } from './types';
 import { leggiEntrate, scriviEntrate } from './entrate';
 import { leggiUscite, scriviUscite } from './uscite';
 import { leggiPrenotazioni, scriviPrenotazioni } from './db';
@@ -287,50 +287,40 @@ export async function dedupPrenotazioniIcal(): Promise<number> {
   return doppioni.length;
 }
 
-// ── Import completo: Prima Nota App + tab mensili → App ───────────────────
+// ── Import completo: Prima Nota App + tab mensili → App (solo uscite) ────
 export async function importFromSheets(): Promise<{ importate: number; ignorate: number; doppioniRimossi: number }> {
   const sheets  = await getSheetsClient();
   const meta    = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
   const tabEsistenti = new Set(meta.data.sheets?.map(s => s.properties?.title ?? '') ?? []);
 
-  const uscite  = await leggiUscite();
-  const entrate = await leggiEntrate();
+  const uscite = await leggiUscite();
 
-  const keyUsc     = new Set(uscite.map(u => `${u.data}|${u.descrizione}|${u.importo}`));
-  const idsEntrate = new Set(entrate.map(e => e.id));
-  const idsUscite  = new Set(uscite.map(u => u.id));
+  const keyUsc    = new Set(uscite.map(u => `${u.data}|${u.descrizione}|${u.importo}`));
+  const idsUscite = new Set(uscite.map(u => u.id));
   const now = new Date().toISOString();
 
   let importate = 0;
   let ignorate  = 0;
 
-  // 1. Legge il foglio "Prima Nota App" (strutturato con ID)
+  // 1. Legge il foglio "Prima Nota App" — importa SOLO uscite (le entrate vengono gestite dall'app)
   const sheetName = await ensureSheet(sheets);
-  const res  = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: `'${sheetName}'!A:H` });
+  const res = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: `'${sheetName}'!A:H` });
   for (const row of (res.data.values ?? []).slice(1).filter(r => r[0] && r[1] && r[2] && r[3])) {
     const [id, tipo, data, descrizione, categoria, importoStr, cameraIdStr, note] = row;
+    if (tipo !== 'uscita') { ignorate++; continue; }
+    if (idsUscite.has(id)) { ignorate++; continue; }
     const importo   = parseFloat(importoStr) || 0;
     const camera_id = cameraIdStr ? parseInt(cameraIdStr) || undefined : undefined;
-    if (tipo === 'entrata') {
-      if (idsEntrate.has(id)) { ignorate++; continue; }
-      const cat = CATEGORIE_ENTRATA.includes(categoria as never) ? categoria as Entrata['categoria'] : 'Altro';
-      entrate.push({ id: id||randomUUID(), data, descrizione, categoria: cat, importo, camera_id, note: note??'', created_at: now });
-      importate++;
-    } else if (tipo === 'uscita') {
-      if (idsUscite.has(id)) { ignorate++; continue; }
-      const cat = CATEGORIE_USCITA.includes(categoria as never) ? categoria as Uscita['categoria'] : 'Altro';
-      uscite.push({ id: id||randomUUID(), data, descrizione, categoria: cat, importo, camera_id, note: note??'', created_at: now });
-      // Aggiorna keyUsc per evitare che i tab mensili reimportino lo stesso record
-      keyUsc.add(`${data}|${descrizione}|${importo}`);
-      importate++;
-    }
+    const cat = CATEGORIE_USCITA.includes(categoria as never) ? categoria as Uscita['categoria'] : 'Altro';
+    uscite.push({ id: id||randomUUID(), data, descrizione, categoria: cat, importo, camera_id, note: note??'', created_at: now });
+    keyUsc.add(`${data}|${descrizione}|${importo}`);
+    importate++;
   }
 
   // 2. Legge tab mensili — importa uscite con data inizio
   const nuove = await importUsciteOriginale(sheets, uscite, keyUsc, tabEsistenti);
   importate += nuove;
 
-  await scriviEntrate(entrate);
   await scriviUscite(uscite);
 
   // 3. Rimuovi prenotazioni iCal doppione
