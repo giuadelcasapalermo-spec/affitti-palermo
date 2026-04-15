@@ -222,7 +222,8 @@ async function importUsciteOriginale(
     for (let i = hIdx + 1; i < rows.length; i++) {
       const row  = rows[i];
       const tipo = String(row[C.tipo]??'').trim().toLowerCase();
-      if (!tipo || tipo === 'tipologia' || tipo.startsWith('ricavo')) continue;
+      // Importa SOLO tipi noti come uscite reali (whitelist)
+      if (!TIPO_TO_CAT[tipo]) continue;
 
       const desc   = String(row[C.desc]??'').trim();
       const uscita = parseFloat(String(row[C.usc]??'')) || 0;
@@ -293,6 +294,8 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
       if (idsUscite.has(id)) { ignorate++; continue; }
       const cat = CATEGORIE_USCITA.includes(categoria as never) ? categoria as Uscita['categoria'] : 'Altro';
       uscite.push({ id: id||randomUUID(), data, descrizione, categoria: cat, importo, camera_id, note: note??'', created_at: now });
+      // Aggiorna keyUsc per evitare che i tab mensili reimportino lo stesso record
+      keyUsc.add(`${data}|${descrizione}|${importo}`);
       importate++;
     }
   }
@@ -304,15 +307,16 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   await scriviEntrate(entrate);
   await scriviUscite(uscite);
 
-  // 3. Rimuovi prenotazioni iCal doppione: stessa camera+check_in+check_out di una non-ical
+  // 3. Rimuovi prenotazioni iCal doppione: stessa camera+check_in+check_out di una manuale
+  //    Usa ical_uid come indicatore certo di origine Booking (più affidabile di fonte)
   const prenotazioni = await leggiPrenotazioni();
   const chiaviManuali = new Set(
     prenotazioni
-      .filter(p => p.fonte !== 'ical' && p.stato !== 'cancellata')
+      .filter(p => !p.ical_uid && p.stato !== 'cancellata')
       .map(p => `${p.camera_id}|${p.check_in}|${p.check_out}`)
   );
   const doppioni = prenotazioni.filter(
-    p => p.fonte === 'ical' && chiaviManuali.has(`${p.camera_id}|${p.check_in}|${p.check_out}`)
+    p => !!p.ical_uid && chiaviManuali.has(`${p.camera_id}|${p.check_in}|${p.check_out}`)
   );
   if (doppioni.length > 0) {
     const idsRimuovere = new Set(doppioni.map(p => p.id));
