@@ -25,6 +25,14 @@ const TIPO_TO_CAT: Record<string, Uscita['categoria']> = {
   'acquisti varie': 'Forniture', 'spese varie': 'Forniture', pulizie: 'Pulizie',
   affitto: 'Affitto', tasse: 'Tasse', commissioni: 'Commissioni', 'pubblicità': 'Pubblicità',
 };
+
+// Tipi ammessi dall'import dei tab mensili: solo spese operative ricorrenti.
+// Esclusi: tasse, commissioni, affitto, pubblicità — queste voci vengono scritte
+// in modo diverso in ogni tab mensile (es. "Tassa di soggiorno 2026", "Tassa di soggiorno
+// I trimestre"…) generando falsi duplicati. Si inseriscono da Prima Nota direttamente.
+const TIPO_AMMESSI_TABS = new Set([
+  'arredamento', 'utenze', 'manutenzione', 'acquisti varie', 'spese varie', 'pulizie',
+]);
 const STANZA_ID: Record<string, number> = {
   'bianca': 1, 'camera 1': 1, '1': 1,
   'gialla': 2, 'camera 2': 2, '2': 2,
@@ -222,8 +230,8 @@ async function importUsciteOriginale(
     for (let i = hIdx + 1; i < rows.length; i++) {
       const row  = rows[i];
       const tipo = String(row[C.tipo]??'').trim().toLowerCase();
-      // Importa SOLO tipi noti come uscite reali (whitelist)
-      if (!TIPO_TO_CAT[tipo]) continue;
+      // Importa SOLO spese operative dai tab mensili (whitelist ristretta)
+      if (!TIPO_AMMESSI_TABS.has(tipo)) continue;
 
       const desc   = String(row[C.desc]??'').trim();
       const uscita = parseFloat(String(row[C.usc]??'')) || 0;
@@ -259,6 +267,24 @@ export async function syncToSheets(): Promise<void> {
 
   // 2. Aggiungi uscite dell'app nei tab mensili
   await exportUsciteToTabs(sheets, uscite, tabEsistenti);
+}
+
+// ── Dedup prenotazioni iCal: rimuove Booking-duplicate di prenotazioni manuali ──
+export async function dedupPrenotazioniIcal(): Promise<number> {
+  const prenotazioni = await leggiPrenotazioni();
+  const chiaviManuali = new Set(
+    prenotazioni
+      .filter(p => !p.ical_uid && p.stato !== 'cancellata')
+      .map(p => `${p.camera_id}|${p.check_in}|${p.check_out}`)
+  );
+  const doppioni = prenotazioni.filter(
+    p => !!p.ical_uid && chiaviManuali.has(`${p.camera_id}|${p.check_in}|${p.check_out}`)
+  );
+  if (doppioni.length > 0) {
+    const idsRimuovere = new Set(doppioni.map(p => p.id));
+    await scriviPrenotazioni(prenotazioni.filter(p => !idsRimuovere.has(p.id)));
+  }
+  return doppioni.length;
 }
 
 // ── Import completo: Prima Nota App + tab mensili → App ───────────────────
@@ -307,21 +333,8 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   await scriviEntrate(entrate);
   await scriviUscite(uscite);
 
-  // 3. Rimuovi prenotazioni iCal doppione: stessa camera+check_in+check_out di una manuale
-  //    Usa ical_uid come indicatore certo di origine Booking (più affidabile di fonte)
-  const prenotazioni = await leggiPrenotazioni();
-  const chiaviManuali = new Set(
-    prenotazioni
-      .filter(p => !p.ical_uid && p.stato !== 'cancellata')
-      .map(p => `${p.camera_id}|${p.check_in}|${p.check_out}`)
-  );
-  const doppioni = prenotazioni.filter(
-    p => !!p.ical_uid && chiaviManuali.has(`${p.camera_id}|${p.check_in}|${p.check_out}`)
-  );
-  if (doppioni.length > 0) {
-    const idsRimuovere = new Set(doppioni.map(p => p.id));
-    await scriviPrenotazioni(prenotazioni.filter(p => !idsRimuovere.has(p.id)));
-  }
+  // 3. Rimuovi prenotazioni iCal doppione
+  const doppioniRimossi = await dedupPrenotazioniIcal();
 
-  return { importate, ignorate, doppioniRimossi: doppioni.length };
+  return { importate, ignorate, doppioniRimossi };
 }
