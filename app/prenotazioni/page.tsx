@@ -6,7 +6,7 @@ import { useCamere } from '@/hooks/useCamere';
 import { differenceInDays, parseISO, format, startOfMonth, endOfMonth, isToday, isTomorrow } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { fData } from '@/lib/utils';
-import { Pencil, Trash2, Plus, X, Euro, TrendingDown, TrendingUp, BookOpen, Landmark, Check, Sparkles, Moon, MessageCircle, User, CalendarRange } from 'lucide-react';
+import { Pencil, Trash2, Plus, X, Euro, TrendingDown, TrendingUp, BookOpen, Landmark, Check, Sparkles, Moon, MessageCircle, User, CalendarRange, RefreshCw } from 'lucide-react';
 import PrenotazioneForm from '@/components/PrenotazioneForm';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
@@ -53,6 +53,8 @@ function PrenotazioniInner() {
   const [filtroOspite, setFiltroOspite] = useState('');
   const [filtroDal, setFiltroDal] = useState(DEFAULT_DAL);
   const [filtroAl,  setFiltroAl]  = useState(DEFAULT_AL);
+  const [syncing, setSyncing] = useState(false);
+  const [syncOk, setSyncOk]   = useState<boolean | null>(null);
 
   const carica = useCallback(() => {
     fetch('/api/prenotazioni').then(r => r.json()).then(data => {
@@ -66,6 +68,22 @@ function PrenotazioniInner() {
   }, []);
 
   useEffect(() => { carica(); }, [carica]);
+
+  async function syncIcal() {
+    setSyncing(true);
+    setSyncOk(null);
+    try {
+      const res = await fetch('/api/sync', { method: 'POST' });
+      const json = await res.json();
+      setSyncOk(json.ok !== false);
+      carica();
+    } catch {
+      setSyncOk(false);
+    } finally {
+      setSyncing(false);
+      setTimeout(() => setSyncOk(null), 3000);
+    }
+  }
 
   async function crea(data: Partial<Prenotazione>) {
     await fetch('/api/prenotazioni', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
@@ -141,6 +159,18 @@ function PrenotazioniInner() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-800">Prenotazioni</h1>
         <div className="flex gap-2">
+          <button
+            onClick={syncIcal}
+            disabled={syncing}
+            className={`flex items-center gap-1.5 border px-4 py-2 rounded text-sm font-medium transition-colors ${
+              syncOk === true  ? 'border-green-300 bg-green-50 text-green-700' :
+              syncOk === false ? 'border-red-300 bg-red-50 text-red-700' :
+              'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+            }`}
+          >
+            <RefreshCw size={15} className={syncing ? 'animate-spin' : ''} />
+            Sync iCal
+          </button>
           <button
             onClick={() => {
               const url = `/api/pulizie?dal=${filtroDal}&al=${filtroAl}`;

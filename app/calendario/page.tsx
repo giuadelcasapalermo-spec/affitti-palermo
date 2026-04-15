@@ -19,7 +19,7 @@ import {
   differenceInDays,
 } from 'date-fns';
 import { it } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, RefreshCw } from 'lucide-react';
 import PrenotazioneForm from '@/components/PrenotazioneForm';
 
 // Colors matching room names: Bianca(1), Gialla(2), Rossa(3), Verde(4), Blue(5)
@@ -59,12 +59,30 @@ export default function CalendarioPage() {
   const [mese, setMese] = useState(new Date());
   const [giornoSelezionato, setGiornoSelezionato] = useState<Date>(new Date());
   const [nuovaPrenotazione, setNuovaPrenotazione] = useState<{ cameraId: number; checkIn: string } | null>(null);
+  const [syncing, setSyncing] = useState(false);
+  const [syncOk, setSyncOk]   = useState<boolean | null>(null);
 
   function caricaPrenotazioni() {
     fetch('/api/prenotazioni').then((r) => r.json()).then(setPrenotazioni);
   }
 
   useEffect(() => { caricaPrenotazioni(); }, []);
+
+  async function syncIcal() {
+    setSyncing(true);
+    setSyncOk(null);
+    try {
+      const res = await fetch('/api/sync', { method: 'POST' });
+      const json = await res.json();
+      setSyncOk(json.ok !== false);
+      caricaPrenotazioni();
+    } catch {
+      setSyncOk(false);
+    } finally {
+      setSyncing(false);
+      setTimeout(() => setSyncOk(null), 3000);
+    }
+  }
 
   async function creaPrenotazione(data: Partial<Prenotazione>) {
     await fetch('/api/prenotazioni', {
@@ -195,6 +213,18 @@ export default function CalendarioPage() {
             <ChevronRight size={18} />
           </button>
         </div>
+        <button
+          onClick={syncIcal}
+          disabled={syncing}
+          className={`flex items-center gap-1.5 border px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+            syncOk === true  ? 'border-green-300 bg-green-50 text-green-700' :
+            syncOk === false ? 'border-red-300 bg-red-50 text-red-700' :
+            'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+          }`}
+        >
+          <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
+          Sync iCal
+        </button>
         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 ml-auto">
           <span className="font-semibold text-blue-700 capitalize hidden sm:inline">
             {format(giornoSelezionato, 'EEEE d MMMM', { locale: it })}
