@@ -333,9 +333,9 @@ export default function CalendarioPage() {
                 );
               })}
             </div>
-            {/* Lista del giorno: dopo la 3a camera su desktop */}
-            {idx === 2 && (
-              <div className="hidden md:block col-span-full bg-white rounded-lg shadow-sm p-5">
+            {/* Lista del giorno: dopo cam 4 e 5 → occupa la cella sotto cam 3 */}
+            {idx === 4 && (
+              <div className="hidden md:block bg-white rounded-xl shadow-sm p-5 overflow-y-auto">
                 {listaGiornoJSX}
               </div>
             )}
