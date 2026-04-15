@@ -262,6 +262,52 @@ export default function Dashboard() {
       </div>
       ); })()}
 
+      {/* ── Statistiche per stanza — solo mobile ── */}
+      <div className="sm:hidden bg-white rounded-lg shadow-sm p-4 space-y-3">
+        <h2 className="text-sm font-semibold text-gray-700">Statistiche per stanza</h2>
+        {(() => {
+          const nGiorniPeriodo = differenceInDays(parseISO(filtroAl), parseISO(filtroDal)) + 1;
+          const camFiltrate = camere.filter(c => filtroCamera === 'tutte' || c.id === filtroCamera);
+          return camFiltrate.map(camera => {
+            const pren = prenNelPeriodo.filter(p => p.camera_id === camera.id);
+            const notti = pren.reduce((s, p) => s + differenceInDays(parseISO(p.check_out), parseISO(p.check_in)), 0);
+            const ricavo = pren.filter(p => p.fonte !== 'ical').reduce((s, p) => s + p.importo_totale, 0);
+            const satPct = nGiorniPeriodo > 0 ? Math.round((Math.min(notti, nGiorniPeriodo) / nGiorniPeriodo) * 100) : 0;
+            const col = COLORI_CAMERA[camera.id] ?? COLORI_CAMERA[1];
+            return (
+              <div key={camera.id}>
+                <div className="flex items-center justify-between mb-1">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs font-bold w-20 ${col.testo}`}>{camera.nome}</span>
+                    <span className="text-[11px] text-gray-400">{notti}n / {nGiorniPeriodo}gg</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    {ricavo > 0 && (
+                      <span className="text-xs font-semibold text-gray-800">€{ricavo.toFixed(0)}</span>
+                    )}
+                    <span className={`text-[11px] font-bold w-9 text-right ${satPct >= 70 ? 'text-green-600' : satPct >= 30 ? 'text-amber-500' : 'text-gray-400'}`}>
+                      {satPct}%
+                    </span>
+                  </div>
+                </div>
+                {/* Barra saturazione CSS */}
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all ${col.bar}`}
+                    style={{ width: `${satPct}%` }}
+                  />
+                </div>
+              </div>
+            );
+          });
+        })()}
+        {/* Totale periodo */}
+        <div className="border-t border-gray-100 pt-2 flex justify-between items-center">
+          <span className="text-xs text-gray-400">Totale ricavi periodo</span>
+          <span className="text-sm font-bold text-gray-800">€{entrateDelPeriodo.toFixed(0)}</span>
+        </div>
+      </div>
+
       {/* KPI cards desktop */}
       <div className="hidden sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-3">

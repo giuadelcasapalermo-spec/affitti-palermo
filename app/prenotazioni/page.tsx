@@ -282,15 +282,15 @@ function PrenotazioniInner() {
         </div>
       </div>
 
-      {/* ── Lista mobile dark stile Booking.com ── */}
-      <div className="sm:hidden -mx-4 bg-[#0f172a] pb-8 pt-1">
+      {/* ── Lista mobile ── */}
+      <div className="sm:hidden -mx-4 bg-gray-50 pb-8 pt-1">
         {filtrate.length === 0 ? (
-          <div className="text-center text-gray-500 py-12 text-sm">Nessuna prenotazione trovata</div>
+          <div className="text-center text-gray-400 py-12 text-sm">Nessuna prenotazione trovata</div>
         ) : (
           groupedEntries.map(([dateStr, prenotazioniGruppo]) => (
             <div key={dateStr}>
               {/* Intestazione gruppo data */}
-              <div className="px-4 pt-4 pb-2 text-blue-400 font-semibold text-sm">
+              <div className="px-4 pt-4 pb-2 text-blue-600 font-semibold text-sm">
                 {getLabelData(dateStr)}
               </div>
               {/* Card prenotazione */}
@@ -302,52 +302,71 @@ function PrenotazioniInner() {
                 return (
                   <div
                     key={p.id}
-                    className="mx-3 mb-3 bg-[#1e293b] rounded-xl p-4 relative"
+                    className="mx-3 mb-3 bg-white rounded-xl p-4 relative shadow-sm border border-gray-100"
                     onDoubleClick={() => startEdit(p)}
                   >
                     {/* Nome + badge */}
-                    <div className="flex items-center gap-2 mb-3 pr-10 flex-wrap">
-                      <span className="font-bold text-white text-[15px]">{p.ospite_nome}</span>
+                    <div className="flex items-center gap-2 mb-2.5 pr-10 flex-wrap">
+                      <span className="font-bold text-gray-900 text-[15px]">{p.ospite_nome}</span>
                       {p.fonte === 'ical' && (
                         <span className="bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">
                           Booking
                         </span>
                       )}
                       {p.stato === 'pending' && (
-                        <span className="bg-yellow-500 text-black text-[11px] font-bold px-2 py-0.5 rounded">
+                        <span className="bg-yellow-400 text-yellow-900 text-[11px] font-bold px-2 py-0.5 rounded">
                           In attesa
                         </span>
                       )}
                       {p.stato === 'cancellata' && (
-                        <span className="bg-red-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">
+                        <span className="bg-red-100 text-red-700 text-[11px] font-bold px-2 py-0.5 rounded">
                           Cancellata
                         </span>
                       )}
                     </div>
+
                     {/* Icona chat in alto a destra */}
-                    <button className="absolute top-4 right-4 text-gray-500 active:text-gray-300">
+                    <button className="absolute top-4 right-4 text-gray-300 active:text-gray-500">
                       <MessageCircle size={22} strokeWidth={1.5} />
                     </button>
+
                     {/* Date range */}
-                    <div className="flex items-center gap-2 text-sm text-gray-300 mb-1.5">
-                      <CalendarRange size={15} className="text-gray-500 flex-shrink-0" />
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-1.5">
+                      <CalendarRange size={15} className="text-gray-400 flex-shrink-0" />
                       <span>{formatDateRange(p.check_in, p.check_out)}</span>
                     </div>
                     {/* Notti */}
-                    <div className="flex items-center gap-2 text-sm text-gray-300 mb-1.5">
-                      <Moon size={15} className="text-gray-500 flex-shrink-0" />
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-1.5">
+                      <Moon size={15} className="text-gray-400 flex-shrink-0" />
                       <span>{notiMob} {notiMob === 1 ? 'notte' : 'notti'}</span>
                     </div>
                     {/* Telefono o note */}
                     {(p.ospite_telefono || p.note) && (
-                      <div className="flex items-center gap-2 text-sm text-gray-300 mb-1.5">
-                        <User size={15} className="text-gray-500 flex-shrink-0" />
+                      <div className="flex items-center gap-2 text-sm text-gray-600 mb-1.5">
+                        <User size={15} className="text-gray-400 flex-shrink-0" />
                         <span className="truncate">{p.ospite_telefono || p.note}</span>
                       </div>
                     )}
-                    {/* Nome camera / proprietà */}
-                    <div className="text-sm text-gray-500 mt-2">
-                      {cam?.nome ?? 'GiuAdel casa Palermo'}
+
+                    {/* Separatore */}
+                    <div className="border-t border-gray-100 mt-2.5 pt-2.5 flex items-center justify-between">
+                      {/* Camera */}
+                      <span className="text-xs text-gray-400">{cam?.nome ?? 'GiuAdel casa Palermo'}</span>
+                      {/* Valore economico */}
+                      <div className="flex items-center gap-2">
+                        {p.tassa_soggiorno ? (
+                          <span className="text-xs text-amber-600 font-medium">
+                            TdS €{p.tassa_soggiorno.toFixed(0)}
+                          </span>
+                        ) : null}
+                        {p.fonte !== 'ical' ? (
+                          <span className="text-base font-bold text-gray-900">
+                            €{p.importo_totale.toFixed(0)}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-gray-300">—</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
