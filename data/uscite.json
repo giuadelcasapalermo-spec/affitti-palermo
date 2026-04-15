@@ -1125,15 +1125,6 @@
     "created_at": "2026-04-14T20:13:22.017Z"
   },
   {
-    "id": "2a3745f8-59ba-434e-8065-8fa2914808b7",
-    "data": "2026-04-14",
-    "descrizione": "Tassa di soggiorno 2026",
-    "categoria": "Tasse",
-    "importo": 252,
-    "note": "",
-    "created_at": "2026-04-15T09:17:37.780Z"
-  },
-  {
     "id": "1e82a5d1-1a3e-4ad9-84ba-31aec2eba687",
     "data": "2026-04-14",
     "descrizione": "Tassa di soggiorno",
