@@ -1150,14 +1150,5 @@
     "importo": 70,
     "note": "",
     "created_at": "2026-04-15T09:16:09.872Z"
-  },
-  {
-    "id": "094bc55b-429e-41c0-8dca-ef2712a9cb9d",
-    "data": "2026-04-08",
-    "descrizione": "Anna",
-    "categoria": "Forniture",
-    "importo": 70,
-    "note": "",
-    "created_at": "2026-04-15T09:16:10.207Z"
   }
 ]
