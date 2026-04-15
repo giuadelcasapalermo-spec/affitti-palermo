@@ -389,7 +389,7 @@ function PrenotazioniInner() {
                             TdS €{p.tassa_soggiorno.toFixed(0)}
                           </span>
                         ) : null}
-                        {p.fonte !== 'ical' ? (
+                        {p.importo_totale > 0 ? (
                           <span className="text-base font-bold text-gray-900">
                             €{p.importo_totale.toFixed(0)}
                           </span>
@@ -573,7 +573,7 @@ function PrenotazioniInner() {
                     <td className="px-3 py-2.5 text-gray-600">{fData(p.check_out)}</td>
                     <td className="px-3 py-2.5 text-right text-gray-600">{notti}</td>
                     <td className="px-3 py-2.5 text-right font-semibold text-gray-800">
-                      {p.fonte === 'ical' ? <span className="text-gray-300">—</span> : `€${p.importo_totale.toFixed(2)}`}
+                      {p.importo_totale > 0 ? `€${p.importo_totale.toFixed(2)}` : <span className="text-gray-300">—</span>}
                     </td>
                     <td className="px-3 py-2.5 text-right text-sm">
                       {p.tassa_soggiorno
