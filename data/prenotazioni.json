@@ -846,21 +846,6 @@
     "tassa_soggiorno": 16
   },
   {
-    "id": "0fbc771d-f674-42cc-8888-d54d7e59990e",
-    "camera_id": 4,
-    "ospite_nome": "Ana Gonzalez Gil",
-    "ospite_telefono": "",
-    "ospite_email": "",
-    "check_in": "2026-04-16",
-    "check_out": "2026-04-19",
-    "importo_totale": 133.65,
-    "stato": "confermata",
-    "note": "Ricavo Booking",
-    "created_at": "2026-04-14T11:24:35.152Z",
-    "fonte": "manuale",
-    "tassa_soggiorno": 24
-  },
-  {
     "id": "6f0c02fb-04f8-44c7-ba1e-591ad13f5886",
     "camera_id": 5,
     "ospite_nome": "Ana Gonzalez Gil",
