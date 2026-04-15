@@ -293,8 +293,85 @@ export async function dedupPrenotazioniIcal(): Promise<number> {
   return doppioni.length;
 }
 
+// ── Arricchimento prenotazioni iCal da tab mensili (Affitto) ─────────────
+// Legge le righe "Affitto" nei tab mensili e aggiorna le prenotazioni iCal
+// che hanno camera+check_in corrispondenti, riempiendo ospite_nome e importo_totale.
+async function arricchisciPrenotazioniDaSheets(
+  sheets: ReturnType<typeof google.sheets>,
+  tabEsistenti: Set<string>,
+): Promise<number> {
+  const prenotazioni = await leggiPrenotazioni();
+  // Indice: "cameraId|check_in" → prenotazione iCal
+  const byKey = new Map(
+    prenotazioni
+      .filter(p => !!p.ical_uid)
+      .map(p => [`${p.camera_id}|${p.check_in}`, p])
+  );
+  if (byKey.size === 0) return 0;
+
+  let aggiornate = 0;
+
+  for (const tab of tabEsistenti) {
+    if (tab === SHEET_NAME) continue;
+
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `'${tab}'!A:P`,
+      valueRenderOption: 'UNFORMATTED_VALUE',
+    });
+    const rows = (res.data.values ?? []) as (string|number)[][];
+
+    const hIdx = rows.findIndex(r => String(r[0]??'').trim() === 'Tipologia');
+    if (hIdx === -1) continue;
+
+    const ncols = rows[hIdx].length;
+    const is2025 = ncols <= 12;
+    // entrata = col C (indice 2) in entrambi i formati
+    const C = is2025
+      ? { tipo:0, desc:1, ent:2, dataI:6, stanza:9 }
+      : { tipo:0, desc:1, ent:2, dataI:10, stanza:13 };
+
+    for (let i = hIdx + 1; i < rows.length; i++) {
+      const row  = rows[i];
+      const tipo = String(row[C.tipo]??'').trim().toLowerCase();
+      if (tipo !== 'affitto') continue;
+
+      const data = parseSheetDate(row[C.dataI] as string|number|undefined);
+      if (!data) continue;
+
+      const stanza    = String(row[C.stanza]??'').trim().toLowerCase();
+      const camera_id = STANZA_ID[stanza];
+      if (!camera_id) continue;
+
+      const key = `${camera_id}|${data}`;
+      const pren = byKey.get(key);
+      if (!pren) continue;
+
+      const nome    = String(row[C.desc]??'').trim();
+      const importo = parseFloat(String(row[C.ent]??'')) || 0;
+
+      // Arricchisci solo i campi vuoti/zero
+      let modificata = false;
+      if (nome && (!pren.ospite_nome || pren.ospite_nome === 'Ospite Booking.com')) {
+        pren.ospite_nome = nome;
+        modificata = true;
+      }
+      if (importo > 0 && (!pren.importo_totale || pren.importo_totale === 0)) {
+        pren.importo_totale = importo;
+        modificata = true;
+      }
+      if (modificata) aggiornate++;
+    }
+  }
+
+  if (aggiornate > 0) {
+    await scriviPrenotazioni(prenotazioni);
+  }
+  return aggiornate;
+}
+
 // ── Import completo: Prima Nota App + tab mensili → App (solo uscite) ────
-export async function importFromSheets(): Promise<{ importate: number; ignorate: number; doppioniRimossi: number }> {
+export async function importFromSheets(): Promise<{ importate: number; ignorate: number; doppioniRimossi: number; prenotazioniArricchite: number }> {
   const sheets  = await getSheetsClient();
   const meta    = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
   const tabEsistenti = new Set(meta.data.sheets?.map(s => s.properties?.title ?? '') ?? []);
@@ -336,5 +413,8 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   // 3. Rimuovi prenotazioni iCal doppione
   const doppioniRimossi = await dedupPrenotazioniIcal();
 
-  return { importate, ignorate, doppioniRimossi };
+  // 4. Arricchisci prenotazioni iCal con nome ospite e importo dai tab mensili
+  const prenotazioniArricchite = await arricchisciPrenotazioniDaSheets(sheets, tabEsistenti);
+
+  return { importate, ignorate, doppioniRimossi, prenotazioniArricchite };
 }

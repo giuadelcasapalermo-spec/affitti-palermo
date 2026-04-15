@@ -18,16 +18,22 @@ export async function POST(req: NextRequest) {
     }
 
     if (direzione === 'import') {
-      const { importate, ignorate, doppioniRimossi } = await importFromSheets();
-      const extra = doppioniRimossi > 0 ? `, rimossi ${doppioniRimossi} doppioni Booking` : '';
-      return NextResponse.json({ ok: true, messaggio: `Importati ${importate} movimenti (${ignorate} già presenti${extra})` });
+      const { importate, ignorate, doppioniRimossi, prenotazioniArricchite } = await importFromSheets();
+      const extra = [
+        doppioniRimossi > 0 ? `rimossi ${doppioniRimossi} doppioni` : '',
+        prenotazioniArricchite > 0 ? `${prenotazioniArricchite} prenotazioni arricchite` : '',
+      ].filter(Boolean).join(', ');
+      return NextResponse.json({ ok: true, messaggio: `Importati ${importate} movimenti (${ignorate} già presenti${extra ? ', ' + extra : ''})` });
     }
 
     if (direzione === 'both') {
       await syncToSheets();
-      const { importate, doppioniRimossi } = await importFromSheets();
-      const extra = doppioniRimossi > 0 ? `, rimossi ${doppioniRimossi} doppioni Booking` : '';
-      return NextResponse.json({ ok: true, messaggio: `Sincronizzazione completata — importati ${importate}${extra}` });
+      const { importate, doppioniRimossi, prenotazioniArricchite } = await importFromSheets();
+      const extra = [
+        doppioniRimossi > 0 ? `rimossi ${doppioniRimossi} doppioni` : '',
+        prenotazioniArricchite > 0 ? `${prenotazioniArricchite} prenotazioni arricchite` : '',
+      ].filter(Boolean).join(', ');
+      return NextResponse.json({ ok: true, messaggio: `Sincronizzazione completata — importati ${importate}${extra ? ', ' + extra : ''}` });
     }
 
     return NextResponse.json({ ok: false, errore: 'direzione non valida' }, { status: 400 });

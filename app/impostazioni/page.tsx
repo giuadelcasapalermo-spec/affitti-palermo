@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { CAMERE, Impostazioni } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
-import { RefreshCw, Save, Link, CheckCircle, AlertCircle, Copy, Upload, Download, PenLine, Users, Trash2, Plus, KeyRound } from 'lucide-react';
+import { RefreshCw, Save, Link, CheckCircle, AlertCircle, Download, PenLine, Users, Trash2, Plus, KeyRound } from 'lucide-react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { it } from 'date-fns/locale';
 
@@ -24,8 +24,6 @@ export default function ImpostazioniPage() {
   const [nomi, setNomi] = useState<Record<number, string>>({});
   const [syncing, setSyncing] = useState(false);
   const [risultatiSync, setRisultatiSync] = useState<SyncResult[] | null>(null);
-  const [copiato, setCopiato] = useState<number | null>(null);
-  const [baseUrl, setBaseUrl] = useState('');
   const [utenti, setUtenti] = useState<UtenteInfo[]>([]);
   const [nuovoUsername, setNuovoUsername] = useState('');
   const [nuovaPassword, setNuovaPassword] = useState('');
@@ -40,7 +38,6 @@ export default function ImpostazioniPage() {
         setImp(data);
         setNomi(data.nomi_camere ?? {});
       });
-    setBaseUrl(window.location.origin);
     caricaUtenti();
   }, []);
 
@@ -119,13 +116,6 @@ export default function ImpostazioniPage() {
     }));
   }
 
-  async function copia(cameraId: number) {
-    const url = `${baseUrl}/api/ical/${cameraId}`;
-    await navigator.clipboard.writeText(url);
-    setCopiato(cameraId);
-    setTimeout(() => setCopiato(null), 2000);
-  }
-
   const haAlmenoUnUrl = Object.values(imp.ical_urls).some((u) => u && u.trim());
 
   return (
@@ -181,62 +171,6 @@ export default function ImpostazioniPage() {
           >
             Ripristina predefiniti
           </button>
-        </div>
-      </div>
-
-      {/* EXPORT: App → Booking.com */}
-      <div className="bg-white rounded-lg shadow-sm p-5">
-        <div className="flex items-center gap-2 mb-1">
-          <Upload size={18} className="text-green-600" />
-          <h2 className="font-semibold text-gray-700">
-            Export iCal — App → Booking.com
-          </h2>
-        </div>
-        <p className="text-sm text-gray-500 mb-4">
-          Copia l&apos;URL di ogni camera e incollalo su Booking.com come calendario esterno.
-          Booking.com aggiornerà le disponibilità ogni 2–6 ore.
-        </p>
-
-        <div className="space-y-3">
-          {CAMERE.map((camera) => {
-            const url = `${baseUrl}/api/ical/${camera.id}`;
-            return (
-              <div key={camera.id} className="flex items-center gap-2">
-                <div className="flex-1">
-                  <div className="text-xs font-medium text-gray-500 mb-0.5">{camera.nome}</div>
-                  <div className="font-mono text-xs bg-gray-50 border rounded px-2 py-1.5 text-gray-600 truncate">
-                    {baseUrl ? url : 'Caricamento...'}
-                  </div>
-                </div>
-                <button
-                  onClick={() => copia(camera.id)}
-                  className="flex-shrink-0 flex items-center gap-1 text-xs border rounded px-2 py-1.5 hover:bg-gray-50"
-                >
-                  {copiato === camera.id ? (
-                    <><CheckCircle size={13} className="text-green-600" /> Copiato</>
-                  ) : (
-                    <><Copy size={13} /> Copia</>
-                  )}
-                </button>
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-shrink-0 text-xs border rounded px-2 py-1.5 hover:bg-gray-50"
-                  title="Apri .ics"
-                >
-                  .ics
-                </a>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-4 bg-yellow-50 rounded p-3 text-xs text-yellow-800">
-          <strong>Attenzione:</strong> L&apos;URL funziona solo se l&apos;app è raggiungibile da internet.
-          In locale usa <strong>ngrok</strong>:{' '}
-          <code className="bg-yellow-100 px-1 rounded">npx ngrok http 3000</code>{' '}
-          e usa l&apos;URL ngrok al posto di localhost.
         </div>
       </div>
 
