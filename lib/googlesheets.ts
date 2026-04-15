@@ -3,6 +3,7 @@ import { GoogleAuth } from 'google-auth-library';
 import { Entrata, Uscita, CATEGORIE_ENTRATA, CATEGORIE_USCITA } from './types';
 import { leggiEntrate, scriviEntrate } from './entrate';
 import { leggiUscite, scriviUscite } from './uscite';
+import { leggiPrenotazioni, scriviPrenotazioni } from './db';
 import { randomUUID } from 'crypto';
 
 const SPREADSHEET_ID = '1t8sY-JBkSDAnIBhQA_xwotRjxAzRCJ1XMUrxbpHlJpM';
@@ -260,7 +261,7 @@ export async function syncToSheets(): Promise<void> {
 }
 
 // ── Import completo: Prima Nota App + tab mensili → App ───────────────────
-export async function importFromSheets(): Promise<{ importate: number; ignorate: number }> {
+export async function importFromSheets(): Promise<{ importate: number; ignorate: number; doppioniRimossi: number }> {
   const sheets  = await getSheetsClient();
   const meta    = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
   const tabEsistenti = new Set(meta.data.sheets?.map(s => s.properties?.title ?? '') ?? []);
@@ -302,5 +303,21 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
 
   await scriviEntrate(entrate);
   await scriviUscite(uscite);
-  return { importate, ignorate };
+
+  // 3. Rimuovi prenotazioni iCal doppione: stessa camera+check_in+check_out di una non-ical
+  const prenotazioni = await leggiPrenotazioni();
+  const chiaviManuali = new Set(
+    prenotazioni
+      .filter(p => p.fonte !== 'ical' && p.stato !== 'cancellata')
+      .map(p => `${p.camera_id}|${p.check_in}|${p.check_out}`)
+  );
+  const doppioni = prenotazioni.filter(
+    p => p.fonte === 'ical' && chiaviManuali.has(`${p.camera_id}|${p.check_in}|${p.check_out}`)
+  );
+  if (doppioni.length > 0) {
+    const idsRimuovere = new Set(doppioni.map(p => p.id));
+    await scriviPrenotazioni(prenotazioni.filter(p => !idsRimuovere.has(p.id)));
+  }
+
+  return { importate, ignorate, doppioniRimossi: doppioni.length };
 }

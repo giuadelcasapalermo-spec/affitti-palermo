@@ -18,14 +18,16 @@ export async function POST(req: NextRequest) {
     }
 
     if (direzione === 'import') {
-      const { importate, ignorate } = await importFromSheets();
-      return NextResponse.json({ ok: true, messaggio: `Importati ${importate} movimenti (${ignorate} già presenti)` });
+      const { importate, ignorate, doppioniRimossi } = await importFromSheets();
+      const extra = doppioniRimossi > 0 ? `, rimossi ${doppioniRimossi} doppioni Booking` : '';
+      return NextResponse.json({ ok: true, messaggio: `Importati ${importate} movimenti (${ignorate} già presenti${extra})` });
     }
 
     if (direzione === 'both') {
       await syncToSheets();
-      const { importate, ignorate } = await importFromSheets();
-      return NextResponse.json({ ok: true, messaggio: `Sincronizzazione completata — importati ${importate}, aggiornato foglio` });
+      const { importate, doppioniRimossi } = await importFromSheets();
+      const extra = doppioniRimossi > 0 ? `, rimossi ${doppioniRimossi} doppioni Booking` : '';
+      return NextResponse.json({ ok: true, messaggio: `Sincronizzazione completata — importati ${importate}${extra}` });
     }
 
     return NextResponse.json({ ok: false, errore: 'direzione non valida' }, { status: 400 });
