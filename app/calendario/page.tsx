@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Fragment } from 'react';
 import { Prenotazione } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
 import { fData } from '@/lib/utils';
@@ -118,6 +118,67 @@ export default function CalendarioPage() {
     .filter((p) => p.fonte !== 'ical')
     .reduce((s, p) => s + p.importo_totale, 0);
 
+  // JSX della lista prenotazioni del giorno (riusata in due posizioni)
+  const listaGiornoJSX = (
+    <>
+      <h2 className="font-semibold text-gray-700 mb-3 capitalize">
+        {format(giornoSelezionato, 'EEEE d MMMM yyyy', { locale: it })}
+      </h2>
+      {(() => {
+        const delGiorno = prenotazioni
+          .filter((p) => {
+            if (p.stato === 'cancellata') return false;
+            return isWithinInterval(giornoSelezionato, {
+              start: parseISO(p.check_in),
+              end: parseISO(p.check_out),
+            });
+          })
+          .sort((a, b) => a.camera_id - b.camera_id);
+
+        if (delGiorno.length === 0)
+          return <p className="text-gray-400 text-sm">Nessun ospite presente in questo giorno</p>;
+
+        return (
+          <div className="space-y-2">
+            {delGiorno.map((p) => {
+              const cam = camere.find((c) => c.id === p.camera_id);
+              const st  = STILE_CAMERA[p.camera_id] ?? STILE_CAMERA[1];
+              const ci  = parseISO(p.check_in);
+              const co  = parseISO(p.check_out);
+              const isCI = isSameDay(giornoSelezionato, ci);
+              const isCO = isSameDay(giornoSelezionato, co);
+              const notti = differenceInDays(co, ci);
+              return (
+                <div key={p.id} className="flex items-center justify-between py-1.5 border-b last:border-0 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${st.dot}`} />
+                    <span className="font-medium">{p.ospite_nome}</span>
+                    <span className="text-gray-400">{cam?.nome}</span>
+                    {isCI && <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-medium">check-in</span>}
+                    {isCO && <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-medium">check-out</span>}
+                  </div>
+                  <div className="flex items-center gap-3 text-gray-500">
+                    <span className="text-xs">{fData(p.check_in)} → {fData(p.check_out)} ({notti}n)</span>
+                    {p.fonte !== 'ical' && (
+                      <span className="font-semibold text-gray-700">
+                        €{p.importo_totale.toFixed(2)}
+                        {p.tassa_soggiorno ? (
+                          <span className="ml-1 text-xs font-normal text-amber-600">
+                            +€{p.tassa_soggiorno.toFixed(2)} tds
+                          </span>
+                        ) : null}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })()}
+    </>
+  );
+
   return (
     <div className="space-y-5">
       {/* Header */}
@@ -151,10 +212,11 @@ export default function CalendarioPage() {
 
       {/* Griglia mini-calendari */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 xl:grid-cols-3">
-        {camere.map((camera) => {
+        {camere.map((camera, idx) => {
           const stile = STILE_CAMERA[camera.id] ?? STILE_CAMERA[1];
           return (
-            <div key={camera.id} className="bg-white rounded-xl shadow-sm p-5">
+            <Fragment key={camera.id}>
+            <div className="bg-white rounded-xl shadow-sm p-5">
               {/* Camera header */}
               <div className="flex items-center gap-2 mb-4">
                 <div className={`w-3 h-3 rounded-full ${stile.dot}`} />
@@ -271,74 +333,20 @@ export default function CalendarioPage() {
                 );
               })}
             </div>
+            {/* Lista del giorno: dopo la 3a camera su desktop */}
+            {idx === 2 && (
+              <div className="hidden md:block col-span-full bg-white rounded-lg shadow-sm p-5">
+                {listaGiornoJSX}
+              </div>
+            )}
+            </Fragment>
           );
         })}
       </div>
 
-      {/* Lista prenotazioni del giorno selezionato */}
-      <div className="bg-white rounded-lg shadow-sm p-5">
-        <h2 className="font-semibold text-gray-700 mb-3 capitalize">
-          {format(giornoSelezionato, "EEEE d MMMM yyyy", { locale: it })}
-        </h2>
-        {(() => {
-          const delGiorno = prenotazioni
-            .filter((p) => {
-              if (p.stato === 'cancellata') return false;
-              const ci = parseISO(p.check_in);
-              const co = parseISO(p.check_out);
-              // ospite presente: check_in <= giorno < check_out
-              return isWithinInterval(giornoSelezionato, { start: ci, end: co });
-            })
-            .sort((a, b) => a.camera_id - b.camera_id);
-
-          if (delGiorno.length === 0)
-            return <p className="text-gray-400 text-sm">Nessun ospite presente in questo giorno</p>;
-
-          return (
-            <div className="space-y-2">
-              {delGiorno.map((p) => {
-                const camera = camere.find((c) => c.id === p.camera_id);
-                const stile = STILE_CAMERA[p.camera_id] ?? STILE_CAMERA[1];
-                const ci = parseISO(p.check_in);
-                const co = parseISO(p.check_out);
-                const isCI = isSameDay(giornoSelezionato, ci);
-                const isCO = isSameDay(giornoSelezionato, co);
-                const notti = differenceInDays(co, ci);
-                return (
-                  <div
-                    key={p.id}
-                    className="flex items-center justify-between py-1.5 border-b last:border-0 text-sm"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${stile.dot}`} />
-                      <span className="font-medium">{p.ospite_nome}</span>
-                      <span className="text-gray-400">{camera?.nome}</span>
-                      {isCI && (
-                        <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-medium">check-in</span>
-                      )}
-                      {isCO && (
-                        <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-medium">check-out</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 text-gray-500">
-                      <span className="text-xs">{fData(p.check_in)} → {fData(p.check_out)} ({notti}n)</span>
-                      {p.fonte !== 'ical' && (
-                        <span className="font-semibold text-gray-700">
-                          €{p.importo_totale.toFixed(2)}
-                          {p.tassa_soggiorno ? (
-                            <span className="ml-1 text-xs font-normal text-amber-600">
-                              +€{p.tassa_soggiorno.toFixed(2)} tds
-                            </span>
-                          ) : null}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })()}
+      {/* Lista prenotazioni del giorno — solo mobile */}
+      <div className="md:hidden bg-white rounded-lg shadow-sm p-5">
+        {listaGiornoJSX}
       </div>
 
       {/* Modale nuova prenotazione */}

@@ -9,6 +9,15 @@ const geist = Geist({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "GiuAdel casa Palermo",
   description: "GiuAdel casa Palermo - 5 camere",
+  icons: {
+    icon: [
+      { url: '/icon-192.png', type: 'image/png', sizes: '192x192' },
+    ],
+    apple: [
+      { url: '/icon-192.png', sizes: '192x192' },
+    ],
+    shortcut: '/icon-192.png',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
