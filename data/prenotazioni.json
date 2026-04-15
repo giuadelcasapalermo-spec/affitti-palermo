@@ -660,21 +660,6 @@
     "ical_uid": "8d01e0480dd545b5b107141c263e14ca@booking.com"
   },
   {
-    "id": "43570bbf-3736-4271-8318-21af9c06e418",
-    "camera_id": 4,
-    "ospite_nome": "Ospite Booking.com",
-    "ospite_telefono": "",
-    "ospite_email": "",
-    "check_in": "2027-10-14",
-    "check_out": "2027-10-15",
-    "importo_totale": 0,
-    "stato": "confermata",
-    "note": "Importata da Booking.com (iCal)",
-    "created_at": "2026-04-15T09:04:11.068Z",
-    "fonte": "ical",
-    "ical_uid": "e2968dcade64bd2f5f71cdd21332457a@booking.com"
-  },
-  {
     "id": "bccd93da-eb9a-4e53-b1b2-bd39de9122a5",
     "camera_id": 5,
     "ospite_nome": "Ospite Booking.com",
@@ -898,5 +883,50 @@
     "created_at": "2026-04-15T10:23:08.901Z",
     "fonte": "ical",
     "ical_uid": "e38f64d24ead48164f2faf81f1414cdc@booking.com"
+  },
+  {
+    "id": "48a7a2a2-3fed-40b0-9426-352ee502151a",
+    "camera_id": 4,
+    "ospite_nome": "Ospite Booking.com",
+    "ospite_telefono": "",
+    "ospite_email": "",
+    "check_in": "2026-04-16",
+    "check_out": "2026-04-17",
+    "importo_totale": 0,
+    "stato": "confermata",
+    "note": "Importata da Booking.com (iCal)",
+    "created_at": "2026-04-15T10:23:09.765Z",
+    "fonte": "ical",
+    "ical_uid": "1e1dd29fcdf84455e3346d6d2a8d342b@booking.com"
+  },
+  {
+    "id": "b0ae80a0-89b7-48f6-8a6e-f3638595d986",
+    "camera_id": 4,
+    "ospite_nome": "Ospite Booking.com",
+    "ospite_telefono": "",
+    "ospite_email": "",
+    "check_in": "2026-04-23",
+    "check_out": "2026-04-26",
+    "importo_totale": 0,
+    "stato": "confermata",
+    "note": "Importata da Booking.com (iCal)",
+    "created_at": "2026-04-15T10:23:09.765Z",
+    "fonte": "ical",
+    "ical_uid": "f36f76f8a36d31ad1d7ced01e765ecbf@booking.com"
+  },
+  {
+    "id": "cc750061-cde5-42e1-9f51-eaac751e46d3",
+    "camera_id": 4,
+    "ospite_nome": "Ospite Booking.com",
+    "ospite_telefono": "",
+    "ospite_email": "",
+    "check_in": "2027-01-01",
+    "check_out": "2027-10-14",
+    "importo_totale": 0,
+    "stato": "confermata",
+    "note": "Importata da Booking.com (iCal)",
+    "created_at": "2026-04-15T10:23:09.765Z",
+    "fonte": "ical",
+    "ical_uid": "295ba86e8c659b857f095e750dc28238@booking.com"
   }
 ]
