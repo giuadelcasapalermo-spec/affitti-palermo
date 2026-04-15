@@ -176,17 +176,18 @@
   {
     "id": "0c526567-584e-4ee2-95a4-fe3ecaaeac81",
     "camera_id": 1,
-    "ospite_nome": "Ospite Booking.com",
+    "ospite_nome": "Leila Kasseh (quadrupla)",
     "ospite_telefono": "",
     "ospite_email": "",
     "check_in": "2026-04-16",
     "check_out": "2026-04-19",
-    "importo_totale": 0,
+    "importo_totale": 122.76,
     "stato": "confermata",
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T09:04:08.374Z",
     "fonte": "ical",
-    "ical_uid": "fe45e536c9724fd3423a13bc5cfaed9a@booking.com"
+    "ical_uid": "fe45e536c9724fd3423a13bc5cfaed9a@booking.com",
+    "tassa_soggiorno": 24
   },
   {
     "id": "e5cb9b38-6e82-48a3-a031-2a45c4558669",
@@ -255,32 +256,34 @@
   {
     "id": "f70fcb42-b63a-4a6d-87db-fc76fc50bbce",
     "camera_id": 1,
-    "ospite_nome": "Ospite Booking.com",
+    "ospite_nome": "Caterina Segantin - quadrupla",
     "ospite_telefono": "",
     "ospite_email": "",
     "check_in": "2026-05-01",
     "check_out": "2026-05-03",
-    "importo_totale": 0,
+    "importo_totale": 184.14,
     "stato": "confermata",
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T09:04:08.374Z",
     "fonte": "ical",
-    "ical_uid": "c50556fc4d1f855f325a9a502e244500@booking.com"
+    "ical_uid": "c50556fc4d1f855f325a9a502e244500@booking.com",
+    "tassa_soggiorno": 48
   },
   {
     "id": "2d10db87-8b8a-46a1-81fd-245013ef621f",
     "camera_id": 1,
-    "ospite_nome": "Ospite Booking.com",
+    "ospite_nome": "Francesca Luccardini (tripla)",
     "ospite_telefono": "",
     "ospite_email": "",
     "check_in": "2026-05-14",
     "check_out": "2026-05-19",
-    "importo_totale": 0,
+    "importo_totale": 193.71,
     "stato": "confermata",
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T09:04:08.374Z",
     "fonte": "ical",
-    "ical_uid": "aeb11231d706b34bb6e21c720cd93767@booking.com"
+    "ical_uid": "aeb11231d706b34bb6e21c720cd93767@booking.com",
+    "tassa_soggiorno": 36
   },
   {
     "id": "323b63d1-3506-4212-83a6-296c91a3b151",
@@ -555,17 +558,18 @@
   {
     "id": "e24a3024-97bc-4bed-a578-2bc83cc41687",
     "camera_id": 3,
-    "ospite_nome": "Ospite Booking.com",
+    "ospite_nome": "Antonio Gioiello",
     "ospite_telefono": "",
     "ospite_email": "",
     "check_in": "2026-04-26",
     "check_out": "2026-04-28",
-    "importo_totale": 0,
+    "importo_totale": 84.15,
     "stato": "confermata",
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T09:04:10.174Z",
     "fonte": "ical",
-    "ical_uid": "e9da5079c3383b97534fc57062a9b55e@booking.com"
+    "ical_uid": "e9da5079c3383b97534fc57062a9b55e@booking.com",
+    "tassa_soggiorno": 16
   },
   {
     "id": "04a76bc1-e22c-4259-8d5c-41579834e606",
@@ -633,17 +637,18 @@
   {
     "id": "2fead01c-8024-44e6-af33-1b0daba9b7ab",
     "camera_id": 4,
-    "ospite_nome": "Ospite Booking.com",
+    "ospite_nome": "Anna Fomasa",
     "ospite_telefono": "",
     "ospite_email": "",
     "check_in": "2026-04-30",
     "check_out": "2026-05-03",
-    "importo_totale": 0,
+    "importo_totale": 168.3,
     "stato": "confermata",
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T09:04:11.067Z",
     "fonte": "ical",
-    "ical_uid": "01e2ae7b935db3584ba090aad293cca6@booking.com"
+    "ical_uid": "01e2ae7b935db3584ba090aad293cca6@booking.com",
+    "tassa_soggiorno": 32
   },
   {
     "id": "385cef74-ea82-4764-97d2-8cf608a0700d",
@@ -663,17 +668,18 @@
   {
     "id": "041d866d-8c94-4c27-a964-adac978910d7",
     "camera_id": 4,
-    "ospite_nome": "Ospite Booking.com",
+    "ospite_nome": "Daniela Valkova",
     "ospite_telefono": "",
     "ospite_email": "",
     "check_in": "2026-05-13",
     "check_out": "2026-05-16",
-    "importo_totale": 0,
+    "importo_totale": 205.15,
     "stato": "confermata",
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T09:04:11.068Z",
     "fonte": "ical",
-    "ical_uid": "5b0cb75562a2efdea42058ec6a0a3a42@booking.com"
+    "ical_uid": "5b0cb75562a2efdea42058ec6a0a3a42@booking.com",
+    "tassa_soggiorno": 32
   },
   {
     "id": "0e49cfac-d2b3-4682-975e-828b474ce2d6",
@@ -742,17 +748,18 @@
   {
     "id": "a5e3a91d-2d6b-4eef-971f-c4834867be88",
     "camera_id": 2,
-    "ospite_nome": "Ospite Booking.com",
+    "ospite_nome": "Bojana Gabelic",
     "ospite_telefono": "",
     "ospite_email": "",
     "check_in": "2026-04-26",
     "check_out": "2026-04-28",
-    "importo_totale": 0,
+    "importo_totale": 84.15,
     "stato": "confermata",
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:07.988Z",
     "fonte": "ical",
-    "ical_uid": "1b64939251bb0a2b2013227e56cd20d0@booking.com"
+    "ical_uid": "1b64939251bb0a2b2013227e56cd20d0@booking.com",
+    "tassa_soggiorno": 16
   },
   {
     "id": "1fb49ba6-8196-4b8c-a78c-55f1d867d94d",
