@@ -1,4 +1,4 @@
-const CACHE = 'giuadel-v1';
+const CACHE = 'giuadel-v2';
 
 // Installa e attiva subito
 self.addEventListener('install', () => self.skipWaiting());
