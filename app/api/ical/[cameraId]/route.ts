@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from 'next/server';
 import { leggiPrenotazioni } from '@/lib/db';
 import { CAMERE } from '@/lib/types';
 
+const CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS });
+}
+
 function icalDate(dateStr: string): string {
   // Converti 'yyyy-MM-dd' → '20240415' (formato iCal DATE, solo data, no orario)
   return dateStr.replace(/-/g, '');
@@ -16,7 +26,8 @@ export async function GET(
   { params }: { params: Promise<{ cameraId: string }> }
 ) {
   const { cameraId } = await params;
-  const cameraIdNum = parseInt(cameraId);
+  // Accetta sia /api/ical/1 che /api/ical/1.ics
+  const cameraIdNum = parseInt(cameraId.replace(/\.ics$/i, ''));
   const camera = CAMERE.find((c) => c.id === cameraIdNum);
 
   if (!camera) {
@@ -63,9 +74,10 @@ export async function GET(
 
   return new NextResponse(calendar, {
     headers: {
+      ...CORS,
       'Content-Type': 'text/calendar; charset=utf-8',
-      'Content-Disposition': `inline; filename="camera-${cameraIdNum}.ics"`,
-      'Cache-Control': 'no-cache, no-store',
+      'Content-Disposition': `attachment; filename="camera-${cameraIdNum}.ics"`,
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
     },
   });
 }
