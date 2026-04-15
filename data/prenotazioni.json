@@ -174,22 +174,6 @@
     "tassa_soggiorno": 32
   },
   {
-    "id": "0c526567-584e-4ee2-95a4-fe3ecaaeac81",
-    "camera_id": 1,
-    "ospite_nome": "Leila Kasseh (quadrupla)",
-    "ospite_telefono": "",
-    "ospite_email": "",
-    "check_in": "2026-04-16",
-    "check_out": "2026-04-19",
-    "importo_totale": 122.76,
-    "stato": "confermata",
-    "note": "Importata da Booking.com (iCal)",
-    "created_at": "2026-04-15T09:04:08.374Z",
-    "fonte": "ical",
-    "ical_uid": "fe45e536c9724fd3423a13bc5cfaed9a@booking.com",
-    "tassa_soggiorno": 24
-  },
-  {
     "id": "e5cb9b38-6e82-48a3-a031-2a45c4558669",
     "camera_id": 1,
     "ospite_nome": "Juanita singola",
