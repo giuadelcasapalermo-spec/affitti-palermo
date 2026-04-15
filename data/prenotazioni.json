@@ -222,7 +222,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T09:04:08.374Z",
     "fonte": "ical",
-    "ical_uid": "93987aa9c37894b61085484d561190bc@booking.com"
+    "ical_uid": "93987aa9c37894b61085484d561190bc@booking.com",
+    "tassa_soggiorno": 36
   },
   {
     "id": "8db6d0c8-9e59-430d-b56a-1fee1a7bfd28",
@@ -522,7 +523,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T09:04:10.174Z",
     "fonte": "ical",
-    "ical_uid": "216728e43a7769893175ce6ab520c1d4@booking.com"
+    "ical_uid": "216728e43a7769893175ce6ab520c1d4@booking.com",
+    "tassa_soggiorno": 16
   },
   {
     "id": "e24a3024-97bc-4bed-a578-2bc83cc41687",
@@ -552,7 +554,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T09:04:10.174Z",
     "fonte": "ical",
-    "ical_uid": "6a61f9a890ea1d63529408e19e267ad9@booking.com"
+    "ical_uid": "6a61f9a890ea1d63529408e19e267ad9@booking.com",
+    "tassa_soggiorno": 16
   },
   {
     "id": "bc05e6d2-2a87-4670-88b8-298ed368228b",
@@ -582,7 +585,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T09:04:10.174Z",
     "fonte": "ical",
-    "ical_uid": "3d47acaabccce254c1d277fcbb244e43@booking.com"
+    "ical_uid": "3d47acaabccce254c1d277fcbb244e43@booking.com",
+    "tassa_soggiorno": 32
   },
   {
     "id": "b5e3ebcd-ac8b-4e00-8845-5908ad4fd5a8",
@@ -672,7 +676,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:07.013Z",
     "fonte": "ical",
-    "ical_uid": "db166059a137e1ac81db7585d7edbd05@booking.com"
+    "ical_uid": "db166059a137e1ac81db7585d7edbd05@booking.com",
+    "tassa_soggiorno": 36
   },
   {
     "id": "6cd14ee0-d3a9-4379-a9e2-88fd1611546e",
@@ -687,7 +692,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:07.988Z",
     "fonte": "ical",
-    "ical_uid": "a49de91851a9808ca1ca5104b0e0d2d3@booking.com"
+    "ical_uid": "a49de91851a9808ca1ca5104b0e0d2d3@booking.com",
+    "tassa_soggiorno": 24
   },
   {
     "id": "dad76160-2afa-4603-b6c9-d85134342a1f",
@@ -702,7 +708,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:07.988Z",
     "fonte": "ical",
-    "ical_uid": "17f2c90accefbf7c75685bd5bb7ba310@booking.com"
+    "ical_uid": "17f2c90accefbf7c75685bd5bb7ba310@booking.com",
+    "tassa_soggiorno": 24
   },
   {
     "id": "a5e3a91d-2d6b-4eef-971f-c4834867be88",
@@ -732,7 +739,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:07.988Z",
     "fonte": "ical",
-    "ical_uid": "0c2b7f2a4356c8181185dc3e840b5bb8@booking.com"
+    "ical_uid": "0c2b7f2a4356c8181185dc3e840b5bb8@booking.com",
+    "tassa_soggiorno": 48
   },
   {
     "id": "34041049-7242-4611-9bc8-081006d64140",
@@ -747,7 +755,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:07.988Z",
     "fonte": "ical",
-    "ical_uid": "066bf223daccee43c23f9eb6ae426a34@booking.com"
+    "ical_uid": "066bf223daccee43c23f9eb6ae426a34@booking.com",
+    "tassa_soggiorno": 18
   },
   {
     "id": "2e37669d-9ed1-4e97-8d3e-ba70e27cd3e0",
@@ -762,7 +771,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:07.988Z",
     "fonte": "ical",
-    "ical_uid": "b62974bfb825e471ee6560501ac8a9cf@booking.com"
+    "ical_uid": "b62974bfb825e471ee6560501ac8a9cf@booking.com",
+    "tassa_soggiorno": 24
   },
   {
     "id": "cfbd62f8-9a41-4179-acc0-697f943b59b0",
@@ -777,7 +787,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:07.988Z",
     "fonte": "ical",
-    "ical_uid": "87c00c4ef4c257557dcaaf5b470e09c8@booking.com"
+    "ical_uid": "87c00c4ef4c257557dcaaf5b470e09c8@booking.com",
+    "tassa_soggiorno": 24
   },
   {
     "id": "3647f3ed-cf31-42a0-aa72-d78cd7fe9877",
@@ -822,7 +833,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:08.901Z",
     "fonte": "ical",
-    "ical_uid": "a5eabfeadb2aa6b1b12572341e4557b2@booking.com"
+    "ical_uid": "a5eabfeadb2aa6b1b12572341e4557b2@booking.com",
+    "tassa_soggiorno": 24
   },
   {
     "id": "7da22685-3c62-408d-a52b-01d5f7b83a80",
@@ -867,7 +879,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:09.765Z",
     "fonte": "ical",
-    "ical_uid": "1e1dd29fcdf84455e3346d6d2a8d342b@booking.com"
+    "ical_uid": "1e1dd29fcdf84455e3346d6d2a8d342b@booking.com",
+    "tassa_soggiorno": 24
   },
   {
     "id": "b0ae80a0-89b7-48f6-8a6e-f3638595d986",
@@ -882,7 +895,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:09.765Z",
     "fonte": "ical",
-    "ical_uid": "f36f76f8a36d31ad1d7ced01e765ecbf@booking.com"
+    "ical_uid": "f36f76f8a36d31ad1d7ced01e765ecbf@booking.com",
+    "tassa_soggiorno": 24
   },
   {
     "id": "cc750061-cde5-42e1-9f51-eaac751e46d3",
@@ -912,7 +926,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:10.677Z",
     "fonte": "ical",
-    "ical_uid": "4b8c3e435e64ae6b713a552a93f9c738@booking.com"
+    "ical_uid": "4b8c3e435e64ae6b713a552a93f9c738@booking.com",
+    "tassa_soggiorno": 24
   },
   {
     "id": "97339183-d7b6-4c3a-8aab-da26d55248fc",
@@ -927,7 +942,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:10.677Z",
     "fonte": "ical",
-    "ical_uid": "2c6d27e5ed4be805970e300dabcd6681@booking.com"
+    "ical_uid": "2c6d27e5ed4be805970e300dabcd6681@booking.com",
+    "tassa_soggiorno": 24
   },
   {
     "id": "856c1c61-bbfe-4336-9513-de13bb8da3d6",
@@ -942,7 +958,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:10.677Z",
     "fonte": "ical",
-    "ical_uid": "11fc159d9519778077b1a51606df4381@booking.com"
+    "ical_uid": "11fc159d9519778077b1a51606df4381@booking.com",
+    "tassa_soggiorno": 32
   },
   {
     "id": "f5d9220c-881e-4b56-b8d3-2ce5fb0f992b",
@@ -957,7 +974,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:10.677Z",
     "fonte": "ical",
-    "ical_uid": "d8cef68b3d4566b0a013f73fb82b277c@booking.com"
+    "ical_uid": "d8cef68b3d4566b0a013f73fb82b277c@booking.com",
+    "tassa_soggiorno": 16
   },
   {
     "id": "5c7b5f27-527c-43c4-94fc-5a75a8d2506f",
@@ -972,7 +990,8 @@
     "note": "Importata da Booking.com (iCal)",
     "created_at": "2026-04-15T10:23:10.677Z",
     "fonte": "ical",
-    "ical_uid": "11a9a3a43e58cb4cb1202869e79cdbd0@booking.com"
+    "ical_uid": "11a9a3a43e58cb4cb1202869e79cdbd0@booking.com",
+    "tassa_soggiorno": 32
   },
   {
     "id": "305615c3-8b6b-4416-bdb3-51a6e9b644e1",
