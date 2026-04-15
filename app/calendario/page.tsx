@@ -116,7 +116,7 @@ export default function CalendarioPage() {
       const d = parseISO(p.check_in);
       return (
         p.stato === 'confermata' &&
-        p.fonte !== 'ical' &&
+        p.importo_totale > 0 &&
         d.getMonth() === mese.getMonth() &&
         d.getFullYear() === mese.getFullYear()
       );
@@ -133,7 +133,7 @@ export default function CalendarioPage() {
   const camereDelGiorno = new Set(prenDelGiorno.map((p) => p.camera_id)).size;
   const ospititDelGiorno = prenDelGiorno.length;
   const valoreDelGiorno = prenDelGiorno
-    .filter((p) => p.fonte !== 'ical')
+    .filter((p) => p.importo_totale > 0)
     .reduce((s, p) => s + p.importo_totale, 0);
 
   // JSX della lista prenotazioni del giorno (riusata in due posizioni)
@@ -177,7 +177,7 @@ export default function CalendarioPage() {
                   </div>
                   <div className="flex items-center gap-3 text-gray-500">
                     <span className="text-xs">{fData(p.check_in)} → {fData(p.check_out)} ({notti}n)</span>
-                    {p.fonte !== 'ical' && (
+                    {p.importo_totale > 0 && (
                       <span className="font-semibold text-gray-700">
                         €{p.importo_totale.toFixed(2)}
                         {p.tassa_soggiorno ? (

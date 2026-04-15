@@ -142,7 +142,7 @@ function PrenotazioniInner() {
   ).sort((a, b) => a[0].localeCompare(b[0]));
 
   const confermate = prenotazioni.filter(
-    p => p.stato === 'confermata' && p.fonte !== 'ical' && p.check_in >= filtroDal && p.check_in <= filtroAl
+    p => p.stato === 'confermata' && p.importo_totale > 0 && p.check_in >= filtroDal && p.check_in <= filtroAl
   );
   const kpiPrenotazioni = confermate.length;
   const kpiImporto      = confermate.reduce((s, p) => s + p.importo_totale, 0);

@@ -138,7 +138,7 @@ export default function Dashboard() {
     .reduce((s, e) => s + e.importo, 0);
 
   const entrateDelPeriodo = prenNelPeriodo
-    .filter((p) => p.fonte !== 'ical' && p.check_in >= filtroDal && p.check_in <= filtroAl)
+    .filter((p) => p.importo_totale > 0 && p.check_in >= filtroDal && p.check_in <= filtroAl)
     .reduce((sum, p) => sum + p.importo_totale, 0);
 
   const totalOspiti = prenNelPeriodo.filter(
@@ -153,7 +153,7 @@ export default function Dashboard() {
   const statsCamera = camere.map((camera) => {
     const pren = prenNelPeriodo.filter((p) => p.camera_id === camera.id);
     const notti = pren.reduce((s, p) => s + differenceInDays(parseISO(p.check_out), parseISO(p.check_in)), 0);
-    const ricavo = pren.filter((p) => p.fonte !== 'ical').reduce((s, p) => s + p.importo_totale, 0);
+    const ricavo = pren.filter((p) => p.importo_totale > 0).reduce((s, p) => s + p.importo_totale, 0);
     return { camera, notti, ricavo };
   });
   const maxNotti = Math.max(1, ...statsCamera.map((s) => s.notti));
@@ -173,7 +173,7 @@ export default function Dashboard() {
         p.check_out > dayStr
       );
       const notti = booking ? differenceInDays(parseISO(booking.check_out), parseISO(booking.check_in)) : 0;
-      const valore = booking && booking.fonte !== 'ical' && notti > 0
+      const valore = booking && booking.importo_totale > 0 && notti > 0
         ? Math.round(booking.importo_totale / notti)
         : 0;
       const isCheckIn = prenotazioni.some(p =>
@@ -310,7 +310,7 @@ export default function Dashboard() {
           return camFiltrate.map(camera => {
             const pren = prenNelPeriodo.filter(p => p.camera_id === camera.id);
             const notti = pren.reduce((s, p) => s + differenceInDays(parseISO(p.check_out), parseISO(p.check_in)), 0);
-            const ricavo = pren.filter(p => p.fonte !== 'ical').reduce((s, p) => s + p.importo_totale, 0);
+            const ricavo = pren.filter(p => p.importo_totale > 0).reduce((s, p) => s + p.importo_totale, 0);
             const satPct = nGiorniPeriodo > 0 ? Math.round((Math.min(notti, nGiorniPeriodo) / nGiorniPeriodo) * 100) : 0;
             const col = COLORI_CAMERA[camera.id] ?? COLORI_CAMERA[1];
             return (
@@ -418,7 +418,7 @@ export default function Dashboard() {
                   (s, p) => s + differenceInDays(parseISO(p.check_out), parseISO(p.check_in)), 0
                 );
                 const stimaCamera = prenotazioniCamera
-                  .filter((p) => p.fonte !== 'ical')
+                  .filter((p) => p.importo_totale > 0)
                   .reduce((s, p) => s + p.importo_totale, 0);
                 const occupazioneOggi = isCameraOccupata(prenotazioni, camera.id);
                 const col = COLORI_CAMERA[camera.id] ?? COLORI_CAMERA[1];
