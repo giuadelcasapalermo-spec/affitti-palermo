@@ -203,7 +203,6 @@ async function importUsciteOriginale(
   sheets: ReturnType<typeof google.sheets>,
   uscite: Uscita[],
   keyUsc: Set<string>,
-  keyDataCat: Set<string>,
   tabEsistenti: Set<string>,
 ): Promise<number> {
   let importate = 0;
@@ -231,27 +230,20 @@ async function importUsciteOriginale(
     for (let i = hIdx + 1; i < rows.length; i++) {
       const row  = rows[i];
       const tipo = String(row[C.tipo]??'').trim().toLowerCase();
-      // Importa SOLO spese operative dai tab mensili (whitelist ristretta)
       if (!TIPO_AMMESSI_TABS.has(tipo)) continue;
 
       const desc   = String(row[C.desc]??'').trim();
       const uscita = parseFloat(String(row[C.usc]??'')) || 0;
-      // Solo righe con data inizio compilata
       const data   = parseSheetDate(row[C.dataI] as string|number|undefined);
       if (!data || uscita <= 0 || !desc) continue;
 
-      const cat = TIPO_TO_CAT[tipo] ?? 'Altro';
-
-      // Salta se già esiste un'uscita nello stesso giorno con la stessa categoria
-      if (keyDataCat.has(`${data}|${cat}`)) continue;
-      // Salta se già presente per data+descrizione+importo
       const k = `${data}|${desc}|${uscita}`;
       if (keyUsc.has(k)) continue;
 
       keyUsc.add(k);
-      keyDataCat.add(`${data}|${cat}`);
-      const stanza   = String(row[C.stanza]??'').trim().toLowerCase();
-      const note     = String(row[C.note]??'').trim();
+      const stanza    = String(row[C.stanza]??'').trim().toLowerCase();
+      const note      = String(row[C.note]??'').trim();
+      const cat       = TIPO_TO_CAT[tipo] ?? 'Altro';
       const camera_id = STANZA_ID[stanza] ?? undefined;
 
       uscite.push({ id: randomUUID(), data, descrizione: desc, categoria: cat, importo: uscita, camera_id, note, created_at: now });
@@ -379,7 +371,6 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   const uscite = await leggiUscite();
 
   const keyUsc    = new Set(uscite.map(u => `${u.data}|${u.descrizione}|${u.importo}`));
-  const keyDataCat = new Set(uscite.map(u => `${u.data}|${u.categoria}`));
   const idsUscite = new Set(uscite.map(u => u.id));
   const now = new Date().toISOString();
 
@@ -396,16 +387,15 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
     const importo   = parseFloat(importoStr) || 0;
     const camera_id = cameraIdStr ? parseInt(cameraIdStr) || undefined : undefined;
     const cat = CATEGORIE_USCITA.includes(categoria as never) ? categoria as Uscita['categoria'] : 'Altro';
-    // Salta se già esiste un'uscita nello stesso giorno con la stessa categoria
-    if (keyDataCat.has(`${data}|${cat}`)) { ignorate++; continue; }
+    const k = `${data}|${descrizione}|${importo}`;
+    if (keyUsc.has(k)) { ignorate++; continue; }
     uscite.push({ id: id||randomUUID(), data, descrizione, categoria: cat, importo, camera_id, note: note??'', created_at: now });
-    keyUsc.add(`${data}|${descrizione}|${importo}`);
-    keyDataCat.add(`${data}|${cat}`);
+    keyUsc.add(k);
     importate++;
   }
 
   // 2. Legge tab mensili — importa uscite con data inizio
-  const nuove = await importUsciteOriginale(sheets, uscite, keyUsc, keyDataCat, tabEsistenti);
+  const nuove = await importUsciteOriginale(sheets, uscite, keyUsc, tabEsistenti);
   importate += nuove;
 
   await scriviUscite(uscite);
