@@ -174,48 +174,102 @@ export default function CalendarioPage() {
               </div>
 
               {/* Settimane */}
-              {settimane.map((settimana, si) => (
-                <div key={si} className="grid grid-cols-7">
-                  {settimana.map((day, di) => {
-                    if (!day) return <div key={di} className="h-8" />;
+              {settimane.map((settimana, si) => {
+                // ── Calcola le pill per questa settimana ──
+                const pills: Array<{
+                  pren: Prenotazione;
+                  colStart: number; // 1-based CSS grid
+                  colSpan: number;
+                  isStart: boolean; // check-in è in questa settimana
+                  isEnd: boolean;   // check-out è in questa settimana
+                }> = [];
+                const visti = new Set<string>();
 
-                    const { occupied, isCheckIn, isCheckOut, pren } = getDayInfo(day, camera.id);
-                    const isToday = isSameDay(day, today);
+                settimana.forEach(day => {
+                  if (!day) return;
+                  prenotazioni.forEach(p => {
+                    if (p.camera_id !== camera.id || p.stato === 'cancellata' || visti.has(p.id)) return;
+                    const ci = parseISO(p.check_in);
+                    const co = parseISO(p.check_out);
+                    if (!isWithinInterval(day, { start: ci, end: co })) return;
+                    visti.add(p.id);
 
-                    // Solo checkout (partenza): colore leggero
-                    // Check-in o mid-stay: colore pieno
-                    let circleClass = 'text-gray-700';
-                    if (occupied && isCheckOut && !isCheckIn) {
-                      circleClass = stile.leggero;
-                    } else if (occupied) {
-                      circleClass = stile.pieno;
-                    }
+                    let first = -1, last = -1;
+                    settimana.forEach((d, i) => {
+                      if (!d) return;
+                      if (isWithinInterval(d, { start: ci, end: co })) {
+                        if (first === -1) first = i;
+                        last = i;
+                      }
+                    });
+                    if (first === -1) return;
 
-                    const isSelected = isSameDay(day, giornoSelezionato);
+                    pills.push({
+                      pren: p,
+                      colStart: first + 1,
+                      colSpan: last - first + 1,
+                      isStart: isSameDay(settimana[first]!, ci),
+                      isEnd:   isSameDay(settimana[last]!,  co),
+                    });
+                  });
+                });
 
-                    return (
-                      <div key={di} className="flex items-center justify-center py-0.5">
+                return (
+                  <div key={si}>
+                    {/* Riga pillole prenotazione */}
+                    <div className="grid grid-cols-7 h-5 pointer-events-none" aria-hidden="true">
+                      {pills.map(({ pren, colStart, colSpan, isStart, isEnd }) => (
                         <div
-                          title={pren ? pren.ospite_nome : 'Doppio click per nuova prenotazione'}
-                          onClick={() => setGiornoSelezionato(day)}
-                          onDoubleClick={() => setNuovaPrenotazione({
-                            cameraId: camera.id,
-                            checkIn: format(day, 'yyyy-MM-dd'),
-                          })}
-                          className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors cursor-pointer
-                            ${circleClass}
-                            ${!occupied ? 'hover:bg-gray-100' : ''}
-                            ${isToday ? 'ring-2 ring-offset-1 ring-blue-400' : ''}
-                            ${isSelected ? 'outline outline-2 outline-offset-1 outline-gray-500' : ''}
+                          key={pren.id}
+                          title={pren.ospite_nome}
+                          className={`h-4 self-center overflow-hidden flex items-center text-[9px] font-semibold text-white
+                            ${stile.pieno}
+                            ${isStart && isEnd  ? 'mx-1 rounded-full' : ''}
+                            ${isStart && !isEnd ? 'ml-1 rounded-l-full' : ''}
+                            ${!isStart && isEnd ? 'mr-1 rounded-r-full' : ''}
                           `}
+                          style={{ gridColumnStart: colStart, gridColumnEnd: colStart + colSpan }}
                         >
-                          {format(day, 'd')}
+                          {isStart && (
+                            <span className="ml-2 truncate leading-none">
+                              {pren.ospite_nome.split(' ')[0]}
+                            </span>
+                          )}
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
+                      ))}
+                    </div>
+
+                    {/* Riga numeri giorni */}
+                    <div className="grid grid-cols-7">
+                      {settimana.map((day, di) => {
+                        if (!day) return <div key={di} className="h-8" />;
+                        const { pren } = getDayInfo(day, camera.id);
+                        const isToday    = isSameDay(day, today);
+                        const isSelected = isSameDay(day, giornoSelezionato);
+                        return (
+                          <div key={di} className="flex items-center justify-center py-0.5">
+                            <div
+                              title={pren ? pren.ospite_nome : 'Doppio click per nuova prenotazione'}
+                              onClick={() => setGiornoSelezionato(day)}
+                              onDoubleClick={() => setNuovaPrenotazione({
+                                cameraId: camera.id,
+                                checkIn: format(day, 'yyyy-MM-dd'),
+                              })}
+                              className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors cursor-pointer
+                                text-gray-700 hover:bg-black/5
+                                ${isToday    ? 'ring-2 ring-offset-1 ring-blue-400' : ''}
+                                ${isSelected ? 'outline outline-2 outline-offset-1 outline-gray-500' : ''}
+                              `}
+                            >
+                              {format(day, 'd')}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           );
         })}
