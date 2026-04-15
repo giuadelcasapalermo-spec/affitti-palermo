@@ -1,10 +1,10 @@
 {
   "ical_urls": {
-    "1": "https://ical.booking.com/v1/export?t=414f7f83-ca65-4223-8741-96cf8ac386a0",
-    "2": "https://ical.booking.com/v1/export?t=f1e411e4-4e91-40c9-aacc-048dcdc81a48",
-    "3": "https://ical.booking.com/v1/export?t=bcbdce86-41d4-40ab-9e7a-98ff3f65f803",
-    "4": "https://ical.booking.com/v1/export?t=2e2fb73b-2629-4ffc-a31f-2c16dae5a7ae",
-    "5": "https://ical.booking.com/v1/export?t=8e8dc352-8ad2-4e2e-bf1c-49978d1cebb6"
+    "1": "",
+    "2": "",
+    "3": "",
+    "4": "",
+    "5": ""
   },
   "nomi_camere": {
     "1": "Bianca",
