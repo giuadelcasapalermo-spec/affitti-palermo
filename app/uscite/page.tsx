@@ -7,7 +7,7 @@ import {
 } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
 import { fData } from '@/lib/utils';
-import { Plus, Pencil, Trash2, X, TrendingDown, TrendingUp, ChevronDown, RefreshCw, ArrowDownToLine, ArrowUpFromLine } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, TrendingDown, TrendingUp, ChevronDown, RefreshCw, ArrowDownToLine, ArrowUpFromLine, ChevronLeft, ChevronRight } from 'lucide-react';
 
 /* ── colori ───────────────────────────────────────────── */
 const COL_USCITA: Record<CategoriaUscita, string> = {
@@ -141,6 +141,12 @@ export default function PrimaNotaPage() {
   const [editingU, setEditingU] = useState<Uscita | null>(null);
   const [filtroMese, setFiltroMese] = useState(() => oggi.slice(0, 7));
   const [filtriFiltriAperti, setFiltriFiltriAperti] = useState(false);
+
+  function spostaMese(delta: number) {
+    const [y, m] = filtroMese.split('-').map(Number);
+    const d = new Date(y, m - 1 + delta, 1);
+    setFiltroMese(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
+  }
   const [tabAttivo, setTabAttivo] = useState<'movimenti' | 'foglio'>('movimenti');
   const [syncing, setSyncing] = useState<'export' | 'import' | 'both' | null>(null);
   const [syncMsg, setSyncMsg] = useState<{ ok: boolean; testo: string } | null>(null);
@@ -311,7 +317,13 @@ export default function PrimaNotaPage() {
 
       {/* Header controlli */}
       <div className="flex items-center gap-2">
+        <button onClick={() => spostaMese(-1)} className="p-1 rounded hover:bg-gray-100" title="Mese precedente">
+          <ChevronLeft size={16} />
+        </button>
         <input type="month" value={filtroMese} onChange={e => setFiltroMese(e.target.value)} className="border rounded px-2 py-1.5 text-sm w-28 sm:w-auto" />
+        <button onClick={() => spostaMese(1)} className="p-1 rounded hover:bg-gray-100" title="Mese successivo">
+          <ChevronRight size={16} />
+        </button>
         <button
           onClick={() => setFormAperto(f => f === 'entrata' ? null : 'entrata')}
           className="flex items-center gap-1 bg-green-600 text-white px-2.5 py-1.5 rounded text-xs font-medium hover:bg-green-700 sm:px-4 sm:py-2 sm:text-sm sm:gap-1.5"

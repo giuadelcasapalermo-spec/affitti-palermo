@@ -3,9 +3,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Prenotazione, Uscita, Entrata } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
-import { isWithinInterval, parseISO, differenceInDays, format, startOfMonth, endOfMonth } from 'date-fns';
+import { isWithinInterval, parseISO, differenceInDays, format, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns';
 import { fData } from '@/lib/utils';
-import { BedDouble, Euro, Users, RefreshCw, TrendingDown, TrendingUp } from 'lucide-react';
+import { BedDouble, Euro, Users, RefreshCw, TrendingDown, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { ComposedChart, Bar, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
@@ -89,6 +89,13 @@ export default function Dashboard() {
     const timer = setInterval(syncIcal, 60 * 60 * 1000);
     return () => clearInterval(timer);
   }, [carica, syncIcal]);
+
+  function spostaMese(delta: number) {
+    const base = parseISO(filtroDal);
+    const nuova = delta > 0 ? addMonths(base, 1) : subMonths(base, 1);
+    setFiltroDal(format(startOfMonth(nuova), 'yyyy-MM-dd'));
+    setFiltroAl(format(endOfMonth(nuova), 'yyyy-MM-dd'));
+  }
 
   const filtroAttivo = filtroDal !== DEFAULT_DAL || filtroAl !== DEFAULT_AL || filtroCamera !== 'tutte';
 
@@ -195,7 +202,10 @@ export default function Dashboard() {
       {/* Filtro periodo + camera */}
       <div className="bg-white rounded-lg shadow-sm p-4 flex items-center gap-4 flex-wrap">
         <span className="text-sm font-medium text-gray-600">Periodo:</span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
+          <button onClick={() => spostaMese(-1)} className="p-1 rounded hover:bg-gray-100" title="Mese precedente">
+            <ChevronLeft size={16} />
+          </button>
           <input
             type="date"
             value={filtroDal}
@@ -209,6 +219,9 @@ export default function Dashboard() {
             onChange={(e) => setFiltroAl(e.target.value)}
             className="border border-gray-300 rounded px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
+          <button onClick={() => spostaMese(1)} className="p-1 rounded hover:bg-gray-100" title="Mese successivo">
+            <ChevronRight size={16} />
+          </button>
         </div>
         <div className="w-px h-5 bg-gray-200" />
         <span className="text-sm font-medium text-gray-600">Camera:</span>
