@@ -310,19 +310,19 @@ export default function PrimaNotaPage() {
       {(tabAttivo === 'movimenti') && <>
 
       {/* Header controlli */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center gap-2">
         <input type="month" value={filtroMese} onChange={e => setFiltroMese(e.target.value)} className="border rounded px-2 py-1.5 text-sm w-28 sm:w-auto" />
         <button
           onClick={() => setFormAperto(f => f === 'entrata' ? null : 'entrata')}
-          className="flex items-center gap-1.5 bg-green-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-green-700"
+          className="flex items-center gap-1 bg-green-600 text-white px-2.5 py-1.5 rounded text-xs font-medium hover:bg-green-700 sm:px-4 sm:py-2 sm:text-sm sm:gap-1.5"
         >
-          <Plus size={15} /> Entrata
+          <Plus size={13} className="sm:hidden" /><Plus size={15} className="hidden sm:inline" /> Entrata
         </button>
         <button
           onClick={() => setFormAperto(f => f === 'uscita' ? null : 'uscita')}
-          className="flex items-center gap-1.5 bg-red-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-700"
+          className="flex items-center gap-1 bg-red-600 text-white px-2.5 py-1.5 rounded text-xs font-medium hover:bg-red-700 sm:px-4 sm:py-2 sm:text-sm sm:gap-1.5"
         >
-          <Plus size={15} /> Uscita
+          <Plus size={13} className="sm:hidden" /><Plus size={15} className="hidden sm:inline" /> Uscita
         </button>
       </div>
 
