@@ -443,21 +443,6 @@
     "ical_uid": "379f1b0f1fa5849c62672a03d23f2bde@booking.com"
   },
   {
-    "id": "d1b42fa1-e213-497c-a0f4-3f22e04afe4f",
-    "camera_id": 5,
-    "ospite_nome": "Ospite Booking.com",
-    "ospite_telefono": "",
-    "ospite_email": "",
-    "check_in": "2027-04-16",
-    "check_out": "2027-10-14",
-    "importo_totale": 0,
-    "stato": "confermata",
-    "note": "Importata da Booking.com (iCal)",
-    "created_at": "2026-04-15T10:23:10.677Z",
-    "fonte": "ical",
-    "ical_uid": "c8f85e64ef233578f2ac482324d0e124@booking.com"
-  },
-  {
     "id": "3ed2ae12-d4ed-4df8-80a6-3f14f99c0375",
     "camera_id": 4,
     "ospite_nome": "Man Ting Cheng",
