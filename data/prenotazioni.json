@@ -271,21 +271,6 @@
     "tassa_soggiorno": 24
   },
   {
-    "id": "6e5907b2-84be-4d3e-8c5a-75e3a03370dd",
-    "camera_id": 2,
-    "ospite_nome": "Ospite Booking.com",
-    "ospite_telefono": "",
-    "ospite_email": "",
-    "check_in": "2027-04-16",
-    "check_out": "2027-10-14",
-    "importo_totale": 0,
-    "stato": "confermata",
-    "note": "Importata da Booking.com (iCal)",
-    "created_at": "2026-04-15T10:23:07.988Z",
-    "fonte": "ical",
-    "ical_uid": "36c36dc0265bcf364c37dd95fcd934db@booking.com"
-  },
-  {
     "id": "dbc46332-cc5f-40cd-80a0-d434e134393d",
     "camera_id": 3,
     "ospite_nome": "Ana Gonzalez Gil",
