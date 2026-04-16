@@ -428,21 +428,6 @@
     "tassa_soggiorno": 16
   },
   {
-    "id": "305615c3-8b6b-4416-bdb3-51a6e9b644e1",
-    "camera_id": 5,
-    "ospite_nome": "Ospite Booking.com",
-    "ospite_telefono": "",
-    "ospite_email": "",
-    "check_in": "2027-01-01",
-    "check_out": "2027-04-14",
-    "importo_totale": 0,
-    "stato": "confermata",
-    "note": "Importata da Booking.com (iCal)",
-    "created_at": "2026-04-15T10:23:10.677Z",
-    "fonte": "ical",
-    "ical_uid": "379f1b0f1fa5849c62672a03d23f2bde@booking.com"
-  },
-  {
     "id": "3ed2ae12-d4ed-4df8-80a6-3f14f99c0375",
     "camera_id": 4,
     "ospite_nome": "Man Ting Cheng",
