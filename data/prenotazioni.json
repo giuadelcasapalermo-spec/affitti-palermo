@@ -189,21 +189,6 @@
     "tassa_soggiorno": 32
   },
   {
-    "id": "385cef74-ea82-4764-97d2-8cf608a0700d",
-    "camera_id": 4,
-    "ospite_nome": "Ospite Booking.com",
-    "ospite_telefono": "",
-    "ospite_email": "",
-    "check_in": "2026-05-07",
-    "check_out": "2026-05-10",
-    "importo_totale": 0,
-    "stato": "confermata",
-    "note": "Importata da Booking.com (iCal)",
-    "created_at": "2026-04-15T09:04:11.068Z",
-    "fonte": "ical",
-    "ical_uid": "ac8a632779e447132ca8ae5688c56c5d@booking.com"
-  },
-  {
     "id": "041d866d-8c94-4c27-a964-adac978910d7",
     "camera_id": 4,
     "ospite_nome": "Daniela Valkova",
