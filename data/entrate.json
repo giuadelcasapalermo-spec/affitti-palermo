@@ -115,5 +115,14 @@
     "importo": 596.92,
     "note": "",
     "created_at": "2026-04-16T07:15:54.826Z"
+  },
+  {
+    "id": "f6146335-d861-46c6-9241-d4cc10e418a1",
+    "data": "2026-04-17",
+    "descrizione": "Tassa di soggiorno",
+    "categoria": "Altro",
+    "importo": 96,
+    "note": "",
+    "created_at": "2026-04-17T13:19:15.377Z"
   }
 ]
