@@ -1618,21 +1618,6 @@
     "ical_uid": "fe45e536c9724fd3423a13bc5cfaed9a@booking.com"
   },
   {
-    "id": "d19ea79a-c458-446f-944c-ed485206e30b",
-    "camera_id": 1,
-    "ospite_nome": "Ospite Booking.com",
-    "ospite_telefono": "",
-    "ospite_email": "",
-    "check_in": "2026-09-12",
-    "check_out": "2026-09-15",
-    "importo_totale": 0,
-    "stato": "confermata",
-    "note": "Importata da Booking.com (iCal)",
-    "created_at": "2026-04-18T20:46:49.393Z",
-    "fonte": "ical",
-    "ical_uid": "6aebb2519db3c8f659a857244bd1d6db@booking.com"
-  },
-  {
     "id": "d2784f4f-4a10-4bbb-a6df-cee09d9a2c82",
     "camera_id": 1,
     "ospite_nome": "Ospite Booking.com",
