@@ -256,22 +256,6 @@
     "tassa_soggiorno": 24
   },
   {
-    "id": "48a7a2a2-3fed-40b0-9426-352ee502151a",
-    "camera_id": 4,
-    "ospite_nome": "Ana Gonzalez Gil",
-    "ospite_telefono": "",
-    "ospite_email": "",
-    "check_in": "2026-04-16",
-    "check_out": "2026-04-17",
-    "importo_totale": 133.65,
-    "stato": "confermata",
-    "note": "Importata da Booking.com (iCal)",
-    "created_at": "2026-04-15T10:23:09.765Z",
-    "fonte": "ical",
-    "ical_uid": "1e1dd29fcdf84455e3346d6d2a8d342b@booking.com",
-    "tassa_soggiorno": 24
-  },
-  {
     "id": "b0ae80a0-89b7-48f6-8a6e-f3638595d986",
     "camera_id": 4,
     "ospite_nome": "Gionatham Lunetta",
@@ -2247,5 +2231,65 @@
     "created_at": "2026-04-18T20:48:04.115Z",
     "fonte": "ical",
     "ical_uid": "4c0437fdadf76c9f74aabce0b1b9bb22@booking.com"
+  },
+  {
+    "id": "4d8cc485-2c39-4952-b12d-477fddce4733",
+    "camera_id": 4,
+    "ospite_nome": "Ospite Booking.com",
+    "ospite_telefono": "",
+    "ospite_email": "",
+    "check_in": "2026-04-17",
+    "check_out": "2026-04-19",
+    "importo_totale": 0,
+    "stato": "confermata",
+    "note": "Importata da Booking.com (iCal)",
+    "created_at": "2026-04-18T20:48:38.953Z",
+    "fonte": "ical",
+    "ical_uid": "1b195c17d64bc1cd757ec0044ff764b8@booking.com"
+  },
+  {
+    "id": "d553b6c8-e0d4-48ee-be7a-f13c09327cfb",
+    "camera_id": 4,
+    "ospite_nome": "Ospite Booking.com",
+    "ospite_telefono": "",
+    "ospite_email": "",
+    "check_in": "2026-05-07",
+    "check_out": "2026-05-10",
+    "importo_totale": 0,
+    "stato": "confermata",
+    "note": "Importata da Booking.com (iCal)",
+    "created_at": "2026-04-18T20:48:38.953Z",
+    "fonte": "ical",
+    "ical_uid": "ac8a632779e447132ca8ae5688c56c5d@booking.com"
+  },
+  {
+    "id": "445e9a79-139f-4ddd-a7fd-ffe401a7ec26",
+    "camera_id": 4,
+    "ospite_nome": "Ospite Booking.com",
+    "ospite_telefono": "",
+    "ospite_email": "",
+    "check_in": "2026-05-16",
+    "check_out": "2026-05-19",
+    "importo_totale": 0,
+    "stato": "confermata",
+    "note": "Importata da Booking.com (iCal)",
+    "created_at": "2026-04-18T20:48:38.953Z",
+    "fonte": "ical",
+    "ical_uid": "8d01e0480dd545b5b107141c263e14ca@booking.com"
+  },
+  {
+    "id": "7e8bf7ec-717c-4da4-8258-062c088bf816",
+    "camera_id": 4,
+    "ospite_nome": "Ospite Booking.com",
+    "ospite_telefono": "",
+    "ospite_email": "",
+    "check_in": "2027-10-14",
+    "check_out": "2027-10-18",
+    "importo_totale": 0,
+    "stato": "confermata",
+    "note": "Importata da Booking.com (iCal)",
+    "created_at": "2026-04-18T20:48:38.953Z",
+    "fonte": "ical",
+    "ical_uid": "e2968dcade64bd2f5f71cdd21332457a@booking.com"
   }
 ]
