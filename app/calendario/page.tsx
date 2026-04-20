@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, Fragment } from 'react';
+import { useEffect, useState, Fragment, useMemo } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { Prenotazione } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
 import { fData } from '@/lib/utils';
@@ -22,13 +23,13 @@ import { it } from 'date-fns/locale';
 import { ChevronLeft, ChevronRight, X, RefreshCw } from 'lucide-react';
 import PrenotazioneForm from '@/components/PrenotazioneForm';
 
-// Colors matching room names: Bianca(1), Gialla(2), Rossa(3), Verde(4), Blue(5)
+// Colors matching room names: Rossa(1), Gialla(2), Verde(3), Bianca(4), Blue(5)
 const STILE_CAMERA: Record<number, { dot: string; pieno: string; leggero: string }> = {
-  1: { dot: 'bg-sky-400',    pieno: 'bg-sky-400 text-white',     leggero: 'bg-sky-100 text-sky-600' },
-  2: { dot: 'bg-amber-400',  pieno: 'bg-amber-400 text-white',   leggero: 'bg-amber-100 text-amber-600' },
-  3: { dot: 'bg-red-500',    pieno: 'bg-red-500 text-white',     leggero: 'bg-red-100 text-red-600' },
-  4: { dot: 'bg-green-500',  pieno: 'bg-green-500 text-white',   leggero: 'bg-green-100 text-green-600' },
-  5: { dot: 'bg-blue-600',   pieno: 'bg-blue-600 text-white',    leggero: 'bg-blue-100 text-blue-600' },
+  1: { dot: 'bg-red-500',   pieno: 'bg-red-500 text-white',    leggero: 'bg-red-100 text-red-600' },    // Rossa
+  2: { dot: 'bg-amber-400', pieno: 'bg-amber-400 text-white',  leggero: 'bg-amber-100 text-amber-600' }, // Gialla
+  3: { dot: 'bg-green-500', pieno: 'bg-green-500 text-white',  leggero: 'bg-green-100 text-green-600' }, // Verde
+  4: { dot: 'bg-gray-400',  pieno: 'bg-gray-400 text-white',   leggero: 'bg-gray-100 text-gray-600' },   // Bianca
+  5: { dot: 'bg-blue-600',  pieno: 'bg-blue-600 text-white',   leggero: 'bg-blue-100 text-blue-600' },   // Blue
 };
 
 const GIORNI_SETTIMANA = ['L', 'M', 'M', 'G', 'V', 'S', 'D'];
@@ -56,8 +57,14 @@ function buildWeeks(date: Date): (Date | null)[][] {
 export default function CalendarioPage() {
   const camere = useCamere();
   const [prenotazioni, setPrenotazioni] = useState<Prenotazione[]>([]);
-  const [mese, setMese] = useState(new Date());
-  const [giornoSelezionato, setGiornoSelezionato] = useState<Date>(new Date());
+  const [meseStr, setMeseStr] = usePersistedState('cal-mese', format(new Date(), 'yyyy-MM-dd'));
+  const [giornoStr, setGiornoStr] = usePersistedState('cal-giorno', format(new Date(), 'yyyy-MM-dd'));
+  const mese = useMemo(() => parseISO(meseStr), [meseStr]);
+  const giornoSelezionato = useMemo(() => parseISO(giornoStr), [giornoStr]);
+  const setMese = (fn: Date | ((prev: Date) => Date)) => {
+    setMeseStr(format(typeof fn === 'function' ? fn(mese) : fn, 'yyyy-MM-dd'));
+  };
+  const setGiornoSelezionato = (d: Date) => setGiornoStr(format(d, 'yyyy-MM-dd'));
   const [nuovaPrenotazione, setNuovaPrenotazione] = useState<{ cameraId: number; checkIn: string } | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [syncOk, setSyncOk]   = useState<boolean | null>(null);
@@ -72,7 +79,7 @@ export default function CalendarioPage() {
     setSyncing(true);
     setSyncOk(null);
     try {
-      const res = await fetch('/api/sync', { method: 'POST' });
+      const res = await fetch("/api/sync-gmail", { method: "POST" });
       const json = await res.json();
       setSyncOk(json.ok !== false);
       caricaPrenotazioni();
@@ -167,27 +174,34 @@ export default function CalendarioPage() {
               const isCO = isSameDay(giornoSelezionato, co);
               const notti = differenceInDays(co, ci);
               return (
-                <div key={p.id} className="flex items-center justify-between py-1 border-b last:border-0 text-xs">
-                  <div className="flex items-center gap-1.5">
+                <div key={p.id} className="flex items-center justify-between py-1.5 border-b last:border-0 text-xs gap-2">
+                  <div className="flex items-center gap-1.5 min-w-0">
                     <div className={`w-2 h-2 rounded-full flex-shrink-0 ${st.dot}`} />
-                    <span className="font-medium">{p.ospite_nome}</span>
-                    <span className="text-gray-400">{cam?.nome}</span>
-                    {isCI && <span className="text-[10px] bg-green-100 text-green-700 px-1 py-0.5 rounded font-medium">CI</span>}
-                    {isCO && <span className="text-[10px] bg-orange-100 text-orange-700 px-1 py-0.5 rounded font-medium">CO</span>}
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1 flex-wrap">
+                        <span className="font-medium truncate">{p.ospite_nome}</span>
+                        <span className="text-gray-400 flex-shrink-0">{cam?.nome}</span>
+                        {isCI && <span className="text-[10px] bg-green-100 text-green-700 px-1 py-0.5 rounded font-medium flex-shrink-0">CI</span>}
+                        {isCO && <span className="text-[10px] bg-orange-100 text-orange-700 px-1 py-0.5 rounded font-medium flex-shrink-0">CO</span>}
+                      </div>
+                      <div className="text-[10px] text-gray-400 mt-0.5">
+                        <span>{fData(p.check_in)}</span>
+                        <span className="mx-0.5">→</span>
+                        <span>{fData(p.check_out)}</span>
+                        <span className="ml-1">({notti}n)</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-500">
-                    <span className="text-[10px]">{fData(p.check_in)}→{fData(p.check_out)} ({notti}n)</span>
-                    {p.importo_totale > 0 && (
-                      <span className="font-semibold text-gray-700">
-                        €{p.importo_totale.toFixed(0)}
-                        {p.tassa_soggiorno ? (
-                          <span className="ml-0.5 text-[10px] font-normal text-amber-600">
-                            +€{p.tassa_soggiorno.toFixed(0)}tds
-                          </span>
-                        ) : null}
-                      </span>
-                    )}
-                  </div>
+                  {p.importo_totale > 0 && (
+                    <span className="font-semibold text-gray-700 flex-shrink-0">
+                      €{p.importo_totale.toFixed(0)}
+                      {p.tassa_soggiorno ? (
+                        <span className="ml-0.5 text-[10px] font-normal text-amber-600">
+                          +€{p.tassa_soggiorno.toFixed(0)}tds
+                        </span>
+                      ) : null}
+                    </span>
+                  )}
                 </div>
               );
             })}
@@ -223,7 +237,7 @@ export default function CalendarioPage() {
           }`}
         >
           <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
-          Sync iCal
+          Sync Gmail
         </button>
         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 ml-auto">
           <span className="font-semibold text-blue-700 capitalize hidden sm:inline">

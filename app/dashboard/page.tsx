@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 import { Prenotazione, Uscita, Entrata } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
 import { isWithinInterval, parseISO, differenceInDays, format, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns';
@@ -12,10 +13,10 @@ const COLORI_CAMERA: Record<number, {
   bg: string; border: string; testo: string; bar: string;
   hex: string; hexLight: string; hexArea: string;
 }> = {
-  1: { bg: 'bg-sky-100',   border: 'border-sky-300',   testo: 'text-sky-800',   bar: 'bg-sky-400',   hex: '#0ea5e9', hexLight: '#e0f2fe', hexArea: '#38bdf8' },
+  1: { bg: 'bg-red-100',   border: 'border-red-300',   testo: 'text-red-800',   bar: 'bg-red-500',   hex: '#ef4444', hexLight: '#fee2e2', hexArea: '#f87171' },
   2: { bg: 'bg-amber-100', border: 'border-amber-300', testo: 'text-amber-800', bar: 'bg-amber-400', hex: '#f59e0b', hexLight: '#fef3c7', hexArea: '#fbbf24' },
-  3: { bg: 'bg-red-100',   border: 'border-red-300',   testo: 'text-red-800',   bar: 'bg-red-500',   hex: '#ef4444', hexLight: '#fee2e2', hexArea: '#f87171' },
-  4: { bg: 'bg-green-100', border: 'border-green-300', testo: 'text-green-800', bar: 'bg-green-500', hex: '#16a34a', hexLight: '#dcfce7', hexArea: '#4ade80' },
+  3: { bg: 'bg-green-100', border: 'border-green-300', testo: 'text-green-800', bar: 'bg-green-500', hex: '#16a34a', hexLight: '#dcfce7', hexArea: '#4ade80' },
+  4: { bg: 'bg-gray-100',  border: 'border-gray-300',  testo: 'text-gray-800',  bar: 'bg-gray-400',  hex: '#6b7280', hexLight: '#f3f4f6', hexArea: '#9ca3af' },
   5: { bg: 'bg-blue-100',  border: 'border-blue-300',  testo: 'text-blue-800',  bar: 'bg-blue-600',  hex: '#2563eb', hexLight: '#dbeafe', hexArea: '#60a5fa' },
 };
 
@@ -58,9 +59,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
   const [syncSheetsMsg, setSyncSheetsMsg] = useState<string | null>(null);
-  const [filtroDal, setFiltroDal] = useState(DEFAULT_DAL);
-  const [filtroAl, setFiltroAl] = useState(DEFAULT_AL);
-  const [filtroCamera, setFiltroCamera] = useState<number | 'tutte'>('tutte');
+  const [filtroDal, setFiltroDal] = usePersistedState('dash-dal',    DEFAULT_DAL);
+  const [filtroAl, setFiltroAl]   = usePersistedState('dash-al',     DEFAULT_AL);
+  const [filtroCamera, setFiltroCamera] = usePersistedState<number | 'tutte'>('dash-camera', 'tutte');
 
   const carica = useCallback(() => {
     fetch('/api/prenotazioni')
@@ -79,7 +80,7 @@ export default function Dashboard() {
 
   const syncIcal = useCallback(async () => {
     setSyncing(true);
-    await fetch('/api/sync', { method: 'POST' });
+    await fetch("/api/sync-gmail", { method: "POST" });
     carica();
     setSyncing(false);
   }, [carica]);
@@ -207,11 +208,11 @@ export default function Dashboard() {
           <button
             onClick={syncIcal}
             disabled={syncing}
-            title="Sincronizza Booking.com iCal"
+            title="Sincronizza prenotazioni da Gmail"
             className="flex items-center gap-1.5 border border-gray-300 bg-white px-3 py-2 rounded text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
           >
             <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
-            {syncing ? 'Sync...' : 'Sync iCal'}
+            {syncing ? 'Sync...' : 'Sync Gmail'}
           </button>
           <button
             onClick={syncSheetsBidirezionale}
@@ -306,7 +307,7 @@ export default function Dashboard() {
         <h2 className="text-sm font-semibold text-gray-700">Statistiche per stanza</h2>
         {(() => {
           const nGiorniPeriodo = differenceInDays(parseISO(filtroAl), parseISO(filtroDal)) + 1;
-          const camFiltrate = camere.filter(c => filtroCamera === 'tutte' || c.id === filtroCamera);
+          const camFiltrate = camere.filter(c => filtroCamera === 'tutte' || c.id === filtroCamera).sort((a, b) => a.id - b.id);
           return camFiltrate.map(camera => {
             const pren = prenNelPeriodo.filter(p => p.camera_id === camera.id);
             const notti = pren.reduce((s, p) => s + differenceInDays(parseISO(p.check_out), parseISO(p.check_in)), 0);
@@ -400,13 +401,13 @@ export default function Dashboard() {
       {/* Stato camere nel periodo */}
       {(() => {
         const COLORI: Record<number, { bg: string; border: string; testo: string }> = {
-          1: { bg: 'bg-sky-100',    border: 'border-sky-300',    testo: 'text-sky-800' },
-          2: { bg: 'bg-amber-100',  border: 'border-amber-300',  testo: 'text-amber-800' },
-          3: { bg: 'bg-red-100',    border: 'border-red-300',    testo: 'text-red-800' },
-          4: { bg: 'bg-green-100',  border: 'border-green-300',  testo: 'text-green-800' },
-          5: { bg: 'bg-blue-100',   border: 'border-blue-300',   testo: 'text-blue-800' },
+          1: { bg: 'bg-red-100',   border: 'border-red-300',   testo: 'text-red-800' },
+          2: { bg: 'bg-amber-100', border: 'border-amber-300', testo: 'text-amber-800' },
+          3: { bg: 'bg-green-100', border: 'border-green-300', testo: 'text-green-800' },
+          4: { bg: 'bg-gray-100',  border: 'border-gray-300',  testo: 'text-gray-800' },
+          5: { bg: 'bg-blue-100',  border: 'border-blue-300',  testo: 'text-blue-800' },
         };
-        const camFiltrate = camere.filter((c) => filtroCamera === 'tutte' || c.id === filtroCamera);
+        const camFiltrate = camere.filter((c) => filtroCamera === 'tutte' || c.id === filtroCamera).sort((a, b) => a.id - b.id);
         return (
           <div className="bg-white rounded-lg shadow-sm p-3 sm:p-5">
             <h2 className="font-semibold text-gray-700 mb-3 sm:mb-4 text-sm sm:text-base">Camere nel periodo</h2>
@@ -453,7 +454,7 @@ export default function Dashboard() {
           d.setUTCDate(d.getUTCDate() + i);
           return d.toISOString().split('T')[0];
         });
-        const camFiltrate = camere.filter(c => filtroCamera === 'tutte' || c.id === filtroCamera);
+        const camFiltrate = camere.filter(c => filtroCamera === 'tutte' || c.id === filtroCamera).sort((a, b) => a.id - b.id);
         const getPren = (cameraId: number, day: string) =>
           prenotazioni.find(p =>
             p.camera_id === cameraId &&
@@ -529,6 +530,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-2 xl:grid-cols-3 gap-4">
           {camere
             .filter(c => filtroCamera === 'tutte' || c.id === filtroCamera)
+            .sort((a, b) => a.id - b.id)
             .map(camera => {
               const col = COLORI_CAMERA[camera.id] ?? COLORI_CAMERA[1];
               const data = buildChartData(camera.id);

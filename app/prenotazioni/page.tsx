@@ -10,6 +10,7 @@ import { Pencil, Trash2, Plus, X, Euro, TrendingDown, TrendingUp, BookOpen, Land
 import PrenotazioneForm from '@/components/PrenotazioneForm';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import { usePersistedState } from '@/hooks/usePersistedState';
 
 function statoColore(stato: Prenotazione['stato']) {
   if (stato === 'confermata') return 'bg-green-100 text-green-800';
@@ -48,11 +49,11 @@ function PrenotazioniInner() {
   const [mostraForm, setMostraForm] = useState(searchParams.get('nuova') === '1');
   const [editingId, setEditingId]     = useState<string | null>(null);
   const [editValues, setEditValues]   = useState<Partial<Prenotazione>>({});
-  const [filtroStato,  setFiltroStato]  = useState('tutti');
-  const [filtroCamera, setFiltroCamera] = useState('tutte');
-  const [filtroOspite, setFiltroOspite] = useState('');
-  const [filtroDal, setFiltroDal] = useState(DEFAULT_DAL);
-  const [filtroAl,  setFiltroAl]  = useState(DEFAULT_AL);
+  const [filtroStato,  setFiltroStato]  = usePersistedState('pren-stato',   'tutti');
+  const [filtroCamera, setFiltroCamera] = usePersistedState('pren-camera',  'tutte');
+  const [filtroOspite, setFiltroOspite] = usePersistedState('pren-ospite',  '');
+  const [filtroDal, setFiltroDal] = usePersistedState('pren-dal', DEFAULT_DAL);
+  const [filtroAl,  setFiltroAl]  = usePersistedState('pren-al',  DEFAULT_AL);
   const [syncing, setSyncing] = useState(false);
   const [syncOk, setSyncOk]   = useState<boolean | null>(null);
 
@@ -73,7 +74,7 @@ function PrenotazioniInner() {
     setSyncing(true);
     setSyncOk(null);
     try {
-      const res = await fetch('/api/sync', { method: 'POST' });
+      const res = await fetch("/api/sync-gmail", { method: "POST" });
       const json = await res.json();
       setSyncOk(json.ok !== false);
       carica();
@@ -169,7 +170,7 @@ function PrenotazioniInner() {
             }`}
           >
             <RefreshCw size={15} className={syncing ? 'animate-spin' : ''} />
-            Sync iCal
+            Sync Gmail
           </button>
           <button
             onClick={() => {
