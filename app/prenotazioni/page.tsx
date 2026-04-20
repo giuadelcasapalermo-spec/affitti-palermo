@@ -74,7 +74,7 @@ function PrenotazioniInner() {
     setSyncing(true);
     setSyncOk(null);
     try {
-      const res = await fetch("/api/sync-gmail", { method: "POST" });
+      const res = await fetch("/api/sync", { method: "POST" });
       const json = await res.json();
       setSyncOk(json.ok !== false);
       carica();
@@ -170,7 +170,7 @@ function PrenotazioniInner() {
             }`}
           >
             <RefreshCw size={15} className={syncing ? 'animate-spin' : ''} />
-            Sync Gmail
+            Sync iCal
           </button>
           <button
             onClick={() => {

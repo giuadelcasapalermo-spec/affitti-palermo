@@ -79,7 +79,7 @@ export default function CalendarioPage() {
     setSyncing(true);
     setSyncOk(null);
     try {
-      const res = await fetch("/api/sync-gmail", { method: "POST" });
+      const res = await fetch("/api/sync", { method: "POST" });
       const json = await res.json();
       setSyncOk(json.ok !== false);
       caricaPrenotazioni();
@@ -237,7 +237,7 @@ export default function CalendarioPage() {
           }`}
         >
           <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
-          Sync Gmail
+          Sync iCal
         </button>
         <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600 ml-auto">
           <span className="font-semibold text-blue-700 capitalize hidden sm:inline">

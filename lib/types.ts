@@ -74,9 +74,9 @@ export interface Impostazioni {
 }
 
 export const CAMERE: Camera[] = [
-  { id: 3, nome: 'Camera 3', prezzo_notte: 65 },
-  { id: 2, nome: 'Camera 2', prezzo_notte: 60 },
-  { id: 4, nome: 'Camera 4', prezzo_notte: 65 },
   { id: 1, nome: 'Camera 1', prezzo_notte: 60 },
+  { id: 2, nome: 'Camera 2', prezzo_notte: 60 },
+  { id: 3, nome: 'Camera 3', prezzo_notte: 65 },
+  { id: 4, nome: 'Camera 4', prezzo_notte: 65 },
   { id: 5, nome: 'Camera 5', prezzo_notte: 70 },
 ];

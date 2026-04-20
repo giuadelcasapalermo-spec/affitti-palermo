@@ -80,7 +80,7 @@ export default function Dashboard() {
 
   const syncIcal = useCallback(async () => {
     setSyncing(true);
-    await fetch("/api/sync-gmail", { method: "POST" });
+    await fetch("/api/sync", { method: "POST" });
     carica();
     setSyncing(false);
   }, [carica]);
@@ -212,7 +212,7 @@ export default function Dashboard() {
             className="flex items-center gap-1.5 border border-gray-300 bg-white px-3 py-2 rounded text-sm font-medium hover:bg-gray-50 disabled:opacity-50"
           >
             <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
-            {syncing ? 'Sync...' : 'Sync Gmail'}
+            {syncing ? 'Sync...' : 'Sync iCal'}
           </button>
           <button
             onClick={syncSheetsBidirezionale}

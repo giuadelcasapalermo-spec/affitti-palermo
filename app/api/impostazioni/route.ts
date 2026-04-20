@@ -8,7 +8,8 @@ export async function GET() {
 export async function PUT(req: NextRequest) {
   const body = await req.json();
   const imp = await leggiImpostazioni();
-  imp.ical_urls = body.ical_urls ?? imp.ical_urls;
+  if (body.ical_urls !== undefined) imp.ical_urls = body.ical_urls;
+  if (body.nomi_camere !== undefined) imp.nomi_camere = body.nomi_camere;
   await scriviImpostazioni(imp);
   return NextResponse.json(imp);
 }

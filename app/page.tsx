@@ -9,11 +9,11 @@ import { BedDouble, Euro, Users, RefreshCw, TrendingDown, TrendingUp } from 'luc
 import Link from 'next/link';
 
 const COLORI_CAMERA: Record<number, { bg: string; border: string; testo: string; bar: string }> = {
-  1: { bg: 'bg-sky-100',   border: 'border-sky-300',   testo: 'text-sky-800',   bar: 'bg-sky-400' },
-  2: { bg: 'bg-amber-100', border: 'border-amber-300', testo: 'text-amber-800', bar: 'bg-amber-400' },
-  3: { bg: 'bg-red-100',   border: 'border-red-300',   testo: 'text-red-800',   bar: 'bg-red-500' },
-  4: { bg: 'bg-green-100', border: 'border-green-300', testo: 'text-green-800', bar: 'bg-green-500' },
-  5: { bg: 'bg-blue-100',  border: 'border-blue-300',  testo: 'text-blue-800',  bar: 'bg-blue-600' },
+  1: { bg: 'bg-red-100',   border: 'border-red-300',   testo: 'text-red-800',   bar: 'bg-red-500' },   // Rossa
+  2: { bg: 'bg-amber-100', border: 'border-amber-300', testo: 'text-amber-800', bar: 'bg-amber-400' }, // Gialla
+  3: { bg: 'bg-green-100', border: 'border-green-300', testo: 'text-green-800', bar: 'bg-green-500' }, // Verde
+  4: { bg: 'bg-gray-100',  border: 'border-gray-300',  testo: 'text-gray-800',  bar: 'bg-gray-400' },  // Bianca
+  5: { bg: 'bg-blue-100',  border: 'border-blue-300',  testo: 'text-blue-800',  bar: 'bg-blue-600' },  // Blue
 };
 
 function isCameraOccupata(prenotazioni: Prenotazione[], cameraId: number): Prenotazione | null {

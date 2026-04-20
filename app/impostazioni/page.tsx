@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { CAMERE, Impostazioni } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
-import { RefreshCw, Save, CheckCircle, PenLine, Users, Trash2, Plus, KeyRound, Mail } from 'lucide-react';
+import { RefreshCw, Save, CheckCircle, PenLine, Users, Trash2, Plus, KeyRound, Mail, Link } from 'lucide-react';
 import { formatDistanceToNow, parseISO } from 'date-fns';
 import { it } from 'date-fns/locale';
 
@@ -24,11 +24,20 @@ interface SyncResult {
   errore?: string;
 }
 
+interface ICalSyncResult {
+  ok: boolean;
+  risultati: SyncResult[];
+  doppioniRimossi: number;
+}
+
 export default function ImpostazioniPage() {
   const camere = useCamere();
   const [imp, setImp] = useState<Impostazioni>({ ical_urls: {}, nomi_camere: {} });
   const [salvatoNomi, setSalvatoNomi] = useState(false);
   const [nomi, setNomi] = useState<Record<number, string>>({});
+  const [syncingIcal, setSyncingIcal] = useState(false);
+  const [risultatiIcal, setRisultatiIcal] = useState<ICalSyncResult | null>(null);
+  const [salvatoUrls, setSalvatoUrls] = useState(false);
   const [syncingGmail, setSyncingGmail] = useState(false);
   const [risultatiGmail, setRisultatiGmail] = useState<{ importate: number; dettagli: string[] } | null>(null);
   const [utenti, setUtenti] = useState<UtenteInfo[]>([]);
@@ -94,6 +103,25 @@ export default function ImpostazioniPage() {
     setImp((prev) => ({ ...prev, nomi_camere: nomi }));
     setSalvatoNomi(true);
     setTimeout(() => setSalvatoNomi(false), 2000);
+  }
+
+  async function salvaUrls() {
+    await fetch('/api/impostazioni', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...imp }),
+    });
+    setSalvatoUrls(true);
+    setTimeout(() => setSalvatoUrls(false), 2000);
+  }
+
+  async function sincronizzaIcal() {
+    setSyncingIcal(true);
+    setRisultatiIcal(null);
+    const res = await fetch('/api/sync', { method: 'POST' });
+    const data = await res.json();
+    setRisultatiIcal(data);
+    setSyncingIcal(false);
   }
 
   async function sincronizzaGmail() {
@@ -167,6 +195,84 @@ export default function ImpostazioniPage() {
             Ripristina predefiniti
           </button>
         </div>
+      </div>
+
+      {/* URL iCal Booking.com */}
+      <div className="bg-white rounded-lg shadow-sm p-5">
+        <div className="flex items-center gap-2 mb-1">
+          <Link size={18} className="text-blue-600" />
+          <h2 className="font-semibold text-gray-700">URL iCal Booking.com</h2>
+        </div>
+        <p className="text-sm text-gray-500 mb-1">
+          Incolla qui l&apos;URL iCal di ogni camera dall&apos;extranet Booking.com.
+        </p>
+        <p className="text-xs text-gray-400 mb-4">
+          Extranet → Struttura → Disponibilità → Sincronizzazione calendario → Esporta calendario
+        </p>
+
+        <div className="space-y-3">
+          {CAMERE.map((c) => {
+            const nomeAttuale = camere.find((cam) => cam.id === c.id)?.nome ?? c.nome;
+            return (
+              <div key={c.id} className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5 w-24 flex-shrink-0">
+                  <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${DOT_CAMERA[c.id] ?? 'bg-gray-400'}`} />
+                  <span className="text-sm text-gray-600 truncate">{nomeAttuale}</span>
+                </div>
+                <input
+                  type="url"
+                  placeholder="https://ical.booking.com/v1/exportiCalendar?..."
+                  value={imp.ical_urls?.[c.id] ?? ''}
+                  onChange={(e) => setUrl(c.id, e.target.value)}
+                  className="flex-1 border rounded px-3 py-2 text-xs font-mono text-gray-600"
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 flex items-center gap-3 flex-wrap">
+          <button
+            onClick={salvaUrls}
+            className="flex items-center gap-1.5 bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-blue-700"
+          >
+            <Save size={15} />
+            {salvatoUrls ? 'Salvato!' : 'Salva URL'}
+          </button>
+          <button
+            onClick={sincronizzaIcal}
+            disabled={syncingIcal}
+            className="flex items-center gap-1.5 bg-green-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-green-700 disabled:opacity-50"
+          >
+            <RefreshCw size={15} className={syncingIcal ? 'animate-spin' : ''} />
+            {syncingIcal ? 'Sincronizzando...' : 'Sync iCal ora'}
+          </button>
+        </div>
+
+        {risultatiIcal && (
+          <div className="mt-3 space-y-1">
+            {risultatiIcal.risultati.map((r) => {
+              const cam = camere.find(c => c.id === r.camera_id);
+              return (
+                <div key={r.camera_id} className={`text-xs px-3 py-1.5 rounded flex items-center gap-2 ${
+                  r.errore ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-700'
+                }`}>
+                  <div className={`w-2 h-2 rounded-full flex-shrink-0 ${DOT_CAMERA[r.camera_id] ?? 'bg-gray-400'}`} />
+                  <span>{cam?.nome ?? `Camera ${r.camera_id}`}:</span>
+                  {r.errore
+                    ? <span>{r.errore}</span>
+                    : <span>+{r.aggiunte} aggiunte, -{r.rimosse} rimosse</span>
+                  }
+                </div>
+              );
+            })}
+            {risultatiIcal.doppioniRimossi > 0 && (
+              <div className="text-xs px-3 py-1 text-gray-500">
+                {risultatiIcal.doppioniRimossi} doppio/i rimosso/i
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Sync Gmail — Booking.com → App */}
