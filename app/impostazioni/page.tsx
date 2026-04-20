@@ -28,6 +28,7 @@ interface ICalSyncResult {
   ok: boolean;
   risultati: SyncResult[];
   doppioniRimossi: number;
+  gmail?: { importate: number; aggiornate: number; cancellate: number; dettagli: string[] };
 }
 
 export default function ImpostazioniPage() {
@@ -269,6 +270,15 @@ export default function ImpostazioniPage() {
             {risultatiIcal.doppioniRimossi > 0 && (
               <div className="text-xs px-3 py-1 text-gray-500">
                 {risultatiIcal.doppioniRimossi} doppio/i rimosso/i
+              </div>
+            )}
+            {risultatiIcal.gmail && (risultatiIcal.gmail.importate > 0 || risultatiIcal.gmail.aggiornate > 0 || risultatiIcal.gmail.cancellate > 0) && (
+              <div className="text-xs px-3 py-1.5 rounded bg-blue-50 text-blue-700 mt-1">
+                Gmail: {[
+                  risultatiIcal.gmail.importate > 0 && `${risultatiIcal.gmail.importate} nuove`,
+                  risultatiIcal.gmail.aggiornate > 0 && `${risultatiIcal.gmail.aggiornate} aggiornate`,
+                  risultatiIcal.gmail.cancellate > 0 && `${risultatiIcal.gmail.cancellate} cancellate`,
+                ].filter(Boolean).join(', ')}
               </div>
             )}
           </div>
