@@ -122,7 +122,8 @@ export interface DatiPrenotazioneEmail {
   ospite_telefono: string;
   num_ospiti: number;
   gmail_message_id: string;
-  _corpo_debug?: string; // prime 800 chars del testo estratto (solo per debug)
+  tipo: 'nuova' | 'cancellata';
+  _corpo_debug?: string;
 }
 
 function parseEmailBooking(testo: string, messageId: string): DatiPrenotazioneEmail | null {
@@ -266,6 +267,7 @@ function parseEmailBooking(testo: string, messageId: string): DatiPrenotazioneEm
     ospite_telefono,
     num_ospiti,
     gmail_message_id: messageId,
+    tipo: 'nuova' as const,
     _corpo_debug: testo.slice(0, 800),
   };
 }
@@ -294,8 +296,8 @@ export async function fetchEmailBooking(): Promise<DatiPrenotazioneEmail[]> {
 
   const res = await gmail.users.messages.list({
     userId: 'me',
-    q: 'from:booking.com',
-    maxResults: 100,
+    q: 'from:noreply@booking.com subject:(prenotazione OR cancellata)',
+    maxResults: 200,
   });
 
   const messaggi = res.data.messages ?? [];
@@ -306,23 +308,97 @@ export async function fetchEmailBooking(): Promise<DatiPrenotazioneEmail[]> {
   for (const msg of nuovi) {
     if (!msg.id) continue;
 
-    const dettaglio = await gmail.users.messages.get({
+    // Leggi solo metadata prima (più veloce)
+    const meta = await gmail.users.messages.get({
       userId: 'me',
       id: msg.id,
-      format: 'full',
+      format: 'metadata',
+      metadataHeaders: ['Subject', 'From'],
     });
 
-    const payload = dettaglio.data.payload as GmailPart | undefined;
-    if (!payload) continue;
+    const headers = meta.data.payload?.headers ?? [];
+    const subject = headers.find(h => h.name === 'Subject')?.value ?? '';
 
-    const { plain, html } = estraiCorpo(payload);
-    // Preferisci testo plain; fallback su HTML strippato
-    const corpo = plain.trim() || stripHtml(html);
+    // Soggetto tipo: "Booking.com - Hai una nuova prenotazione! (6905621318, giovedì 30 aprile 2026)"
+    // Soggetto tipo: "Booking.com - Prenotazione cancellata! (5648001165, giovedì 13 agosto 2026)"
+    const isCancellata = /cancellat/i.test(subject);
+    const isNuova = /nuova\s+prenotazione|new\s+booking|new\s+reservation/i.test(subject);
 
-    if (!corpo.trim()) continue;
+    if (!isNuova && !isCancellata) {
+      // Email non rilevante (messaggi ospiti, promo, ecc.) — marca come processata e salta
+      await marcaProcessata(msg.id, '', '');
+      continue;
+    }
 
-    const dati = parseEmailBooking(corpo, msg.id);
-    if (dati) risultati.push(dati);
+    // Estrai booking number e data dal soggetto
+    // Pattern: (6905621318, giovedì 30 aprile 2026)
+    const subjectMatch = subject.match(/\((\d{9,12}),\s*(?:\w+\s+)?(.+?)\)/);
+    const booking_number = subjectMatch?.[1] ?? '';
+    const check_in_soggetto = subjectMatch ? parseData(subjectMatch[2]) : null;
+
+    if (!booking_number) {
+      await marcaProcessata(msg.id, '', '');
+      continue;
+    }
+
+    // Per le nuove prenotazioni, prova a leggere il corpo per trovare più dati
+    let ospite_nome = 'Ospite Booking.com';
+    let check_in = check_in_soggetto;
+    let check_out: string | null = null;
+    let camera_nome = '';
+    let importo = 0;
+    let tassa_soggiorno = 0;
+    let ospite_email = '';
+    let ospite_telefono = '';
+    let num_ospiti = 1;
+    let corpo_debug = '';
+
+    try {
+      const dettaglio = await gmail.users.messages.get({
+        userId: 'me',
+        id: msg.id,
+        format: 'full',
+      });
+      const payload = dettaglio.data.payload as GmailPart | undefined;
+      if (payload) {
+        const { plain, html } = estraiCorpo(payload);
+        const corpo = plain.trim() || stripHtml(html);
+        corpo_debug = corpo.slice(0, 800);
+
+        if (corpo.trim()) {
+          const dati = parseEmailBooking(corpo, msg.id);
+          if (dati) {
+            if (dati.ospite_nome !== 'Ospite Booking.com') ospite_nome = dati.ospite_nome;
+            if (dati.check_in) check_in = dati.check_in;
+            if (dati.check_out) check_out = dati.check_out;
+            if (dati.camera_nome) camera_nome = dati.camera_nome;
+            if (dati.importo > 0) importo = dati.importo;
+            if (dati.tassa_soggiorno > 0) tassa_soggiorno = dati.tassa_soggiorno;
+            if (dati.ospite_email) ospite_email = dati.ospite_email;
+            if (dati.ospite_telefono) ospite_telefono = dati.ospite_telefono;
+            if (dati.num_ospiti > 1) num_ospiti = dati.num_ospiti;
+          }
+        }
+      }
+    } catch {
+      // Se non riesce a leggere il corpo, usa solo i dati dal soggetto
+    }
+
+    risultati.push({
+      booking_number,
+      ospite_nome,
+      check_in,
+      check_out,
+      camera_nome,
+      importo,
+      tassa_soggiorno,
+      ospite_email,
+      ospite_telefono,
+      num_ospiti,
+      gmail_message_id: msg.id,
+      tipo: isCancellata ? 'cancellata' : 'nuova',
+      _corpo_debug: corpo_debug,
+    });
   }
 
   return risultati;
