@@ -1,29 +1,38 @@
-import fs from 'fs';
-import path from 'path';
 import { Entrata } from './types';
-import { onVercel, githubRead, githubWrite } from './github-storage';
-
-const PATH = path.join(process.cwd(), 'data', 'entrate.json');
-const GITHUB_PATH = 'data/entrate.json';
+import sql from './postgres';
 
 export async function leggiEntrate(): Promise<Entrata[]> {
-  if (onVercel) {
-    try {
-      const raw = await githubRead(GITHUB_PATH);
-      return JSON.parse(raw);
-    } catch {
-      return [];
-    }
-  }
-  if (!fs.existsSync(PATH)) return [];
-  return JSON.parse(fs.readFileSync(PATH, 'utf-8'));
+  const rows = await sql`
+    SELECT id, data, descrizione, categoria, importo, camera_id, note, created_at
+    FROM entrate
+    ORDER BY data DESC
+  `;
+  return rows as unknown as Entrata[];
 }
 
 export async function scriviEntrate(entrate: Entrata[]): Promise<void> {
-  const json = JSON.stringify(entrate, null, 2);
-  if (onVercel) {
-    await githubWrite(GITHUB_PATH, json);
-  } else {
-    fs.writeFileSync(PATH, json);
+  if (entrate.length === 0) {
+    await sql`DELETE FROM entrate`;
+    return;
+  }
+
+  const ids = entrate.map((e) => e.id);
+  await sql`DELETE FROM entrate WHERE id != ALL(${ids})`;
+
+  for (const e of entrate) {
+    await sql`
+      INSERT INTO entrate (id, data, descrizione, categoria, importo, camera_id, note, created_at)
+      VALUES (
+        ${e.id}, ${e.data}, ${e.descrizione}, ${e.categoria}, ${e.importo},
+        ${e.camera_id ?? null}, ${e.note}, ${e.created_at}
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        data = EXCLUDED.data,
+        descrizione = EXCLUDED.descrizione,
+        categoria = EXCLUDED.categoria,
+        importo = EXCLUDED.importo,
+        camera_id = EXCLUDED.camera_id,
+        note = EXCLUDED.note
+    `;
   }
 }

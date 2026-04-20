@@ -8,13 +8,13 @@ export async function PUT(
   const { id } = await params;
   const { password } = await request.json();
 
-  const utenti = leggiUtenti();
+  const utenti = await leggiUtenti();
   const u = utenti.find((u) => u.id === id);
   if (!u) return NextResponse.json({ error: 'Non trovato' }, { status: 404 });
 
   u.salt = nuovoSalt();
   u.hash = hashPassword(password, u.salt);
-  salvaUtenti(utenti);
+  await salvaUtenti(utenti);
 
   return NextResponse.json({ ok: true });
 }
@@ -24,10 +24,10 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const utenti = leggiUtenti();
+  const utenti = await leggiUtenti();
   if (utenti.length <= 1) {
     return NextResponse.json({ error: 'Deve esserci almeno un utente' }, { status: 400 });
   }
-  salvaUtenti(utenti.filter((u) => u.id !== id));
+  await salvaUtenti(utenti.filter((u) => u.id !== id));
   return NextResponse.json({ ok: true });
 }

@@ -1,30 +1,40 @@
 import { format } from 'date-fns';
 import { Prenotazione, Impostazioni } from './types';
 import { leggiPrenotazioni, scriviPrenotazioni } from './db';
-import { onVercel } from './github-storage';
-import { leggiImpostazioniSheets, scriviImpostazioniSheets } from './googlesheets';
-import fs from 'fs';
-import path from 'path';
+import sql from './postgres';
 import { randomUUID } from 'crypto';
 
-const IMPOSTAZIONI_PATH = path.join(process.cwd(), 'data', 'impostazioni.json');
-
 export async function leggiImpostazioni(): Promise<Impostazioni> {
-  if (onVercel) {
-    return leggiImpostazioniSheets();
+  const rows = await sql`SELECT tipo, chiave, valore FROM impostazioni`;
+  const imp: Impostazioni = { ical_urls: {}, nomi_camere: {} };
+  for (const row of rows) {
+    const id = Number(row.chiave);
+    if (row.tipo === 'ical' && !isNaN(id)) imp.ical_urls[id] = row.valore as string;
+    else if (row.tipo === 'camera' && !isNaN(id)) imp.nomi_camere[id] = row.valore as string;
+    else if (row.tipo === 'sync' && row.chiave === 'ultimo_sync') imp.ultimo_sync = row.valore as string;
   }
-  if (!fs.existsSync(IMPOSTAZIONI_PATH)) {
-    return { ical_urls: {}, nomi_camere: {} };
-  }
-  return JSON.parse(fs.readFileSync(IMPOSTAZIONI_PATH, 'utf-8'));
+  return imp;
 }
 
 export async function scriviImpostazioni(imp: Impostazioni): Promise<void> {
-  if (onVercel) {
-    await scriviImpostazioniSheets(imp);
-    return;
+  for (const [id, url] of Object.entries(imp.ical_urls ?? {})) {
+    await sql`
+      INSERT INTO impostazioni (tipo, chiave, valore) VALUES ('ical', ${id}, ${url})
+      ON CONFLICT (tipo, chiave) DO UPDATE SET valore = EXCLUDED.valore
+    `;
   }
-  fs.writeFileSync(IMPOSTAZIONI_PATH, JSON.stringify(imp, null, 2));
+  for (const [id, nome] of Object.entries(imp.nomi_camere ?? {})) {
+    await sql`
+      INSERT INTO impostazioni (tipo, chiave, valore) VALUES ('camera', ${id}, ${nome})
+      ON CONFLICT (tipo, chiave) DO UPDATE SET valore = EXCLUDED.valore
+    `;
+  }
+  if (imp.ultimo_sync) {
+    await sql`
+      INSERT INTO impostazioni (tipo, chiave, valore) VALUES ('sync', 'ultimo_sync', ${imp.ultimo_sync})
+      ON CONFLICT (tipo, chiave) DO UPDATE SET valore = EXCLUDED.valore
+    `;
+  }
 }
 
 interface ICalEvent {
@@ -106,8 +116,17 @@ export async function sincronizzaCalendario(
   let testo: string;
 
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch(url, {
+      signal: AbortSignal.timeout(15000),
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; CalendarBot/1.0; +https://affitti-palermo.vercel.app)',
+        'Accept': 'text/calendar, text/plain, */*',
+      },
+    });
+    if (!res.ok) {
+      const body = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status}${body ? ': ' + body.slice(0, 200) : ''}`);
+    }
     testo = await res.text();
   } catch (err) {
     const msg = err instanceof Error ? err.message : 'Errore sconosciuto';

@@ -3,7 +3,7 @@ import { leggiUtenti, salvaUtenti, hashPassword, nuovoSalt } from '@/lib/auth';
 import { randomUUID } from 'crypto';
 
 export async function GET() {
-  const utenti = leggiUtenti().map(({ id, username }) => ({ id, username }));
+  const utenti = (await leggiUtenti()).map(({ id, username }) => ({ id, username }));
   return NextResponse.json(utenti);
 }
 
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Username e password richiesti' }, { status: 400 });
   }
 
-  const utenti = leggiUtenti();
+  const utenti = await leggiUtenti();
   if (utenti.find((u) => u.username === username)) {
     return NextResponse.json({ error: 'Username già esistente' }, { status: 409 });
   }
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
   const salt = nuovoSalt();
   const hash = hashPassword(password, salt);
   utenti.push({ id: randomUUID(), username, salt, hash });
-  salvaUtenti(utenti);
+  await salvaUtenti(utenti);
 
   return NextResponse.json({ ok: true });
 }

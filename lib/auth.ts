@@ -1,9 +1,7 @@
 import crypto from 'crypto';
-import fs from 'fs';
-import path from 'path';
+import sql from './postgres';
 
 const SECRET = process.env.AUTH_SECRET || 'giuadel-fallback-secret';
-const UTENTI_FILE = path.join(process.cwd(), 'data', 'utenti.json');
 
 export interface Utente {
   id: string;
@@ -12,12 +10,26 @@ export interface Utente {
   hash: string;
 }
 
-export function leggiUtenti(): Utente[] {
-  return JSON.parse(fs.readFileSync(UTENTI_FILE, 'utf-8'));
+export async function leggiUtenti(): Promise<Utente[]> {
+  const rows = await sql`SELECT id, username, salt, hash FROM utenti`;
+  return rows as unknown as Utente[];
 }
 
-export function salvaUtenti(utenti: Utente[]) {
-  fs.writeFileSync(UTENTI_FILE, JSON.stringify(utenti, null, 2));
+export async function salvaUtenti(utenti: Utente[]): Promise<void> {
+  for (const u of utenti) {
+    await sql`
+      INSERT INTO utenti (id, username, salt, hash)
+      VALUES (${u.id}, ${u.username}, ${u.salt}, ${u.hash})
+      ON CONFLICT (id) DO UPDATE SET
+        username = EXCLUDED.username,
+        salt = EXCLUDED.salt,
+        hash = EXCLUDED.hash
+    `;
+  }
+  const ids = utenti.map((u) => u.id);
+  if (ids.length > 0) {
+    await sql`DELETE FROM utenti WHERE id != ALL(${ids})`;
+  }
 }
 
 export function hashPassword(password: string, salt: string): string {

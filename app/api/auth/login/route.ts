@@ -4,7 +4,7 @@ import { leggiUtenti, verificaPassword, creaToken } from '@/lib/auth';
 export async function POST(request: NextRequest) {
   const { username, password } = await request.json();
 
-  const utenti = leggiUtenti();
+  const utenti = await leggiUtenti();
   const utente = utenti.find((u) => u.username === username);
 
   if (!utente || !verificaPassword(password, utente.hash, utente.salt)) {
