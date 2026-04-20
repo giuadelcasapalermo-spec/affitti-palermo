@@ -41,29 +41,20 @@ export async function GET(request: Request) {
         format: 'full',
       });
 
-      let corpo = '';
-      const payload = dettaglio.data.payload;
-      const parts = payload?.parts ?? [payload];
-
-      for (const part of parts) {
-        if (!part) continue;
+      type GPart = { mimeType?: string|null; body?: {data?: string|null}|null; parts?: GPart[]|null };
+      function estraiRicorsivo(part: GPart, acc: {plain: string; html: string}): void {
         const mime = part.mimeType ?? '';
-        if (mime === 'text/plain' || mime === 'text/html') {
-          const data = part.body?.data;
-          if (data) {
-            const decoded = Buffer.from(data, 'base64').toString('utf-8');
-            corpo += mime === 'text/html' ? stripHtml(decoded) : decoded;
-          }
+        const data = part.body?.data;
+        if (data) {
+          const decoded = Buffer.from(data, 'base64').toString('utf-8');
+          if (mime === 'text/plain') acc.plain += decoded + '\n';
+          else if (mime === 'text/html') acc.html += decoded + '\n';
         }
-        for (const subpart of part.parts ?? []) {
-          const subMime = subpart.mimeType ?? '';
-          const subData = subpart.body?.data;
-          if (subData && (subMime === 'text/plain' || subMime === 'text/html')) {
-            const decoded = Buffer.from(subData, 'base64').toString('utf-8');
-            corpo += subMime === 'text/html' ? stripHtml(decoded) : decoded;
-          }
-        }
+        for (const sp of part.parts ?? []) estraiRicorsivo(sp, acc);
       }
+      const acc = { plain: '', html: '' };
+      estraiRicorsivo(dettaglio.data.payload as GPart, acc);
+      const corpo = acc.plain.trim() || stripHtml(acc.html);
 
       // Test regex patterns
       const numMatch = corpo.match(/(?:numero\s+(?:di\s+)?prenotazione|booking\s+(?:number|id|no\.?)|reservation\s+(?:number|id)|n[°\.\s]*prenotazione|codice\s+prenotazione)[\s:]*([0-9]{6,12})/i)
