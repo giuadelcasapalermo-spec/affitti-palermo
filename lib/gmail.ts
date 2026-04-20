@@ -117,6 +117,7 @@ export interface DatiPrenotazioneEmail {
   check_out: string | null;
   camera_nome: string;
   importo: number;
+  tassa_soggiorno: number;
   ospite_email: string;
   ospite_telefono: string;
   num_ospiti: number;
@@ -181,9 +182,57 @@ function parseEmailBooking(testo: string, messageId: string): DatiPrenotazioneEm
   const cameraMatch = testo.match(/(?:camera|room|stanza|unit[àa]|tipo\s+di\s+(?:stanza|camera)|sistemazione)[\s:]+([^\n]{3,60})/i);
   const camera_nome = cameraMatch ? cameraMatch[1].trim() : '';
 
-  // Importo
-  const importoMatch = testo.match(/(?:totale|total|importo|price|prezzo|valore)[\s:€$£]*([0-9]+(?:[.,][0-9]{2})?)/i);
-  const importo = importoMatch ? parseFloat(importoMatch[1].replace(',', '.')) : 0;
+  // ── Importi ──────────────────────────────────────────────────────────────
+  // Helper: estrae il primo numero (es. "€ 250,00" o "EUR 250.00" o "250,00 €")
+  function estraiImporto(riga: string): number {
+    const m = riga.match(/(?:EUR|€|£|\$)?\s*([0-9]+(?:[.,][0-9]{1,2})?)\s*(?:EUR|€)?/i);
+    return m ? parseFloat(m[1].replace(',', '.')) : 0;
+  }
+
+  // Tassa di soggiorno (prima, perché è più specifica)
+  const tassaMatch = testo.match(
+    /tassa\s+(?:di\s+)?soggiorno[\s:€£$EUR]*([0-9]+(?:[.,][0-9]{1,2})?)|city\s+(?:tax|fee)[\s:€£$EUR]*([0-9]+(?:[.,][0-9]{1,2})?)|tourist\s+tax[\s:€£$EUR]*([0-9]+(?:[.,][0-9]{1,2})?)/i
+  );
+  const tassa_soggiorno = tassaMatch
+    ? parseFloat((tassaMatch[1] ?? tassaMatch[2] ?? tassaMatch[3]).replace(',', '.'))
+    : 0;
+
+  // Importo soggiorno (escludi righe che contengono "tassa" o "tax")
+  const righe = testo.split('\n');
+  let importo = 0;
+
+  // 1. Cerca "importo/costo/prezzo soggiorno" esplicitamente
+  const soggiornMatch = testo.match(
+    /(?:importo|costo|prezzo)\s+(?:del\s+)?soggiorno[\s:]*(?:EUR|€|£|\$)?\s*([0-9]+(?:[.,][0-9]{1,2})?)/i
+  ) ?? testo.match(
+    /accommodation\s+(?:cost|price|charge|total)[\s:]*(?:EUR|€|£|\$)?\s*([0-9]+(?:[.,][0-9]{1,2})?)/i
+  );
+
+  if (soggiornMatch) {
+    importo = parseFloat(soggiornMatch[1].replace(',', '.'));
+  } else {
+    // 2. Cerca "totale" o "importo totale" (escludendo righe con tassa)
+    for (const riga of righe) {
+      const lc = riga.toLowerCase();
+      if (lc.includes('tassa') || lc.includes('tax') || lc.includes('turistica')) continue;
+      if (/(?:totale|total(?:\s+amount)?|importo\s+totale|prezzo\s+totale)\b/i.test(riga)) {
+        const v = estraiImporto(riga);
+        if (v > 0) { importo = v; break; }
+      }
+    }
+  }
+
+  // 3. Fallback generico: primo importo trovato (escluso tassa)
+  if (importo === 0) {
+    for (const riga of righe) {
+      const lc = riga.toLowerCase();
+      if (lc.includes('tassa') || lc.includes('tax') || lc.includes('turistica')) continue;
+      if (/(?:importo|price|prezzo|valore|costo|amount)\b/i.test(riga)) {
+        const v = estraiImporto(riga);
+        if (v > 0) { importo = v; break; }
+      }
+    }
+  }
 
   // Email ospite
   const emailMatch = testo.match(/\b[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}\b/g);
@@ -211,6 +260,7 @@ function parseEmailBooking(testo: string, messageId: string): DatiPrenotazioneEm
     check_out,
     camera_nome,
     importo,
+    tassa_soggiorno,
     ospite_email,
     ospite_telefono,
     num_ospiti,

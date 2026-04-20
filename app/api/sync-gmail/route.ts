@@ -62,6 +62,7 @@ export async function POST() {
       check_in: email.check_in,
       check_out: email.check_out,
       importo_totale: email.importo,
+      tassa_soggiorno: email.tassa_soggiorno || undefined,
       stato: 'confermata',
       note: `BK:${email.booking_number} - Importata da email`,
       created_at: new Date().toISOString(),
