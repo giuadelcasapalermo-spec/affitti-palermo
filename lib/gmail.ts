@@ -122,6 +122,7 @@ export interface DatiPrenotazioneEmail {
   ospite_telefono: string;
   num_ospiti: number;
   gmail_message_id: string;
+  _corpo_debug?: string; // prime 800 chars del testo estratto (solo per debug)
 }
 
 function parseEmailBooking(testo: string, messageId: string): DatiPrenotazioneEmail | null {
@@ -265,6 +266,7 @@ function parseEmailBooking(testo: string, messageId: string): DatiPrenotazioneEm
     ospite_telefono,
     num_ospiti,
     gmail_message_id: messageId,
+    _corpo_debug: testo.slice(0, 800),
   };
 }
 

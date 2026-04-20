@@ -5,7 +5,10 @@ import { leggiImpostazioni } from '@/lib/ical';
 import { CAMERE } from '@/lib/types';
 import { randomUUID } from 'crypto';
 
-export async function POST() {
+export async function POST(req: Request) {
+  const url = new URL(req.url);
+  const debug = url.searchParams.get('debug') === '1';
+
   const emails = await fetchEmailBooking();
 
   if (emails.length === 0) {
@@ -20,6 +23,7 @@ export async function POST() {
 
   let importate = 0;
   const dettagli: string[] = [];
+  const debugInfo: Record<string, string> = {};
 
   for (const email of emails) {
     // Evita duplicati per numero prenotazione
@@ -30,6 +34,7 @@ export async function POST() {
 
     if (!email.check_in || !email.check_out) {
       dettagli.push(`${email.booking_number}: date mancanti, saltata`);
+      if (debug) debugInfo[email.booking_number] = email._corpo_debug ?? '(vuoto)';
       continue;
     }
 
@@ -80,5 +85,5 @@ export async function POST() {
     await scriviPrenotazioni(prenotazioni);
   }
 
-  return NextResponse.json({ ok: true, importate, dettagli });
+  return NextResponse.json({ ok: true, importate, dettagli, ...(debug ? { debugInfo } : {}) });
 }
