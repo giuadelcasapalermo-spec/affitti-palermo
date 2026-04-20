@@ -68,8 +68,9 @@ export interface DatiPrenotazioneEmail {
 
 function parseEmailBooking(testo: string, messageId: string): DatiPrenotazioneEmail | null {
   // Numero prenotazione
-  const numMatch = testo.match(/(?:numero\s+(?:di\s+)?prenotazione|booking\s+(?:number|id|no\.?)|reservation\s+(?:number|id))[\s:]*([0-9]{6,12})/i)
-    ?? testo.match(/\b([0-9]{10})\b/);
+  const numMatch = testo.match(/(?:numero\s+(?:di\s+)?prenotazione|booking\s+(?:number|id|no\.?)|reservation\s+(?:number|id)|n[°\.\s]*prenotazione|codice\s+prenotazione)[\s:]*([0-9]{6,12})/i)
+    ?? testo.match(/\b([0-9]{10})\b/)
+    ?? testo.match(/\b([0-9]{9})\b/);
   if (!numMatch) return null;
   const booking_number = numMatch[1];
 
@@ -148,8 +149,8 @@ export async function fetchEmailBooking(): Promise<DatiPrenotazioneEmail[]> {
 
   const res = await gmail.users.messages.list({
     userId: 'me',
-    q: 'from:booking.com subject:(prenotazione OR reservation OR booking)',
-    maxResults: 50,
+    q: 'from:booking.com',
+    maxResults: 100,
   });
 
   const messaggi = res.data.messages ?? [];
