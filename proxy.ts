@@ -1,23 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SECRET = process.env.AUTH_SECRET || 'giuadel-fallback-secret';
-
-const PUBLIC = ['/login', '/api/auth/login', '/api/ical/', '/api/debug-sheets', '/api/debug-gmail'];
+const PUBLIC = ['/login', '/api/auth/login', '/api/ical/', '/api/debug-sheets', '/api/debug-gmail', '/api/webhook-beds24'];
 
 async function tokenValido(token: string): Promise<boolean> {
   try {
+    const secret = process.env.AUTH_SECRET;
+    if (!secret) return false; // fail-safe: senza segreto nessun token è valido
+
     const [payload, sig] = token.split('.');
     if (!payload || !sig) return false;
 
     const key = await crypto.subtle.importKey(
       'raw',
-      new TextEncoder().encode(SECRET),
+      new TextEncoder().encode(secret),
       { name: 'HMAC', hash: 'SHA-256' },
       false,
       ['verify']
     );
 
-    // base64url → base64 → bytes
     const b64 = (s: string) => s.replace(/-/g, '+').replace(/_/g, '/');
     const sigBytes = Uint8Array.from(atob(b64(sig)), (c) => c.charCodeAt(0));
     const ok = await crypto.subtle.verify('HMAC', key, sigBytes, new TextEncoder().encode(payload));
