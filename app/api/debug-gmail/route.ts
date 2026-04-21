@@ -79,8 +79,8 @@ export async function GET(request: Request) {
     }
 
     // Lista email da booking.com
-    const processati = await sql`SELECT message_id FROM gmail_sync`;
-    const idsProcessati = new Set(processati.map((r) => r.message_id as string));
+    const processati = await sql`SELECT message_id FROM gmail_sync` as { message_id: string }[];
+    const idsProcessati = new Set(processati.map((r) => r.message_id));
 
     const res = await gmail.users.messages.list({
       userId: 'me',
