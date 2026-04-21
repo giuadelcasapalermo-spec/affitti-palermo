@@ -13,6 +13,7 @@ import {
   parseISO,
   isSameDay,
   isWithinInterval,
+  isBefore,
   addMonths,
   subMonths,
   addDays,
@@ -104,16 +105,23 @@ export default function CalendarioPage() {
   const today = new Date();
   const settimane = buildWeeks(mese);
 
+  // Convenzione hotel: il giorno di check-out NON è occupato (ci <= day < co)
+  function isNottePren(day: Date, p: Prenotazione): boolean {
+    const ci = parseISO(p.check_in);
+    const co = parseISO(p.check_out);
+    return !isBefore(day, ci) && isBefore(day, co);
+  }
+
   function getDayInfo(day: Date, cameraId: number) {
     const pren = prenotazioni.find((p) => {
       if (p.camera_id !== cameraId || p.stato === 'cancellata') return false;
-      return isWithinInterval(day, { start: parseISO(p.check_in), end: parseISO(p.check_out) });
+      return isNottePren(day, p);
     });
     if (!pren) return { occupied: false, isCheckIn: false, isCheckOut: false, pren: null };
     return {
       occupied: true,
       isCheckIn: isSameDay(day, parseISO(pren.check_in)),
-      isCheckOut: isSameDay(day, parseISO(pren.check_out)),
+      isCheckOut: false,
       pren,
     };
   }
@@ -132,10 +140,7 @@ export default function CalendarioPage() {
 
   const prenDelGiorno = prenotazioni.filter((p) => {
     if (p.stato === 'cancellata') return false;
-    return isWithinInterval(giornoSelezionato, {
-      start: parseISO(p.check_in),
-      end: parseISO(p.check_out),
-    });
+    return isNottePren(giornoSelezionato, p); // esclude il giorno di check-out dal conteggio
   });
   const camereDelGiorno = new Set(prenDelGiorno.map((p) => p.camera_id)).size;
   const ospititDelGiorno = prenDelGiorno.length;
@@ -150,9 +155,10 @@ export default function CalendarioPage() {
         {format(giornoSelezionato, 'EEEE d MMMM yyyy', { locale: it })}
       </h2>
       {(() => {
-        const delGiorno = prenotazioni
+        const tutti = prenotazioni
           .filter((p) => {
             if (p.stato === 'cancellata') return false;
+            // includi anche il check-out per mostrarlo nelle partenze
             return isWithinInterval(giornoSelezionato, {
               start: parseISO(p.check_in),
               end: parseISO(p.check_out),
@@ -160,52 +166,68 @@ export default function CalendarioPage() {
           })
           .sort((a, b) => a.camera_id - b.camera_id);
 
-        if (delGiorno.length === 0)
+        if (tutti.length === 0)
           return <p className="text-gray-400 text-xs">Nessun ospite presente in questo giorno</p>;
 
-        return (
-          <div className="space-y-1">
-            {delGiorno.map((p) => {
-              const cam = camere.find((c) => c.id === p.camera_id);
-              const st  = STILE_CAMERA[p.camera_id] ?? STILE_CAMERA[1];
-              const ci  = parseISO(p.check_in);
-              const co  = parseISO(p.check_out);
-              const isCI = isSameDay(giornoSelezionato, ci);
-              const isCO = isSameDay(giornoSelezionato, co);
-              const notti = differenceInDays(co, ci);
-              return (
-                <div key={p.id} className="flex items-center justify-between py-1.5 border-b last:border-0 text-xs gap-2">
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${st.dot}`} />
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1 flex-wrap">
-                        <span className="font-medium truncate">{p.ospite_nome}</span>
-                        <span className="text-gray-400 flex-shrink-0">{cam?.nome}</span>
-                        {isCI && <span className="text-[10px] bg-green-100 text-green-700 px-1 py-0.5 rounded font-medium flex-shrink-0">CI</span>}
-                        {isCO && <span className="text-[10px] bg-orange-100 text-orange-700 px-1 py-0.5 rounded font-medium flex-shrink-0">CO</span>}
-                      </div>
-                      <div className="text-[10px] text-gray-400 mt-0.5">
-                        <span>{fData(p.check_in)}</span>
-                        <span className="mx-0.5">→</span>
-                        <span>{fData(p.check_out)}</span>
-                        <span className="ml-1">({notti}n)</span>
-                      </div>
-                    </div>
+        const partenze = tutti.filter(p => isSameDay(giornoSelezionato, parseISO(p.check_out)));
+        const presenze = tutti.filter(p => !isSameDay(giornoSelezionato, parseISO(p.check_out)));
+
+        const renderRow = (p: Prenotazione) => {
+          const cam  = camere.find((c) => c.id === p.camera_id);
+          const st   = STILE_CAMERA[p.camera_id] ?? STILE_CAMERA[1];
+          const ci   = parseISO(p.check_in);
+          const co   = parseISO(p.check_out);
+          const isCI = isSameDay(giornoSelezionato, ci);
+          const isCO = isSameDay(giornoSelezionato, co);
+          const notti = differenceInDays(co, ci);
+          return (
+            <div key={p.id} className="flex items-center justify-between py-1.5 border-b last:border-0 text-xs gap-2">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <div className={`w-2 h-2 rounded-full flex-shrink-0 ${st.dot}`} />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1 flex-wrap">
+                    <span className="font-medium truncate">{p.ospite_nome}</span>
+                    <span className="text-gray-400 flex-shrink-0">{cam?.nome}</span>
+                    {isCI && <span className="text-[10px] bg-green-100 text-green-700 px-1 py-0.5 rounded font-medium flex-shrink-0">CI</span>}
+                    {isCO && <span className="text-[10px] bg-orange-100 text-orange-700 px-1 py-0.5 rounded font-medium flex-shrink-0">CO</span>}
                   </div>
-                  {p.importo_totale > 0 && (
-                    <span className="font-semibold text-gray-700 flex-shrink-0">
-                      €{p.importo_totale.toFixed(0)}
-                      {p.tassa_soggiorno ? (
-                        <span className="ml-0.5 text-[10px] font-normal text-amber-600">
-                          +€{p.tassa_soggiorno.toFixed(0)}tds
-                        </span>
-                      ) : null}
-                    </span>
-                  )}
+                  <div className="text-[10px] text-gray-400 mt-0.5">
+                    <span>{fData(p.check_in)}</span>
+                    <span className="mx-0.5">→</span>
+                    <span>{fData(p.check_out)}</span>
+                    <span className="ml-1">({notti}n)</span>
+                  </div>
                 </div>
-              );
-            })}
-          </div>
+              </div>
+              {p.importo_totale > 0 && (
+                <span className="font-semibold text-gray-700 flex-shrink-0">
+                  €{p.importo_totale.toFixed(0)}
+                  {p.tassa_soggiorno ? (
+                    <span className="ml-0.5 text-[10px] font-normal text-amber-600">
+                      +€{p.tassa_soggiorno.toFixed(0)}tds
+                    </span>
+                  ) : null}
+                </span>
+              )}
+            </div>
+          );
+        };
+
+        return (
+          <>
+            {partenze.length > 0 && (
+              <>
+                <p className="text-[10px] font-semibold text-orange-500 uppercase tracking-wide mb-1">
+                  Partenze ({partenze.length})
+                </p>
+                <div>{partenze.map(renderRow)}</div>
+                {presenze.length > 0 && <hr className="my-2 border-gray-200" />}
+              </>
+            )}
+            {presenze.length > 0 && (
+              <div>{presenze.map(renderRow)}</div>
+            )}
+          </>
         );
       })()}
     </>
@@ -297,13 +319,14 @@ export default function CalendarioPage() {
                     if (p.camera_id !== camera.id || p.stato === 'cancellata' || visti.has(p.id)) return;
                     const ci = parseISO(p.check_in);
                     const co = parseISO(p.check_out);
-                    if (!isWithinInterval(day, { start: ci, end: co })) return;
+                    // ci <= day < co  (check-out NON colorato)
+                    if (isBefore(day, ci) || !isBefore(day, co)) return;
                     visti.add(p.id);
 
                     let first = -1, last = -1;
                     settimana.forEach((d, i) => {
                       if (!d) return;
-                      if (isWithinInterval(d, { start: ci, end: co })) {
+                      if (!isBefore(d, ci) && isBefore(d, co)) {
                         if (first === -1) first = i;
                         last = i;
                       }
@@ -315,7 +338,8 @@ export default function CalendarioPage() {
                       colStart: first + 1,
                       colSpan: last - first + 1,
                       isStart: isSameDay(settimana[first]!, ci),
-                      isEnd:   isSameDay(settimana[last]!,  co),
+                      // la pill finisce se l'ultimo giorno colorato è l'ultima notte (check_out - 1)
+                      isEnd: isSameDay(addDays(settimana[last]!, 1), co),
                     });
                   });
                 });

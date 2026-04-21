@@ -18,18 +18,20 @@ export async function POST(req: NextRequest) {
     }
 
     if (direzione === 'import') {
-      const { importate, ignorate, doppioniRimossi, prenotazioniArricchite } = await importFromSheets();
+      const { importate, ignorate, rimosse, doppioniRimossi, prenotazioniArricchite } = await importFromSheets();
       const extra = [
+        rimosse > 0 ? `rimossi ${rimosse} obsoleti` : '',
         doppioniRimossi > 0 ? `rimossi ${doppioniRimossi} doppioni` : '',
         prenotazioniArricchite > 0 ? `${prenotazioniArricchite} prenotazioni arricchite` : '',
       ].filter(Boolean).join(', ');
-      return NextResponse.json({ ok: true, messaggio: `Importati ${importate} movimenti (${ignorate} già presenti${extra ? ', ' + extra : ''})` });
+      return NextResponse.json({ ok: true, messaggio: `Importati/aggiornati ${importate} movimenti (${ignorate} saltati${extra ? ', ' + extra : ''})` });
     }
 
     if (direzione === 'both') {
       await syncToSheets();
-      const { importate, doppioniRimossi, prenotazioniArricchite } = await importFromSheets();
+      const { importate, rimosse, doppioniRimossi, prenotazioniArricchite } = await importFromSheets();
       const extra = [
+        rimosse > 0 ? `rimossi ${rimosse} obsoleti` : '',
         doppioniRimossi > 0 ? `rimossi ${doppioniRimossi} doppioni` : '',
         prenotazioniArricchite > 0 ? `${prenotazioniArricchite} prenotazioni arricchite` : '',
       ].filter(Boolean).join(', ');

@@ -172,22 +172,13 @@ export async function sincronizzaCalendario(
     });
   }
 
-  // Rimuovi prenotazioni iCal che non sono più nel feed remoto
-  const idsDaRimuovere = new Set(
-    esistentiIcal.filter((p) => !uidsRemoti.has(p.ical_uid!)).map((p) => p.id)
-  );
-
-  const aggiornate = [
-    ...prenotazioni.filter((p) => !idsDaRimuovere.has(p.id)),
-    ...daAggiungere,
-  ];
-
+  const aggiornate = [...prenotazioni, ...daAggiungere];
   await scriviPrenotazioni(aggiornate);
 
   return {
     camera_id: cameraId,
     aggiunte: daAggiungere.length,
-    rimosse: idsDaRimuovere.size,
+    rimosse: 0,
   };
 }
 

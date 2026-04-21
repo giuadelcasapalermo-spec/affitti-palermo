@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sincronizzaTutti } from '@/lib/ical';
+import { arricchisciPrenotazioniDaSheetsAll } from '@/lib/googlesheets';
 import { leggiPrenotazioni, scriviPrenotazioni } from '@/lib/db';
 import { fetchEmailBooking, marcaProcessata } from '@/lib/gmail';
 import { leggiImpostazioni } from '@/lib/ical';
@@ -170,11 +171,13 @@ export async function POST() {
   const risultatiIcal = await sincronizzaTutti();
   const doppioniRimossi = await dedupPrenotazioniIcal();
   const risultatiGmail = await sincronizzaGmail();
+  const prenotazioniArricchite = await arricchisciPrenotazioniDaSheetsAll().catch(() => 0);
 
   return NextResponse.json({
     ok: true,
     risultati: risultatiIcal,
     doppioniRimossi,
     gmail: risultatiGmail,
+    prenotazioniArricchite,
   });
 }

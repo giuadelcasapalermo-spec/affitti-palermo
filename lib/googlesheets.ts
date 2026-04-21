@@ -33,6 +33,22 @@ const TIPO_TO_CAT: Record<string, Uscita['categoria']> = {
 const TIPO_AMMESSI_TABS = new Set([
   'arredamento', 'utenze', 'manutenzione', 'acquisti varie', 'spese varie', 'pulizie',
 ]);
+
+// Categorie corrispondenti ai tipi ammessi (per la pulizia del DB)
+const CATEGORIE_AMMESSE_TABS = new Set<string>(
+  [...TIPO_AMMESSI_TABS].map(t => TIPO_TO_CAT[t] ?? 'Altro')
+);
+
+/** Converte nome tab → prefisso mese ISO (es. "Aprile" → "2026-04") */
+function monthPrefixForTab(tab: string): string | null {
+  for (let i = 0; i < MESI_IT.length; i++) {
+    const mm = String(i + 1).padStart(2, '0');
+    if (tab === MESI_IT[i])           return `2026-${mm}`;
+    if (tab === `${MESI_IT[i]}2025`)  return `2025-${mm}`;
+    if (tab === `${MESI_IT[i]}2024`)  return `2024-${mm}`;
+  }
+  return null;
+}
 const STANZA_ID: Record<string, number> = {
   'rossa': 1, 'camera 1': 1, '1': 1,
   'gialla': 2, 'camera 2': 2, '2': 2,
@@ -134,79 +150,111 @@ async function exportUsciteToTabs(
   uscite: Uscita[],
   tabEsistenti: Set<string>,
 ): Promise<number> {
-  // Raggruppa uscite per tab mensile
   const perTab = new Map<string, Uscita[]>();
   for (const u of uscite) {
     if (!u.data) continue;
     const tab = tabPerData(u.data);
-    if (!tabEsistenti.has(tab)) continue; // tab non esiste nel documento, salta
+    if (!tabEsistenti.has(tab)) continue;
     if (!perTab.has(tab)) perTab.set(tab, []);
     perTab.get(tab)!.push(u);
   }
 
-  let aggiunte = 0;
+  let processate = 0;
 
   for (const [tab, usciteDelTab] of perTab) {
-    // Leggi righe esistenti per deduplicare su descrizione+importo
     const res = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `'${tab}'!A:P`,
       valueRenderOption: 'UNFORMATTED_VALUE',
     });
     const rows = (res.data.values ?? []) as (string|number)[][];
-    // Chiave di deduplicazione: descrizione+importo già presenti
-    const esistenti = new Set(
-      rows.map(r => `${String(r[1]??'').trim().toLowerCase()}|${parseFloat(String(r[4]??''))||0}`)
-    );
 
-    const nuoveRighe: (string|number)[][] = [];
-    for (const u of usciteDelTab) {
-      const k = `${u.descrizione.trim().toLowerCase()}|${u.importo}`;
-      if (esistenti.has(k)) continue;
-      esistenti.add(k);
-      const tipo = CAT_TO_TIPO[u.categoria] ?? 'Spese varie';
-      const stanza = u.camera_id ? (STANZA_NOME[u.camera_id] ?? '') : '';
-      nuoveRighe.push([
-        tipo,
-        u.descrizione,
-        -u.importo,
-        '',
-        u.importo,
-        '', '', '', '', '',
-        isoToSerial(u.data),
-        '',
-        '',
-        stanza,
-        '',
-        u.note ?? '',
-      ]);
-      aggiunte++;
+    const hIdx = rows.findIndex(r => String(r[0]??'').trim() === 'Tipologia');
+    const ncols = hIdx >= 0 ? (rows[hIdx] as (string|number)[]).length : 0;
+    const is2025 = ncols <= 12;
+    const dataICol = is2025 ? 6 : 10;
+
+    // Mappa data|tipo → riga 1-based nel foglio (per upsert)
+    const keyToRow = new Map<string, number>();
+    for (let i = (hIdx >= 0 ? hIdx + 1 : 0); i < rows.length; i++) {
+      const row = rows[i];
+      const tipo = String(row[0]??'').trim().toLowerCase();
+      const dataVal = row[dataICol];
+      if (!dataVal || !tipo) continue;
+      const data = parseSheetDate(dataVal as string|number|undefined);
+      if (!data) continue;
+      keyToRow.set(`${data}|${tipo}`, i + 1);
     }
 
-    if (nuoveRighe.length === 0) continue;
+    const nuoveRighe: (string|number)[][] = [];
 
-    // Trova prima riga vuota nel tab (appendi in fondo)
-    const nextRow = rows.length + 1;
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `'${tab}'!A${nextRow}`,
-      valueInputOption: 'RAW',
-      requestBody: { values: nuoveRighe },
-    });
+    for (const u of usciteDelTab) {
+      const tipoStr = CAT_TO_TIPO[u.categoria] ?? 'Spese varie';
+      const key = `${u.data}|${tipoStr.toLowerCase()}`;
+      const rowIdx = keyToRow.get(key);
+
+      if (rowIdx !== undefined) {
+        // Aggiorna descrizione e importo nella riga esistente (col B:E)
+        await sheets.spreadsheets.values.update({
+          spreadsheetId: SPREADSHEET_ID,
+          range: `'${tab}'!B${rowIdx}:E${rowIdx}`,
+          valueInputOption: 'RAW',
+          requestBody: { values: [[u.descrizione, -u.importo, '', u.importo]] },
+        });
+        processate++;
+      } else {
+        const stanza = u.camera_id ? (STANZA_NOME[u.camera_id] ?? '') : '';
+        nuoveRighe.push([
+          tipoStr,
+          u.descrizione,
+          -u.importo,
+          '',
+          u.importo,
+          '', '', '', '', '',
+          isoToSerial(u.data),
+          '',
+          '',
+          stanza,
+          '',
+          u.note ?? '',
+        ]);
+        processate++;
+      }
+    }
+
+    if (nuoveRighe.length > 0) {
+      const nextRow = rows.length + 1;
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `'${tab}'!A${nextRow}`,
+        valueInputOption: 'RAW',
+        requestBody: { values: nuoveRighe },
+      });
+    }
   }
 
-  return aggiunte;
+  return processate;
 }
 
 // ── Tab mensili → App (uscite con data inizio) ────────────────────────────
 async function importUsciteOriginale(
   sheets: ReturnType<typeof google.sheets>,
   uscite: Uscita[],
-  keyUsc: Set<string>,
   tabEsistenti: Set<string>,
-): Promise<number> {
+): Promise<{ importate: number; aggiornate: number; rimosse: number }> {
   let importate = 0;
+  let aggiornate = 0;
+  let rimosse = 0;
   const now = new Date().toISOString();
+
+  const buildKeyMap = () => {
+    const m = new Map<string, number>();
+    for (let i = 0; i < uscite.length; i++) {
+      m.set(`${uscite[i].data}|${uscite[i].categoria}`, i);
+    }
+    return m;
+  };
+  let keyMap = buildKeyMap();
 
   for (const tab of tabEsistenti) {
     if (tab === SHEET_NAME) continue;
@@ -227,6 +275,9 @@ async function importUsciteOriginale(
       ? { tipo:0, desc:1, usc:4, dataI:6, stanza:9, note:11 }
       : { tipo:0, desc:1, usc:4, dataI:10, stanza:13, note:15 };
 
+    // Chiavi trovate in questo tab (per la pulizia)
+    const trovatiNelTab = new Set<string>();
+
     for (let i = hIdx + 1; i < rows.length; i++) {
       const row  = rows[i];
       const tipo = String(row[C.tipo]??'').trim().toLowerCase();
@@ -237,20 +288,50 @@ async function importUsciteOriginale(
       const data   = parseSheetDate(row[C.dataI] as string|number|undefined);
       if (!data || uscita <= 0 || !desc) continue;
 
-      const k = `${data}|${desc}|${uscita}`;
-      if (keyUsc.has(k)) continue;
+      const cat = TIPO_TO_CAT[tipo] ?? 'Altro';
+      const k   = `${data}|${cat}`;
+      trovatiNelTab.add(k);
 
-      keyUsc.add(k);
-      const stanza    = String(row[C.stanza]??'').trim().toLowerCase();
-      const note      = String(row[C.note]??'').trim();
-      const cat       = TIPO_TO_CAT[tipo] ?? 'Altro';
-      const camera_id = STANZA_ID[stanza] ?? undefined;
+      const existingIdx = keyMap.get(k);
+      if (existingIdx !== undefined) {
+        uscite[existingIdx].descrizione = desc;
+        uscite[existingIdx].importo = uscita;
+        aggiornate++;
+      } else {
+        const stanza    = String(row[C.stanza]??'').trim().toLowerCase();
+        const note      = String(row[C.note]??'').trim();
+        const camera_id = STANZA_ID[stanza] ?? undefined;
+        keyMap.set(k, uscite.length);
+        uscite.push({ id: randomUUID(), data, descrizione: desc, categoria: cat, importo: uscita, camera_id, note, created_at: now });
+        importate++;
+      }
+    }
 
-      uscite.push({ id: randomUUID(), data, descrizione: desc, categoria: cat, importo: uscita, camera_id, note, created_at: now });
-      importate++;
+    // Rimuovi dal DB le uscite del mese corrispondente a questo tab
+    // che NON sono state trovate nello sheet (sync completo per mese)
+    const monthPrefix = monthPrefixForTab(tab);
+    if (monthPrefix) {
+      const idsRimuovere = new Set<string>();
+      const vistiKey = new Set<string>(); // dedup: tieni solo il primo per chiave
+      for (const u of uscite) {
+        if (!u.data.startsWith(monthPrefix)) continue;
+        if (!CATEGORIE_AMMESSE_TABS.has(u.categoria)) continue;
+        const k = `${u.data}|${u.categoria}`;
+        if (!trovatiNelTab.has(k) || vistiKey.has(k)) {
+          idsRimuovere.add(u.id);
+        } else {
+          vistiKey.add(k);
+        }
+      }
+      if (idsRimuovere.size > 0) {
+        const before = uscite.length;
+        uscite.splice(0, uscite.length, ...uscite.filter(u => !idsRimuovere.has(u.id)));
+        rimosse += before - uscite.length;
+        keyMap = buildKeyMap();
+      }
     }
   }
-  return importate;
+  return { importate, aggiornate, rimosse };
 }
 
 // ── Export completo: Prima Nota App + tab mensili ─────────────────────────
@@ -329,13 +410,13 @@ async function arricchisciPrenotazioniDaSheets(
     const is2025 = ncols <= 12;
     // entrata = col C (indice 2) in entrambi i formati
     const C = is2025
-      ? { tipo:0, desc:1, ent:2, dataI:6, stanza:9 }
-      : { tipo:0, desc:1, ent:2, dataI:10, stanza:13 };
+      ? { tipo:0, desc:1, ent:3, tassa:-1, dataI:6, stanza:9 }
+      : { tipo:0, desc:1, ent:3, tassa:5,  dataI:10, stanza:13 };
 
     for (let i = hIdx + 1; i < rows.length; i++) {
       const row  = rows[i];
       const tipo = String(row[C.tipo]??'').trim().toLowerCase();
-      if (tipo !== 'affitto') continue;
+      if (!['affitto', 'ricavo booking', 'ricavo privato'].includes(tipo)) continue;
 
       const data = parseSheetDate(row[C.dataI] as string|number|undefined);
       if (!data) continue;
@@ -350,15 +431,19 @@ async function arricchisciPrenotazioniDaSheets(
 
       const nome    = String(row[C.desc]??'').trim();
       const importo = parseFloat(String(row[C.ent]??'')) || 0;
+      const tassa   = C.tassa >= 0 ? (parseFloat(String(row[C.tassa]??'')) || 0) : 0;
 
-      // Arricchisci solo i campi vuoti/zero
       let modificata = false;
       if (nome && (!pren.ospite_nome || pren.ospite_nome === 'Ospite Booking.com')) {
         pren.ospite_nome = nome;
         modificata = true;
       }
-      if (importo > 0 && (!pren.importo_totale || pren.importo_totale === 0)) {
+      if (importo > 0) {
         pren.importo_totale = importo;
+        modificata = true;
+      }
+      if (tassa > 0) {
+        pren.tassa_soggiorno = tassa;
         modificata = true;
       }
       if (modificata) aggiornate++;
@@ -371,20 +456,55 @@ async function arricchisciPrenotazioniDaSheets(
   return aggiornate;
 }
 
+// ── Arricchisci prenotazioni iCal da sheet (wrapper pubblico) ────────────
+export async function arricchisciPrenotazioniDaSheetsAll(): Promise<number> {
+  const sheets = await getSheetsClient();
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+  const tabEsistenti = new Set(meta.data.sheets?.map(s => s.properties?.title ?? '') ?? []);
+  return arricchisciPrenotazioniDaSheets(sheets, tabEsistenti);
+}
+
 // ── Import completo: Prima Nota App + tab mensili → App (solo uscite) ────
-export async function importFromSheets(): Promise<{ importate: number; ignorate: number; doppioniRimossi: number; prenotazioniArricchite: number }> {
+export async function importFromSheets(): Promise<{ importate: number; ignorate: number; rimosse: number; doppioniRimossi: number; prenotazioniArricchite: number }> {
   const sheets  = await getSheetsClient();
   const meta    = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
   const tabEsistenti = new Set(meta.data.sheets?.map(s => s.properties?.title ?? '') ?? []);
 
   const uscite = await leggiUscite();
-
-  const keyUsc    = new Set(uscite.map(u => `${u.data}|${u.descrizione}|${u.importo}`));
-  const idsUscite = new Set(uscite.map(u => u.id));
   const now = new Date().toISOString();
+
+  // ── Deduplicazione legacy: per ogni data|categoria tieni la voce con descrizione più lunga ──
+  // Rimuove i doppioni creati dalla migrazione JSON (es. "Tassa di soggiorno" vs "…I trimestre 2026")
+  {
+    const gruppi = new Map<string, Uscita[]>();
+    for (const u of uscite) {
+      const k = `${u.data}|${u.categoria}`;
+      if (!gruppi.has(k)) gruppi.set(k, []);
+      gruppi.get(k)!.push(u);
+    }
+    const idsRimuovi = new Set<string>();
+    for (const gruppo of gruppi.values()) {
+      if (gruppo.length <= 1) continue;
+      gruppo.sort((a, b) =>
+        b.descrizione.length !== a.descrizione.length
+          ? b.descrizione.length - a.descrizione.length
+          : b.created_at.localeCompare(a.created_at)
+      );
+      for (let i = 1; i < gruppo.length; i++) idsRimuovi.add(gruppo[i].id);
+    }
+    if (idsRimuovi.size > 0) {
+      uscite.splice(0, uscite.length, ...uscite.filter(u => !idsRimuovi.has(u.id)));
+    }
+  }
 
   let importate = 0;
   let ignorate  = 0;
+
+  // Mappa data|categoria → indice per upsert
+  const keyMap = new Map<string, number>();
+  for (let i = 0; i < uscite.length; i++) {
+    keyMap.set(`${uscite[i].data}|${uscite[i].categoria}`, i);
+  }
 
   // 1. Legge il foglio "Prima Nota App" — importa SOLO uscite (le entrate vengono gestite dall'app)
   const sheetName = await ensureSheet(sheets);
@@ -392,20 +512,25 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   for (const row of (res.data.values ?? []).slice(1).filter(r => r[0] && r[1] && r[2] && r[3])) {
     const [id, tipo, data, descrizione, categoria, importoStr, cameraIdStr, note] = row;
     if (tipo !== 'uscita') { ignorate++; continue; }
-    if (idsUscite.has(id)) { ignorate++; continue; }
     const importo   = parseFloat(importoStr) || 0;
     const camera_id = cameraIdStr ? parseInt(cameraIdStr) || undefined : undefined;
     const cat = CATEGORIE_USCITA.includes(categoria as never) ? categoria as Uscita['categoria'] : 'Altro';
-    const k = `${data}|${descrizione}|${importo}`;
-    if (keyUsc.has(k)) { ignorate++; continue; }
-    uscite.push({ id: id||randomUUID(), data, descrizione, categoria: cat, importo, camera_id, note: note??'', created_at: now });
-    keyUsc.add(k);
-    importate++;
+    const k = `${data}|${cat}`;
+    const existingIdx = keyMap.get(k);
+    if (existingIdx !== undefined) {
+      uscite[existingIdx].descrizione = descrizione;
+      uscite[existingIdx].importo = importo;
+      importate++;
+    } else {
+      keyMap.set(k, uscite.length);
+      uscite.push({ id: id||randomUUID(), data, descrizione, categoria: cat, importo, camera_id, note: note??'', created_at: now });
+      importate++;
+    }
   }
 
   // 2. Legge tab mensili — importa uscite con data inizio
-  const nuove = await importUsciteOriginale(sheets, uscite, keyUsc, tabEsistenti);
-  importate += nuove;
+  const { importate: nuoveImportate, aggiornate: nuoveAggiornate, rimosse: rimosse2 } = await importUsciteOriginale(sheets, uscite, tabEsistenti);
+  importate += nuoveImportate + nuoveAggiornate;
 
   await scriviUscite(uscite);
 
@@ -415,7 +540,7 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   // 4. Arricchisci prenotazioni iCal con nome ospite e importo dai tab mensili
   const prenotazioniArricchite = await arricchisciPrenotazioniDaSheets(sheets, tabEsistenti);
 
-  return { importate, ignorate, doppioniRimossi, prenotazioniArricchite };
+  return { importate, ignorate, rimosse: rimosse2, doppioniRimossi, prenotazioniArricchite };
 }
 
 // ── Impostazioni su Google Sheets (tab "Impostazioni") ────────────────────
