@@ -5,5 +5,6 @@ export async function GET() {
   const imp = await leggiImpostazioni();
   return NextResponse.json({
     googleSheetsAbilitato: imp.google_sheets_abilitato ?? false,
+    googleSheetId: imp.google_sheet_id ?? null,
   });
 }

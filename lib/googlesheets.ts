@@ -4,9 +4,15 @@ import { Entrata, Uscita, CATEGORIE_USCITA, Impostazioni } from './types';
 import { leggiEntrate, scriviEntrate } from './entrate';
 import { leggiUscite, scriviUscite } from './uscite';
 import { leggiPrenotazioni, scriviPrenotazioni } from './db';
+import { leggiImpostazioni } from './ical';
 import { randomUUID } from 'crypto';
 
-const SPREADSHEET_ID = '1t8sY-JBkSDAnIBhQA_xwotRjxAzRCJ1XMUrxbpHlJpM';
+const SPREADSHEET_ID_FALLBACK = '1t8sY-JBkSDAnIBhQA_xwotRjxAzRCJ1XMUrxbpHlJpM';
+
+async function getSpreadsheetId(): Promise<string> {
+  const imp = await leggiImpostazioni();
+  return imp.google_sheet_id?.trim() || SPREADSHEET_ID_FALLBACK;
+}
 const SHEET_NAME = process.env.GOOGLE_SHEET_NAME ?? 'Prima Nota App';
 
 const HEADER = ['ID', 'Tipo', 'Data', 'Descrizione', 'Categoria', 'Importo', 'CameraID', 'Note'];
@@ -104,12 +110,12 @@ async function getSheetsClient() {
   return google.sheets({ version: 'v4', auth: resolvedAuth as never });
 }
 
-async function ensureSheet(sheets: ReturnType<typeof google.sheets>): Promise<string> {
-  const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+async function ensureSheet(sheets: ReturnType<typeof google.sheets>, sid: string): Promise<string> {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: sid });
   const exists = meta.data.sheets?.some((s) => s.properties?.title === SHEET_NAME);
   if (!exists) {
     await sheets.spreadsheets.batchUpdate({
-      spreadsheetId: SPREADSHEET_ID,
+      spreadsheetId: sid,
       requestBody: { requests: [{ addSheet: { properties: { title: SHEET_NAME } } }] },
     });
   }
@@ -125,8 +131,9 @@ function uscitaToRow(u: Uscita): string[] {
 
 // ── App → Google Sheets (tab "Prima Nota App") ────────────────────────────
 export async function exportToSheets(): Promise<void> {
+  const sid       = await getSpreadsheetId();
   const sheets    = await getSheetsClient();
-  const sheetName = await ensureSheet(sheets);
+  const sheetName = await ensureSheet(sheets, sid);
   const range     = `'${sheetName}'!A:H`;
   const entrate   = await leggiEntrate();
   const uscite    = await leggiUscite();
@@ -135,9 +142,9 @@ export async function exportToSheets(): Promise<void> {
     ...[...entrate.map(entrataToRow), ...uscite.map(uscitaToRow)]
       .sort((a, b) => b[2].localeCompare(a[2])),
   ];
-  await sheets.spreadsheets.values.clear({ spreadsheetId: SPREADSHEET_ID, range });
+  await sheets.spreadsheets.values.clear({ spreadsheetId: sid, range });
   await sheets.spreadsheets.values.update({
-    spreadsheetId: SPREADSHEET_ID,
+    spreadsheetId: sid,
     range: `'${sheetName}'!A1`,
     valueInputOption: 'RAW',
     requestBody: { values: righe },
@@ -149,6 +156,7 @@ async function exportUsciteToTabs(
   sheets: ReturnType<typeof google.sheets>,
   uscite: Uscita[],
   tabEsistenti: Set<string>,
+  sid: string,
 ): Promise<number> {
   const perTab = new Map<string, Uscita[]>();
   for (const u of uscite) {
@@ -163,7 +171,7 @@ async function exportUsciteToTabs(
 
   for (const [tab, usciteDelTab] of perTab) {
     const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
+      spreadsheetId: sid,
       range: `'${tab}'!A:P`,
       valueRenderOption: 'UNFORMATTED_VALUE',
     });
@@ -196,7 +204,7 @@ async function exportUsciteToTabs(
       if (rowIdx !== undefined) {
         // Aggiorna descrizione e importo nella riga esistente (col B:E)
         await sheets.spreadsheets.values.update({
-          spreadsheetId: SPREADSHEET_ID,
+          spreadsheetId: sid,
           range: `'${tab}'!B${rowIdx}:E${rowIdx}`,
           valueInputOption: 'RAW',
           requestBody: { values: [[u.descrizione, -u.importo, '', u.importo]] },
@@ -225,7 +233,7 @@ async function exportUsciteToTabs(
     if (nuoveRighe.length > 0) {
       const nextRow = rows.length + 1;
       await sheets.spreadsheets.values.update({
-        spreadsheetId: SPREADSHEET_ID,
+        spreadsheetId: sid,
         range: `'${tab}'!A${nextRow}`,
         valueInputOption: 'RAW',
         requestBody: { values: nuoveRighe },
@@ -241,6 +249,7 @@ async function importUsciteOriginale(
   sheets: ReturnType<typeof google.sheets>,
   uscite: Uscita[],
   tabEsistenti: Set<string>,
+  sid: string,
 ): Promise<{ importate: number; aggiornate: number; rimosse: number }> {
   let importate = 0;
   let aggiornate = 0;
@@ -260,7 +269,7 @@ async function importUsciteOriginale(
     if (tab === SHEET_NAME) continue;
 
     const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
+      spreadsheetId: sid,
       range: `'${tab}'!A:P`,
       valueRenderOption: 'UNFORMATTED_VALUE',
     });
@@ -336,8 +345,9 @@ async function importUsciteOriginale(
 
 // ── Export completo: Prima Nota App + tab mensili ─────────────────────────
 export async function syncToSheets(): Promise<void> {
+  const sid     = await getSpreadsheetId();
   const sheets  = await getSheetsClient();
-  const meta    = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+  const meta    = await sheets.spreadsheets.get({ spreadsheetId: sid });
   const tabEsistenti = new Set(meta.data.sheets?.map(s => s.properties?.title ?? '') ?? []);
   const uscite  = await leggiUscite();
 
@@ -345,7 +355,7 @@ export async function syncToSheets(): Promise<void> {
   await exportToSheets();
 
   // 2. Aggiungi uscite dell'app nei tab mensili
-  await exportUsciteToTabs(sheets, uscite, tabEsistenti);
+  await exportUsciteToTabs(sheets, uscite, tabEsistenti, sid);
 }
 
 // ── Dedup prenotazioni iCal: rimuove Booking-duplicate di prenotazioni manuali ──
@@ -381,6 +391,7 @@ export async function dedupPrenotazioniIcal(): Promise<number> {
 async function arricchisciPrenotazioniDaSheets(
   sheets: ReturnType<typeof google.sheets>,
   tabEsistenti: Set<string>,
+  sid: string,
 ): Promise<number> {
   const prenotazioni = await leggiPrenotazioni();
   // Indice: "cameraId|check_in" → prenotazione iCal
@@ -397,7 +408,7 @@ async function arricchisciPrenotazioniDaSheets(
     if (tab === SHEET_NAME) continue;
 
     const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
+      spreadsheetId: sid,
       range: `'${tab}'!A:P`,
       valueRenderOption: 'UNFORMATTED_VALUE',
     });
@@ -458,16 +469,18 @@ async function arricchisciPrenotazioniDaSheets(
 
 // ── Arricchisci prenotazioni iCal da sheet (wrapper pubblico) ────────────
 export async function arricchisciPrenotazioniDaSheetsAll(): Promise<number> {
+  const sid    = await getSpreadsheetId();
   const sheets = await getSheetsClient();
-  const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+  const meta   = await sheets.spreadsheets.get({ spreadsheetId: sid });
   const tabEsistenti = new Set(meta.data.sheets?.map(s => s.properties?.title ?? '') ?? []);
-  return arricchisciPrenotazioniDaSheets(sheets, tabEsistenti);
+  return arricchisciPrenotazioniDaSheets(sheets, tabEsistenti, sid);
 }
 
 // ── Import completo: Prima Nota App + tab mensili → App (solo uscite) ────
 export async function importFromSheets(): Promise<{ importate: number; ignorate: number; rimosse: number; doppioniRimossi: number; prenotazioniArricchite: number }> {
+  const sid     = await getSpreadsheetId();
   const sheets  = await getSheetsClient();
-  const meta    = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+  const meta    = await sheets.spreadsheets.get({ spreadsheetId: sid });
   const tabEsistenti = new Set(meta.data.sheets?.map(s => s.properties?.title ?? '') ?? []);
 
   const uscite = await leggiUscite();
@@ -507,8 +520,8 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   }
 
   // 1. Legge il foglio "Prima Nota App" — importa SOLO uscite (le entrate vengono gestite dall'app)
-  const sheetName = await ensureSheet(sheets);
-  const res = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: `'${sheetName}'!A:H` });
+  const sheetName = await ensureSheet(sheets, sid);
+  const res = await sheets.spreadsheets.values.get({ spreadsheetId: sid, range: `'${sheetName}'!A:H` });
   for (const row of (res.data.values ?? []).slice(1).filter(r => r[0] && r[1] && r[2] && r[3])) {
     const [id, tipo, data, descrizione, categoria, importoStr, cameraIdStr, note] = row;
     if (tipo !== 'uscita') { ignorate++; continue; }
@@ -529,7 +542,7 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   }
 
   // 2. Legge tab mensili — importa uscite con data inizio
-  const { importate: nuoveImportate, aggiornate: nuoveAggiornate, rimosse: rimosse2 } = await importUsciteOriginale(sheets, uscite, tabEsistenti);
+  const { importate: nuoveImportate, aggiornate: nuoveAggiornate, rimosse: rimosse2 } = await importUsciteOriginale(sheets, uscite, tabEsistenti, sid);
   importate += nuoveImportate + nuoveAggiornate;
 
   await scriviUscite(uscite);
@@ -538,7 +551,7 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
   const doppioniRimossi = await dedupPrenotazioniIcal();
 
   // 4. Arricchisci prenotazioni iCal con nome ospite e importo dai tab mensili
-  const prenotazioniArricchite = await arricchisciPrenotazioniDaSheets(sheets, tabEsistenti);
+  const prenotazioniArricchite = await arricchisciPrenotazioniDaSheets(sheets, tabEsistenti, sid);
 
   return { importate, ignorate, rimosse: rimosse2, doppioniRimossi, prenotazioniArricchite };
 }
@@ -546,25 +559,26 @@ export async function importFromSheets(): Promise<{ importate: number; ignorate:
 // ── Impostazioni su Google Sheets (tab "Impostazioni") ────────────────────
 const IMP_SHEET = 'Impostazioni';
 
-async function ensureImpostazioniSheet(sheets: ReturnType<typeof google.sheets>): Promise<void> {
-  const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+async function ensureImpostazioniSheet(sheets: ReturnType<typeof google.sheets>, sid: string): Promise<void> {
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: sid });
   const exists = meta.data.sheets?.some((s) => s.properties?.title === IMP_SHEET);
   if (!exists) {
     await sheets.spreadsheets.batchUpdate({
-      spreadsheetId: SPREADSHEET_ID,
+      spreadsheetId: sid,
       requestBody: { requests: [{ addSheet: { properties: { title: IMP_SHEET } } }] },
     });
   }
 }
 
 export async function leggiImpostazioniSheets(): Promise<Impostazioni> {
+  const sid    = await getSpreadsheetId();
   const sheets = await getSheetsClient();
-  await ensureImpostazioniSheet(sheets);
+  await ensureImpostazioniSheet(sheets, sid);
 
   let rows: (string | number)[][];
   try {
     const res = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
+      spreadsheetId: sid,
       range: `'${IMP_SHEET}'!A:C`,
     });
     rows = (res.data.values ?? []) as (string | number)[][];
@@ -587,8 +601,9 @@ export async function leggiImpostazioniSheets(): Promise<Impostazioni> {
 }
 
 export async function scriviImpostazioniSheets(imp: Impostazioni): Promise<void> {
+  const sid    = await getSpreadsheetId();
   const sheets = await getSheetsClient();
-  await ensureImpostazioniSheet(sheets);
+  await ensureImpostazioniSheet(sheets, sid);
 
   const rows: string[][] = [['Tipo', 'ID', 'Valore']];
   for (const [id, nome] of Object.entries(imp.nomi_camere ?? {})) {
@@ -602,11 +617,11 @@ export async function scriviImpostazioniSheets(imp: Impostazioni): Promise<void>
   }
 
   await sheets.spreadsheets.values.clear({
-    spreadsheetId: SPREADSHEET_ID,
+    spreadsheetId: sid,
     range: `'${IMP_SHEET}'!A:C`,
   });
   await sheets.spreadsheets.values.update({
-    spreadsheetId: SPREADSHEET_ID,
+    spreadsheetId: sid,
     range: `'${IMP_SHEET}'!A1`,
     valueInputOption: 'RAW',
     requestBody: { values: rows },

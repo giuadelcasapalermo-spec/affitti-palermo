@@ -168,10 +168,13 @@ async function sincronizzaGmail(): Promise<{ importate: number; aggiornate: numb
 }
 
 export async function POST() {
+  const imp = await leggiImpostazioni();
   const risultatiIcal = await sincronizzaTutti();
   const doppioniRimossi = await dedupPrenotazioniIcal();
   const risultatiGmail = await sincronizzaGmail();
-  const prenotazioniArricchite = await arricchisciPrenotazioniDaSheetsAll().catch(() => 0);
+  const prenotazioniArricchite = imp.google_sheets_abilitato
+    ? await arricchisciPrenotazioniDaSheetsAll().catch(() => 0)
+    : 0;
 
   return NextResponse.json({
     ok: true,

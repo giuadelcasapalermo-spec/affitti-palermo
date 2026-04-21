@@ -72,6 +72,7 @@ export interface Impostazioni {
   nomi_camere: Record<number, string>;
   ultimo_sync?: string;
   google_sheets_abilitato?: boolean;
+  google_sheet_id?: string;
 }
 
 export const CAMERE: Camera[] = [

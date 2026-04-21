@@ -337,6 +337,47 @@ export default function ImpostazioniPage() {
 
         {imp.google_sheets_abilitato && (
           <>
+            {/* URL Foglio */}
+            <div className="mb-4">
+              <label className="block text-xs font-medium text-gray-600 mb-1">URL / ID Foglio Google</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  placeholder="https://docs.google.com/spreadsheets/d/... oppure solo l'ID"
+                  defaultValue={imp.google_sheet_id ?? ''}
+                  id="sheet-url-input"
+                  className="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                />
+                <button
+                  onClick={async () => {
+                    const raw = (document.getElementById('sheet-url-input') as HTMLInputElement).value.trim();
+                    const match = raw.match(/spreadsheets\/d\/([a-zA-Z0-9_-]+)/) ?? raw.match(/^([a-zA-Z0-9_-]{20,})$/);
+                    const sheetId = match?.[1] ?? raw;
+                    if (!sheetId) return;
+                    await fetch('/api/impostazioni', {
+                      method: 'PUT',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ google_sheet_id: sheetId }),
+                    });
+                    setImp(prev => ({ ...prev, google_sheet_id: sheetId }));
+                  }}
+                  className="bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-emerald-700"
+                >
+                  Salva
+                </button>
+              </div>
+              {imp.google_sheet_id && (
+                <a
+                  href={`https://docs.google.com/spreadsheets/d/${imp.google_sheet_id}/edit`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-emerald-600 hover:underline mt-1 inline-block"
+                >
+                  Apri foglio →
+                </a>
+              )}
+            </div>
+
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 onClick={() => syncSheets('export')}
