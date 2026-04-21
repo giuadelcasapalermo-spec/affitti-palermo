@@ -47,6 +47,7 @@ export default function ImpostazioniPage() {
   const [nuovaPasswordCambio, setNuovaPasswordCambio] = useState('');
   const [copiato, setCopiato] = useState<number | null>(null);
   const [origin, setOrigin] = useState('');
+  const [togglingSheets, setTogglingSheets] = useState(false);
 
   useEffect(() => {
     setOrigin(window.location.origin);
@@ -101,6 +102,18 @@ export default function ImpostazioniPage() {
     });
     setCambioPasswordId(null);
     setNuovaPasswordCambio('');
+  }
+
+  async function toggleGoogleSheets() {
+    setTogglingSheets(true);
+    const nuovo = !(imp.google_sheets_abilitato ?? false);
+    await fetch('/api/impostazioni', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ google_sheets_abilitato: nuovo }),
+    });
+    setImp(prev => ({ ...prev, google_sheets_abilitato: nuovo }));
+    setTogglingSheets(false);
   }
 
   async function salvaNomi() {
@@ -299,41 +312,60 @@ export default function ImpostazioniPage() {
 
       {/* Google Sheets */}
       <div className="bg-white rounded-lg shadow-sm p-5">
-        <div className="flex items-center gap-2 mb-1">
-          <Table2 size={18} className="text-emerald-600" />
-          <h2 className="font-semibold text-gray-700">Google Sheets</h2>
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2">
+            <Table2 size={18} className="text-emerald-600" />
+            <h2 className="font-semibold text-gray-700">Google Sheets</h2>
+          </div>
+          <button
+            onClick={toggleGoogleSheets}
+            disabled={togglingSheets}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors disabled:opacity-50 ${
+              imp.google_sheets_abilitato ? 'bg-emerald-500' : 'bg-gray-300'
+            }`}
+          >
+            <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+              imp.google_sheets_abilitato ? 'translate-x-6' : 'translate-x-1'
+            }`} />
+          </button>
         </div>
         <p className="text-sm text-gray-500 mb-4">
-          Sincronizza prenotazioni ed entrate/uscite con il foglio Google configurato.
+          {imp.google_sheets_abilitato
+            ? 'Integrazione Google Sheets attiva — i pulsanti di import/export sono visibili in tutta l\'app.'
+            : 'Integrazione Google Sheets disabilitata — l\'app funziona solo con iCal e inserimenti manuali.'}
         </p>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <button
-            onClick={() => syncSheets('export')}
-            disabled={syncingSheets}
-            className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
-          >
-            <RefreshCw size={15} className={syncingSheets ? 'animate-spin' : ''} />
-            Esporta su Sheets
-          </button>
-          <button
-            onClick={() => syncSheets('import')}
-            disabled={syncingSheets}
-            className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
-          >
-            <RefreshCw size={15} className={syncingSheets ? 'animate-spin' : ''} />
-            Importa da Sheets
-          </button>
-        </div>
+        {imp.google_sheets_abilitato && (
+          <>
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={() => syncSheets('export')}
+                disabled={syncingSheets}
+                className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
+              >
+                <RefreshCw size={15} className={syncingSheets ? 'animate-spin' : ''} />
+                Esporta su Sheets
+              </button>
+              <button
+                onClick={() => syncSheets('import')}
+                disabled={syncingSheets}
+                className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
+              >
+                <RefreshCw size={15} className={syncingSheets ? 'animate-spin' : ''} />
+                Importa da Sheets
+              </button>
+            </div>
 
-        {msgSheets && (
-          <div className={`mt-3 text-sm px-3 py-2 rounded ${
-            msgSheets.includes('Errore') || msgSheets.includes('errore')
-              ? 'bg-red-50 text-red-700'
-              : 'bg-emerald-50 text-emerald-700'
-          }`}>
-            {msgSheets}
-          </div>
+            {msgSheets && (
+              <div className={`mt-3 text-sm px-3 py-2 rounded ${
+                msgSheets.includes('Errore') || msgSheets.includes('errore')
+                  ? 'bg-red-50 text-red-700'
+                  : 'bg-emerald-50 text-emerald-700'
+              }`}>
+                {msgSheets}
+              </div>
+            )}
+          </>
         )}
       </div>
 

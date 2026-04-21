@@ -12,6 +12,7 @@ export async function leggiImpostazioni(): Promise<Impostazioni> {
     if (row.tipo === 'ical' && !isNaN(id)) imp.ical_urls[id] = row.valore as string;
     else if (row.tipo === 'camera' && !isNaN(id)) imp.nomi_camere[id] = row.valore as string;
     else if (row.tipo === 'sync' && row.chiave === 'ultimo_sync') imp.ultimo_sync = row.valore as string;
+    else if (row.tipo === 'config' && row.chiave === 'google_sheets_abilitato') imp.google_sheets_abilitato = row.valore === 'true';
   }
   return imp;
 }
@@ -32,6 +33,12 @@ export async function scriviImpostazioni(imp: Impostazioni): Promise<void> {
   if (imp.ultimo_sync) {
     await sql`
       INSERT INTO impostazioni (tipo, chiave, valore) VALUES ('sync', 'ultimo_sync', ${imp.ultimo_sync})
+      ON CONFLICT (tipo, chiave) DO UPDATE SET valore = EXCLUDED.valore
+    `;
+  }
+  if (imp.google_sheets_abilitato !== undefined) {
+    await sql`
+      INSERT INTO impostazioni (tipo, chiave, valore) VALUES ('config', 'google_sheets_abilitato', ${String(imp.google_sheets_abilitato)})
       ON CONFLICT (tipo, chiave) DO UPDATE SET valore = EXCLUDED.valore
     `;
   }

@@ -150,6 +150,7 @@ export default function PrimaNotaPage() {
   const [tabAttivo, setTabAttivo] = useState<'movimenti' | 'foglio'>('movimenti');
   const [syncing, setSyncing] = useState<'export' | 'import' | null>(null);
   const [syncMsg, setSyncMsg] = useState<{ ok: boolean; testo: string } | null>(null);
+  const [sheetsAbilitato, setSheetsAbilitato] = useState(false);
 
   async function syncSheets(direzione: 'export' | 'import') {
     setSyncing(direzione);
@@ -193,7 +194,10 @@ export default function PrimaNotaPage() {
     });
   }, []);
 
-  useEffect(() => { carica(); }, [carica]);
+  useEffect(() => {
+    carica();
+    fetch('/api/settings').then(r => r.json()).then(d => setSheetsAbilitato(d.googleSheetsAbilitato ?? false));
+  }, [carica]);
 
   /* CRUD */
   async function creaEntrata(d: Partial<Entrata>) {
@@ -249,51 +253,55 @@ export default function PrimaNotaPage() {
       {/* Titolo pagina */}
       <h1 className="text-2xl font-bold text-gray-800">Prima Nota</h1>
 
-      {/* Tab switcher — solo desktop */}
-      <div className="hidden sm:flex border-b border-gray-200 -mb-1">
-        <button
-          onClick={() => setTabAttivo('movimenti')}
-          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tabAttivo === 'movimenti' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
-        >
-          Movimenti
-        </button>
-        <button
-          onClick={() => setTabAttivo('foglio')}
-          className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tabAttivo === 'foglio' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
-        >
-          Foglio Google
-        </button>
-      </div>
+      {/* Tab switcher — solo desktop, solo se sheets abilitato */}
+      {sheetsAbilitato && (
+        <div className="hidden sm:flex border-b border-gray-200 -mb-1">
+          <button
+            onClick={() => setTabAttivo('movimenti')}
+            className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tabAttivo === 'movimenti' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          >
+            Movimenti
+          </button>
+          <button
+            onClick={() => setTabAttivo('foglio')}
+            className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${tabAttivo === 'foglio' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
+          >
+            Foglio Google
+          </button>
+        </div>
+      )}
 
       {/* Pulsanti sync Google Sheets */}
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          onClick={() => syncSheets('export')}
-          disabled={!!syncing}
-          title="Esporta movimenti → Google Sheets"
-          className="flex items-center gap-1.5 border border-gray-300 bg-white px-3 py-1.5 rounded text-xs font-medium hover:bg-gray-50 disabled:opacity-50"
-        >
-          {syncing === 'export' ? <RefreshCw size={13} className="animate-spin" /> : <ArrowUpFromLine size={13} />}
-          App → Sheets
-        </button>
-        <button
-          onClick={() => syncSheets('import')}
-          disabled={!!syncing}
-          title="Importa movimenti ← Google Sheets"
-          className="flex items-center gap-1.5 border border-gray-300 bg-white px-3 py-1.5 rounded text-xs font-medium hover:bg-gray-50 disabled:opacity-50"
-        >
-          {syncing === 'import' ? <RefreshCw size={13} className="animate-spin" /> : <ArrowDownToLine size={13} />}
-          Sheets → App
-        </button>
-        {syncMsg && (
-          <span className={`text-xs px-2 py-1 rounded ${syncMsg.ok ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-            {syncMsg.testo}
-          </span>
-        )}
-      </div>
+      {sheetsAbilitato && (
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => syncSheets('export')}
+            disabled={!!syncing}
+            title="Esporta movimenti → Google Sheets"
+            className="flex items-center gap-1.5 border border-gray-300 bg-white px-3 py-1.5 rounded text-xs font-medium hover:bg-gray-50 disabled:opacity-50"
+          >
+            {syncing === 'export' ? <RefreshCw size={13} className="animate-spin" /> : <ArrowUpFromLine size={13} />}
+            App → Sheets
+          </button>
+          <button
+            onClick={() => syncSheets('import')}
+            disabled={!!syncing}
+            title="Importa movimenti ← Google Sheets"
+            className="flex items-center gap-1.5 border border-gray-300 bg-white px-3 py-1.5 rounded text-xs font-medium hover:bg-gray-50 disabled:opacity-50"
+          >
+            {syncing === 'import' ? <RefreshCw size={13} className="animate-spin" /> : <ArrowDownToLine size={13} />}
+            Sheets → App
+          </button>
+          {syncMsg && (
+            <span className={`text-xs px-2 py-1 rounded ${syncMsg.ok ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+              {syncMsg.testo}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Foglio Google — solo desktop */}
-      {tabAttivo === 'foglio' && (
+      {sheetsAbilitato && tabAttivo === 'foglio' && (
         <div className="hidden sm:block bg-white rounded-lg shadow-sm overflow-hidden" style={{ height: 'calc(100vh - 160px)' }}>
           <iframe
             src="https://docs.google.com/spreadsheets/d/1t8sY-JBkSDAnIBhQA_xwotRjxAzRCJ1XMUrxbpHlJpM/htmlview?gid=1457435591"

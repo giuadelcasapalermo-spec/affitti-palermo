@@ -58,7 +58,7 @@ export default function Dashboard() {
   const [entrate, setEntrate] = useState<Entrata[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
-  const [syncSheetsMsg, setSyncSheetsMsg] = useState<string | null>(null);
+
   const [filtroDal, setFiltroDal] = usePersistedState('dash-dal',    DEFAULT_DAL);
   const [filtroAl, setFiltroAl]   = usePersistedState('dash-al',     DEFAULT_AL);
   const [filtroCamera, setFiltroCamera] = usePersistedState<number | 'tutte'>('dash-camera', 'tutte');
@@ -183,9 +183,7 @@ export default function Dashboard() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
         <div className="flex items-center gap-2">
-          {syncSheetsMsg && (
-            <span className="text-xs text-gray-500 max-w-xs truncate">{syncSheetsMsg}</span>
-          )}
+
           <button
             onClick={syncIcal}
             disabled={syncing}

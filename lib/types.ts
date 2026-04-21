@@ -68,9 +68,10 @@ export interface Entrata {
 }
 
 export interface Impostazioni {
-  ical_urls: Record<number, string>; // camera_id -> URL
-  nomi_camere: Record<number, string>; // camera_id -> nome personalizzato
+  ical_urls: Record<number, string>;
+  nomi_camere: Record<number, string>;
   ultimo_sync?: string;
+  google_sheets_abilitato?: boolean;
 }
 
 export const CAMERE: Camera[] = [
