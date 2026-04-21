@@ -1,25 +1,17 @@
 import { neon } from '@neondatabase/serverless';
 
-let _sql: ReturnType<typeof neon> | undefined;
+let _fn: ReturnType<typeof neon> | undefined;
 
 function getInstance(): ReturnType<typeof neon> {
-  if (!_sql) {
+  if (!_fn) {
     if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL non configurato');
-    _sql = neon(process.env.DATABASE_URL);
+    _fn = neon(process.env.DATABASE_URL);
   }
-  return _sql;
+  return _fn;
 }
 
-const sql = new Proxy(
-  (() => {}) as unknown as ReturnType<typeof neon>,
-  {
-    apply(_t, _this, args: unknown[]) {
-      return (getInstance() as unknown as (...a: unknown[]) => unknown)(...args);
-    },
-    get(_t, prop) {
-      return (getInstance() as unknown as Record<string | symbol, unknown>)[prop];
-    },
-  }
-);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const sql = (strings: TemplateStringsArray, ...values: any[]): Promise<Record<string, any>[]> =>
+  getInstance()(strings, ...values) as unknown as Promise<Record<string, any>[]>;
 
 export default sql;
