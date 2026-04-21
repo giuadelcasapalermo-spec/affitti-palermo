@@ -148,10 +148,10 @@ export default function PrimaNotaPage() {
     setFiltroMese(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`);
   }
   const [tabAttivo, setTabAttivo] = useState<'movimenti' | 'foglio'>('movimenti');
-  const [syncing, setSyncing] = useState<'export' | 'import' | 'both' | null>(null);
+  const [syncing, setSyncing] = useState<'export' | 'import' | null>(null);
   const [syncMsg, setSyncMsg] = useState<{ ok: boolean; testo: string } | null>(null);
 
-  async function syncSheets(direzione: 'export' | 'import' | 'both') {
+  async function syncSheets(direzione: 'export' | 'import') {
     setSyncing(direzione);
     setSyncMsg(null);
     try {
@@ -162,7 +162,7 @@ export default function PrimaNotaPage() {
       });
       const json = await res.json();
       setSyncMsg({ ok: json.ok, testo: json.messaggio ?? json.errore ?? 'Errore' });
-      if (json.ok && (direzione === 'import' || direzione === 'both')) carica();
+      if (json.ok && direzione === 'import') carica();
     } catch {
       setSyncMsg({ ok: false, testo: 'Errore di rete' });
     } finally {
@@ -284,15 +284,6 @@ export default function PrimaNotaPage() {
         >
           {syncing === 'import' ? <RefreshCw size={13} className="animate-spin" /> : <ArrowDownToLine size={13} />}
           Sheets → App
-        </button>
-        <button
-          onClick={() => syncSheets('both')}
-          disabled={!!syncing}
-          title="Sincronizza in entrambi i versi"
-          className="flex items-center gap-1.5 border border-blue-300 bg-blue-50 text-blue-700 px-3 py-1.5 rounded text-xs font-medium hover:bg-blue-100 disabled:opacity-50"
-        >
-          {syncing === 'both' ? <RefreshCw size={13} className="animate-spin" /> : <RefreshCw size={13} />}
-          Sync bidirezionale
         </button>
         {syncMsg && (
           <span className={`text-xs px-2 py-1 rounded ${syncMsg.ok ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>

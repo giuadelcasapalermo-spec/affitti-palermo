@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { syncToSheets, importFromSheets } from '@/lib/googlesheets';
 
 export async function POST(req: NextRequest) {
-  const { direzione } = await req.json() as { direzione: 'export' | 'import' | 'both' };
+  const { direzione } = await req.json() as { direzione: 'export' | 'import' };
 
   // Diagnostica env vars
   const envCheck = {
@@ -25,17 +25,6 @@ export async function POST(req: NextRequest) {
         prenotazioniArricchite > 0 ? `${prenotazioniArricchite} prenotazioni arricchite` : '',
       ].filter(Boolean).join(', ');
       return NextResponse.json({ ok: true, messaggio: `Importati/aggiornati ${importate} movimenti (${ignorate} saltati${extra ? ', ' + extra : ''})` });
-    }
-
-    if (direzione === 'both') {
-      await syncToSheets();
-      const { importate, rimosse, doppioniRimossi, prenotazioniArricchite } = await importFromSheets();
-      const extra = [
-        rimosse > 0 ? `rimossi ${rimosse} obsoleti` : '',
-        doppioniRimossi > 0 ? `rimossi ${doppioniRimossi} doppioni` : '',
-        prenotazioniArricchite > 0 ? `${prenotazioniArricchite} prenotazioni arricchite` : '',
-      ].filter(Boolean).join(', ');
-      return NextResponse.json({ ok: true, messaggio: `Sincronizzazione completata — importati ${importate}${extra ? ', ' + extra : ''}` });
     }
 
     return NextResponse.json({ ok: false, errore: 'direzione non valida' }, { status: 400 });

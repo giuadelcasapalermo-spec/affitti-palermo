@@ -85,25 +85,6 @@ export default function Dashboard() {
     setSyncing(false);
   }, [carica]);
 
-  async function syncSheetsBidirezionale() {
-    setSyncing(true);
-    setSyncSheetsMsg(null);
-    try {
-      const res = await fetch('/api/sync-sheets', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ direzione: 'both' }),
-      });
-      const json = await res.json();
-      setSyncSheetsMsg(json.messaggio ?? json.errore ?? 'Errore');
-      carica();
-    } catch {
-      setSyncSheetsMsg('Errore di rete');
-    } finally {
-      setSyncing(false);
-      setTimeout(() => setSyncSheetsMsg(null), 4000);
-    }
-  }
 
   useEffect(() => {
     carica();
@@ -213,15 +194,6 @@ export default function Dashboard() {
           >
             <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
             {syncing ? 'Sync...' : 'Sync iCal'}
-          </button>
-          <button
-            onClick={syncSheetsBidirezionale}
-            disabled={syncing}
-            title="Sincronizza bidirezionale con Google Sheets"
-            className="flex items-center gap-1.5 border border-blue-300 bg-blue-50 text-blue-700 px-3 py-2 rounded text-sm font-medium hover:bg-blue-100 disabled:opacity-50"
-          >
-            <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
-            Sync Sheets
           </button>
         </div>
       </div>

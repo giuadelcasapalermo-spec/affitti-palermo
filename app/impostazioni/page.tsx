@@ -3,16 +3,14 @@
 import { useEffect, useState } from 'react';
 import { CAMERE, Impostazioni } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
-import { RefreshCw, Save, CheckCircle, PenLine, Users, Trash2, Plus, KeyRound, Mail, Link } from 'lucide-react';
-import { formatDistanceToNow, parseISO } from 'date-fns';
-import { it } from 'date-fns/locale';
+import { Save, PenLine, Users, Trash2, Plus, KeyRound, Link, Copy, Check, RefreshCw, Table2 } from 'lucide-react';
 
 const DOT_CAMERA: Record<number, string> = {
-  1: 'bg-red-500',   // Rossa
-  2: 'bg-amber-400', // Gialla
-  3: 'bg-green-500', // Verde
-  4: 'bg-gray-400',  // Bianca
-  5: 'bg-blue-600',  // Blue
+  1: 'bg-red-500',
+  2: 'bg-amber-400',
+  3: 'bg-green-500',
+  4: 'bg-gray-400',
+  5: 'bg-blue-600',
 };
 
 interface UtenteInfo { id: string; username: string; }
@@ -39,16 +37,19 @@ export default function ImpostazioniPage() {
   const [syncingIcal, setSyncingIcal] = useState(false);
   const [risultatiIcal, setRisultatiIcal] = useState<ICalSyncResult | null>(null);
   const [salvatoUrls, setSalvatoUrls] = useState(false);
-  const [syncingGmail, setSyncingGmail] = useState(false);
-  const [risultatiGmail, setRisultatiGmail] = useState<{ importate: number; dettagli: string[] } | null>(null);
+  const [syncingSheets, setSyncingSheets] = useState(false);
+  const [msgSheets, setMsgSheets] = useState('');
   const [utenti, setUtenti] = useState<UtenteInfo[]>([]);
   const [nuovoUsername, setNuovoUsername] = useState('');
   const [nuovaPassword, setNuovaPassword] = useState('');
   const [erroreAccount, setErroreAccount] = useState('');
   const [cambioPasswordId, setCambioPasswordId] = useState<string | null>(null);
   const [nuovaPasswordCambio, setNuovaPasswordCambio] = useState('');
+  const [copiato, setCopiato] = useState<number | null>(null);
+  const [origin, setOrigin] = useState('');
 
   useEffect(() => {
+    setOrigin(window.location.origin);
     fetch('/api/impostazioni')
       .then((r) => r.json())
       .then((data) => {
@@ -60,6 +61,13 @@ export default function ImpostazioniPage() {
 
   function caricaUtenti() {
     fetch('/api/auth/utenti').then(r => r.json()).then(setUtenti);
+  }
+
+  async function copia(cameraId: number) {
+    const url = `${origin}/api/ical/${cameraId}`;
+    await navigator.clipboard.writeText(url);
+    setCopiato(cameraId);
+    setTimeout(() => setCopiato(null), 2000);
   }
 
   async function aggiungiUtente() {
@@ -125,13 +133,17 @@ export default function ImpostazioniPage() {
     setSyncingIcal(false);
   }
 
-  async function sincronizzaGmail() {
-    setSyncingGmail(true);
-    setRisultatiGmail(null);
-    const res = await fetch('/api/sync-gmail', { method: 'POST' });
+  async function syncSheets(direzione: 'export' | 'import') {
+    setSyncingSheets(true);
+    setMsgSheets('');
+    const res = await fetch('/api/sync-sheets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ direzione }),
+    });
     const data = await res.json();
-    setRisultatiGmail(data);
-    setSyncingGmail(false);
+    setMsgSheets(data.messaggio ?? data.errore ?? 'Fatto');
+    setSyncingSheets(false);
   }
 
   function setUrl(cameraId: number, url: string) {
@@ -198,7 +210,7 @@ export default function ImpostazioniPage() {
         </div>
       </div>
 
-      {/* URL iCal Booking.com */}
+      {/* URL iCal Booking.com — import */}
       <div className="bg-white rounded-lg shadow-sm p-5">
         <div className="flex items-center gap-2 mb-1">
           <Link size={18} className="text-blue-600" />
@@ -285,41 +297,87 @@ export default function ImpostazioniPage() {
         )}
       </div>
 
-      {/* Sync Gmail — Booking.com → App */}
+      {/* Google Sheets */}
       <div className="bg-white rounded-lg shadow-sm p-5">
         <div className="flex items-center gap-2 mb-1">
-          <Mail size={18} className="text-red-500" />
-          <h2 className="font-semibold text-gray-700">Sync Gmail — Booking.com</h2>
+          <Table2 size={18} className="text-emerald-600" />
+          <h2 className="font-semibold text-gray-700">Google Sheets</h2>
         </div>
         <p className="text-sm text-gray-500 mb-4">
-          Importa automaticamente le prenotazioni dalle email di conferma Booking.com
-          ricevute su <strong>giuadelcasapalermo@gmail.com</strong>.
+          Sincronizza prenotazioni ed entrate/uscite con il foglio Google configurato.
         </p>
 
-        <button
-          onClick={sincronizzaGmail}
-          disabled={syncingGmail}
-          className="flex items-center gap-1.5 bg-red-500 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-600 disabled:opacity-50"
-        >
-          <RefreshCw size={15} className={syncingGmail ? 'animate-spin' : ''} />
-          {syncingGmail ? 'Lettura email...' : 'Importa da Gmail'}
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => syncSheets('export')}
+            disabled={syncingSheets}
+            className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
+          >
+            <RefreshCw size={15} className={syncingSheets ? 'animate-spin' : ''} />
+            Esporta su Sheets
+          </button>
+          <button
+            onClick={() => syncSheets('import')}
+            disabled={syncingSheets}
+            className="flex items-center gap-1.5 bg-emerald-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
+          >
+            <RefreshCw size={15} className={syncingSheets ? 'animate-spin' : ''} />
+            Importa da Sheets
+          </button>
+        </div>
 
-        {risultatiGmail && (
+        {msgSheets && (
           <div className={`mt-3 text-sm px-3 py-2 rounded ${
-            risultatiGmail.importate > 0 ? 'bg-green-50 text-green-700' : 'bg-gray-50 text-gray-600'
+            msgSheets.includes('Errore') || msgSheets.includes('errore')
+              ? 'bg-red-50 text-red-700'
+              : 'bg-emerald-50 text-emerald-700'
           }`}>
-            <div className="flex items-center gap-2 font-medium mb-1">
-              <CheckCircle size={14} />
-              {risultatiGmail.importate > 0
-                ? `${risultatiGmail.importate} prenotazion${risultatiGmail.importate === 1 ? 'e' : 'i'} importata/e`
-                : 'Nessuna nuova prenotazione'}
-            </div>
-            {risultatiGmail.dettagli?.map((d, i) => (
-              <div key={i} className="text-xs opacity-80 ml-5">{d}</div>
-            ))}
+            {msgSheets}
           </div>
         )}
+      </div>
+
+      {/* iCal Output */}
+      <div className="bg-white rounded-lg shadow-sm p-5">
+        <div className="flex items-center gap-2 mb-1">
+          <Link size={18} className="text-green-600" />
+          <h2 className="font-semibold text-gray-700">iCal Output — Blocca date su Booking.com</h2>
+        </div>
+        <p className="text-sm text-gray-500 mb-1">
+          Queste URL espongono le prenotazioni inserite manualmente sull&apos;app. Aggiungile su Booking.com per bloccare automaticamente le date.
+        </p>
+        <p className="text-xs text-gray-400 mb-4">
+          Extranet Booking.com → Proprietà → Disponibilità → Sincronizzazione calendario → Importa calendario
+        </p>
+
+        <div className="space-y-2">
+          {CAMERE.map((c) => {
+            const nomeAttuale = camere.find((cam) => cam.id === c.id)?.nome ?? c.nome;
+            const url = origin ? `${origin}/api/ical/${c.id}` : `…/api/ical/${c.id}`;
+            return (
+              <div key={c.id} className="flex items-center gap-3">
+                <div className="flex items-center gap-1.5 w-24 flex-shrink-0">
+                  <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${DOT_CAMERA[c.id] ?? 'bg-gray-400'}`} />
+                  <span className="text-sm text-gray-600 truncate">{nomeAttuale}</span>
+                </div>
+                <code className="flex-1 text-xs bg-gray-50 border rounded px-3 py-2 text-gray-600 truncate">
+                  {url}
+                </code>
+                <button
+                  onClick={() => copia(c.id)}
+                  title="Copia URL"
+                  className={`flex items-center gap-1 px-2 py-2 rounded text-xs font-medium transition-colors flex-shrink-0 ${
+                    copiato === c.id
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  {copiato === c.id ? <Check size={14} /> : <Copy size={14} />}
+                </button>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Gestione account */}
@@ -332,7 +390,6 @@ export default function ImpostazioniPage() {
           Utenti autorizzati ad accedere all&apos;applicazione.
         </p>
 
-        {/* Lista utenti */}
         <div className="space-y-2 mb-5">
           {utenti.map((u) => (
             <div key={u.id} className="flex items-center gap-3 p-2.5 rounded-lg border border-gray-100 bg-gray-50">
@@ -382,7 +439,6 @@ export default function ImpostazioniPage() {
           ))}
         </div>
 
-        {/* Aggiungi utente */}
         <div className="border-t pt-4">
           <div className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Aggiungi utente</div>
           <div className="flex items-center gap-2 flex-wrap">
