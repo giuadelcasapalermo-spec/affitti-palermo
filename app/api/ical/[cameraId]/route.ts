@@ -35,7 +35,12 @@ export async function GET(
   }
 
   const prenotazioni = (await leggiPrenotazioni()).filter(
-    (p) => p.camera_id === cameraIdNum && p.stato !== 'cancellata'
+    (p) =>
+      p.camera_id === cameraIdNum &&
+      p.stato !== 'cancellata' &&
+      p.fonte !== 'ical' &&
+      !p.note?.includes('BK:') &&
+      !p.note?.includes('Beds24')
   );
 
   const now = new Date()

@@ -74,7 +74,7 @@ function PrenotazioniInner() {
     setSyncing(true);
     setSyncOk(null);
     try {
-      const res = await fetch("/api/sync", { method: "POST" });
+      const res = await fetch('/api/sync', { method: 'POST' });
       const json = await res.json();
       setSyncOk(json.ok !== false);
       carica();
