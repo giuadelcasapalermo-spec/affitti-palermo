@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { usePersistedState } from '@/hooks/usePersistedState';
 import { Prenotazione, Uscita, Entrata } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
-import { isWithinInterval, parseISO, differenceInDays, format, startOfMonth, endOfMonth, addMonths, subMonths } from 'date-fns';
+import { isWithinInterval, parseISO, differenceInDays, format, startOfMonth, endOfMonth, addMonths, subMonths, addDays } from 'date-fns';
 import { fData } from '@/lib/utils';
 import { BedDouble, Euro, Users, RefreshCw, TrendingDown, TrendingUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import { ComposedChart, Bar, Area, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
@@ -132,9 +132,17 @@ export default function Dashboard() {
     prenNelPeriodo.some((p) => p.camera_id === c.id)
   );
 
+  // Notti effettive di una prenotazione ritagliate al periodo selezionato
+  function nottiInPeriodo(p: Prenotazione): number {
+    const fineEsclusiva = format(addDays(parseISO(filtroAl), 1), 'yyyy-MM-dd');
+    const ci = p.check_in  >= filtroDal     ? p.check_in  : filtroDal;
+    const co = p.check_out <= fineEsclusiva ? p.check_out : fineEsclusiva;
+    return Math.max(0, differenceInDays(parseISO(co), parseISO(ci)));
+  }
+
   const statsCamera = camere.map((camera) => {
     const pren = prenNelPeriodo.filter((p) => p.camera_id === camera.id);
-    const notti = pren.reduce((s, p) => s + differenceInDays(parseISO(p.check_out), parseISO(p.check_in)), 0);
+    const notti = pren.reduce((s, p) => s + nottiInPeriodo(p), 0);
     const ricavo = pren.filter((p) => p.importo_totale > 0).reduce((s, p) => s + p.importo_totale, 0);
     return { camera, notti, ricavo };
   });
@@ -280,9 +288,9 @@ export default function Dashboard() {
           const camFiltrate = camere.filter(c => filtroCamera === 'tutte' || c.id === filtroCamera).sort((a, b) => a.id - b.id);
           return camFiltrate.map(camera => {
             const pren = prenNelPeriodo.filter(p => p.camera_id === camera.id);
-            const notti = pren.reduce((s, p) => s + differenceInDays(parseISO(p.check_out), parseISO(p.check_in)), 0);
+            const notti = pren.reduce((s, p) => s + nottiInPeriodo(p), 0);
             const ricavo = pren.filter(p => p.importo_totale > 0).reduce((s, p) => s + p.importo_totale, 0);
-            const satPct = nGiorniPeriodo > 0 ? Math.round((Math.min(notti, nGiorniPeriodo) / nGiorniPeriodo) * 100) : 0;
+            const satPct = nGiorniPeriodo > 0 ? Math.round((notti / nGiorniPeriodo) * 100) : 0;
             const col = COLORI_CAMERA[camera.id] ?? COLORI_CAMERA[1];
             return (
               <div key={camera.id}>

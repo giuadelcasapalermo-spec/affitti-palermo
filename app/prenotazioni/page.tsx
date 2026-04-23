@@ -6,7 +6,7 @@ import { useCamere } from '@/hooks/useCamere';
 import { differenceInDays, parseISO, format, startOfMonth, endOfMonth, isToday, isTomorrow } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { fData } from '@/lib/utils';
-import { Pencil, Trash2, Plus, X, Euro, TrendingDown, TrendingUp, BookOpen, Landmark, Check, Sparkles, Moon, MessageCircle, User, CalendarRange, RefreshCw } from 'lucide-react';
+import { Pencil, Trash2, Plus, X, Euro, TrendingDown, TrendingUp, BookOpen, Landmark, Check, Sparkles, Moon, User, CalendarRange, RefreshCw } from 'lucide-react';
 import PrenotazioneForm from '@/components/PrenotazioneForm';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
@@ -56,6 +56,7 @@ function PrenotazioniInner() {
   const [filtroAl,  setFiltroAl]  = usePersistedState('pren-al',  DEFAULT_AL);
   const [syncing, setSyncing] = useState(false);
   const [syncOk, setSyncOk]   = useState<boolean | null>(null);
+  const [editingCard, setEditingCard] = useState<Prenotazione | null>(null);
 
   const carica = useCallback(() => {
     fetch('/api/prenotazioni').then(r => r.json()).then(data => {
@@ -111,6 +112,12 @@ function PrenotazioniInner() {
 
   function setEV(k: keyof Prenotazione, v: string | number | undefined) {
     setEditValues(prev => ({ ...prev, [k]: v }));
+  }
+
+  async function aggiornaCard(data: Partial<Prenotazione>) {
+    if (!editingCard) return;
+    await aggiorna(editingCard.id, data);
+    setEditingCard(null);
   }
 
   async function salvaInline() {
@@ -313,6 +320,31 @@ function PrenotazioniInner() {
         </div>
       </div>
 
+      {/* Modal modifica prenotazione (mobile) */}
+      {editingCard && (
+        <div
+          className="sm:hidden fixed inset-0 z-50 flex items-end bg-black/50"
+          onClick={() => setEditingCard(null)}
+        >
+          <div
+            className="bg-white rounded-t-2xl w-full p-5 max-h-[92vh] overflow-y-auto"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-semibold text-gray-800">Modifica prenotazione</h2>
+              <button onClick={() => setEditingCard(null)}>
+                <X size={18} className="text-gray-400 hover:text-gray-600" />
+              </button>
+            </div>
+            <PrenotazioneForm
+              iniziale={editingCard}
+              onSalva={aggiornaCard}
+              onAnnulla={() => setEditingCard(null)}
+            />
+          </div>
+        </div>
+      )}
+
       {/* ── Lista mobile ── */}
       <div className="sm:hidden -mx-4 bg-gray-50 pb-8 pt-1">
         {filtrate.length === 0 ? (
@@ -337,7 +369,7 @@ function PrenotazioniInner() {
                     onDoubleClick={() => startEdit(p)}
                   >
                     {/* Nome + badge */}
-                    <div className="flex items-center gap-2 mb-2.5 pr-10 flex-wrap">
+                    <div className="flex items-center gap-2 mb-2.5 pr-16 flex-wrap">
                       <span className="font-bold text-gray-900 text-[15px]">{p.ospite_nome}</span>
                       {p.fonte === 'ical' && (
                         <span className="bg-blue-600 text-white text-[11px] font-bold px-2 py-0.5 rounded">
@@ -356,10 +388,21 @@ function PrenotazioniInner() {
                       )}
                     </div>
 
-                    {/* Icona chat in alto a destra */}
-                    <button className="absolute top-4 right-4 text-gray-300 active:text-gray-500">
-                      <MessageCircle size={22} strokeWidth={1.5} />
-                    </button>
+                    {/* Azioni modifica / elimina */}
+                    <div className="absolute top-3 right-3 flex gap-0.5">
+                      <button
+                        onClick={() => setEditingCard(p)}
+                        className="p-1.5 text-gray-400 active:text-blue-600 touch-manipulation rounded-lg active:bg-blue-50"
+                      >
+                        <Pencil size={17} strokeWidth={1.8} />
+                      </button>
+                      <button
+                        onClick={() => elimina(p.id)}
+                        className="p-1.5 text-gray-400 active:text-red-600 touch-manipulation rounded-lg active:bg-red-50"
+                      >
+                        <Trash2 size={17} strokeWidth={1.8} />
+                      </button>
+                    </div>
 
                     {/* Date range */}
                     <div className="flex items-center gap-2 text-sm text-gray-600 mb-1.5">
