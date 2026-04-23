@@ -8,6 +8,7 @@ import {
 import { useCamere } from '@/hooks/useCamere';
 import { fData } from '@/lib/utils';
 import { Plus, Pencil, Trash2, X, TrendingDown, TrendingUp, ChevronDown, RefreshCw, ArrowDownToLine, ArrowUpFromLine, ChevronLeft, ChevronRight } from 'lucide-react';
+import VoiceInput from '@/components/VoiceInput';
 
 /* ── colori ───────────────────────────────────────────── */
 const COL_USCITA: Record<CategoriaUscita, string> = {
@@ -52,8 +53,20 @@ function FormUscita({ iniziale, onSalva, onAnnulla, camere }: {
     note:       iniziale?.note       ?? '',
   });
   const set = (k: string, v: string | number) => setF(p => ({ ...p, [k]: v }));
+  function applicaVoce(data: Record<string, unknown>) {
+    setF(p => ({
+      ...p,
+      ...(data.data        ? { data:        String(data.data) }                          : {}),
+      ...(data.descrizione ? { descrizione: String(data.descrizione) }                  : {}),
+      ...(data.categoria   ? { categoria:   String(data.categoria) as CategoriaUscita } : {}),
+      ...(data.importo != null ? { importo: String(data.importo) }                      : {}),
+      ...(data.camera_id != null ? { camera_id: String(data.camera_id) }                : {}),
+      ...(data.note != null ? { note: String(data.note) }                               : {}),
+    }));
+  }
   return (
     <form onSubmit={e => { e.preventDefault(); onSalva({ ...f, importo: Number(f.importo), camera_id: f.camera_id ? Number(f.camera_id) : undefined }); }} className="space-y-4">
+      <VoiceInput tipo="uscita" camere={camere} onParsed={applicaVoce} />
       <div className="grid grid-cols-2 gap-4">
         <div><label className="block text-sm font-medium text-gray-700 mb-1">Data *</label>
           <input type="date" value={f.data} onChange={e => set('data', e.target.value)} className="w-full border rounded px-3 py-2 text-sm" required /></div>
@@ -99,8 +112,20 @@ function FormEntrata({ iniziale, onSalva, onAnnulla, camere }: {
     note:       iniziale?.note        ?? '',
   });
   const set = (k: string, v: string | number) => setF(p => ({ ...p, [k]: v }));
+  function applicaVoce(data: Record<string, unknown>) {
+    setF(p => ({
+      ...p,
+      ...(data.data        ? { data:        String(data.data) }                            : {}),
+      ...(data.descrizione ? { descrizione: String(data.descrizione) }                    : {}),
+      ...(data.categoria   ? { categoria:   String(data.categoria) as CategoriaEntrata }  : {}),
+      ...(data.importo != null ? { importo: String(data.importo) }                        : {}),
+      ...(data.camera_id != null ? { camera_id: String(data.camera_id) }                  : {}),
+      ...(data.note != null ? { note: String(data.note) }                                 : {}),
+    }));
+  }
   return (
     <form onSubmit={e => { e.preventDefault(); onSalva({ ...f, importo: Number(f.importo), camera_id: f.camera_id ? Number(f.camera_id) : undefined }); }} className="space-y-4">
+      <VoiceInput tipo="entrata" camere={camere} onParsed={applicaVoce} />
       <div className="grid grid-cols-2 gap-4">
         <div><label className="block text-sm font-medium text-gray-700 mb-1">Data *</label>
           <input type="date" value={f.data} onChange={e => set('data', e.target.value)} className="w-full border rounded px-3 py-2 text-sm" required /></div>

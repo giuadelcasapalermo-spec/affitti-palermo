@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Camera, Prenotazione } from '@/lib/types';
 import { useCamere } from '@/hooks/useCamere';
 import { differenceInDays, parseISO } from 'date-fns';
+import VoiceInput from './VoiceInput';
 
 interface Props {
   iniziale?: Partial<Prenotazione>;
@@ -46,8 +47,25 @@ export default function PrenotazioneForm({ iniziale = {}, onSalva, onAnnulla }: 
     onSalva(payload);
   }
 
+  function applicaVoce(data: Record<string, unknown>) {
+    setForm(f => ({
+      ...f,
+      ...(data.camera_id != null     ? { camera_id:      Number(data.camera_id) }                    : {}),
+      ...(data.ospite_nome           ? { ospite_nome:     String(data.ospite_nome) }                  : {}),
+      ...(data.ospite_telefono       ? { ospite_telefono: String(data.ospite_telefono) }              : {}),
+      ...(data.ospite_email          ? { ospite_email:    String(data.ospite_email) }                 : {}),
+      ...(data.check_in              ? { check_in:        String(data.check_in) }                     : {}),
+      ...(data.check_out             ? { check_out:       String(data.check_out) }                    : {}),
+      ...(data.importo_totale != null ? { importo_totale: Number(data.importo_totale) }               : {}),
+      ...(data.tassa_soggiorno != null ? { tassa_soggiorno: Number(data.tassa_soggiorno) }            : {}),
+      ...(data.stato                 ? { stato: data.stato as Prenotazione['stato'] }                 : {}),
+      ...(data.note != null          ? { note:            String(data.note) }                         : {}),
+    }));
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <VoiceInput tipo="prenotazione" camere={camere} onParsed={applicaVoce} />
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Camera *</label>
