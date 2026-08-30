@@ -325,66 +325,122 @@ export default function CalendarioPage() {
     </>
   );
 
+  // Pulsanti azione (sync iCal + toggle vista) — riusati in row 1 (mobile) e row 2 (desktop)
+  const azioniJSX = (
+    <>
+      {!soloCalendario && (
+        <>
+          {syncMsg && (
+            <span className={`hidden sm:inline text-xs px-2 py-1 rounded ${
+              syncOk === false ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-500'
+            }`}>{syncMsg}</span>
+          )}
+        <button
+          onClick={syncIcal}
+          disabled={syncing}
+          className={`flex items-center gap-1.5 border px-2.5 py-1.5 rounded text-sm font-medium transition-colors ${
+            syncOk === true  ? 'border-green-300 bg-green-50 text-green-700' :
+            syncOk === false ? 'border-red-300 bg-red-50 text-red-700' :
+            'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+          }`}
+        >
+          <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
+          <span className="hidden sm:inline">Sync iCal</span>
+        </button>
+        </>
+      )}
+      {!soloCalendario && (
+        <button
+          onClick={() => setVistaCompatta(v => !v)}
+          title={vistaCompatta ? 'Vista estesa' : 'Vista compatta'}
+          className={`flex items-center gap-1.5 border px-2.5 py-1.5 rounded text-sm font-medium transition-colors ${
+            vistaCompatta
+              ? 'border-blue-400 bg-blue-50 text-blue-700'
+              : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+          }`}
+        >
+          {vistaCompatta ? <CalendarDays size={14} /> : <LayoutGrid size={14} />}
+          <span className="hidden sm:inline">{vistaCompatta ? 'Esteso' : 'Compatto'}</span>
+        </button>
+      )}
+    </>
+  );
+
+  // Riepilogo pulizie in versione compatta (pallini con tooltip) — solo desktop, tra mese e pulsanti
+  const pulizieCompattoJSX = (pulizieCheckout.length > 0 || pulizieCambio.length > 0) && (
+    <div className="flex items-center gap-3">
+      {pulizieCheckout.length > 0 && (
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] font-semibold text-orange-500 uppercase">CO</span>
+          <div className="flex -space-x-0.5">
+            {pulizieCheckout.map((p) => {
+              const cam = camere.find((c) => c.id === p.camera_id);
+              const st = getCameraStyle(p.camera_id, cam?.colore);
+              return (
+                <div
+                  key={p.id}
+                  title={`${cam?.nome ?? 'Camera'} — ${p.ospite_nome}`}
+                  className={`w-2.5 h-2.5 rounded-full ring-1 ring-white ${st.dot}`}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+      {pulizieCambio.length > 0 && (
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] font-semibold text-blue-500 uppercase">Cambio</span>
+          <div className="flex -space-x-0.5">
+            {pulizieCambio.map((p) => {
+              const cam = camere.find((c) => c.id === p.camera_id);
+              const st = getCameraStyle(p.camera_id, cam?.colore);
+              const nottiTrascorse = differenceInDays(giornoSelezionato, parseISO(p.check_in));
+              return (
+                <div
+                  key={p.id}
+                  title={`${cam?.nome ?? 'Camera'} — ${p.ospite_nome} (${nottiTrascorse}n)`}
+                  className={`w-2.5 h-2.5 rounded-full ring-1 ring-white ${st.dot}`}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="space-y-2">
-      {/* Row 1: title + buttons right (icon-only on mobile) */}
+      {/* Row 1: title + buttons (solo mobile, icon-only — su desktop i pulsanti si spostano in row 2) */}
       <div className="flex items-center justify-between gap-2">
         <h1 className="text-2xl font-bold text-gray-800">Calendario</h1>
-        <div className="flex items-center gap-2">
-          {!soloCalendario && (
-            <>
-              {syncMsg && (
-                <span className={`hidden sm:inline text-xs px-2 py-1 rounded ${
-                  syncOk === false ? 'bg-red-50 text-red-600' : 'bg-gray-100 text-gray-500'
-                }`}>{syncMsg}</span>
-              )}
-            <button
-              onClick={syncIcal}
-              disabled={syncing}
-              className={`flex items-center gap-1.5 border px-2.5 py-1.5 rounded text-sm font-medium transition-colors ${
-                syncOk === true  ? 'border-green-300 bg-green-50 text-green-700' :
-                syncOk === false ? 'border-red-300 bg-red-50 text-red-700' :
-                'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
-              <span className="hidden sm:inline">Sync iCal</span>
-            </button>
-            </>
-          )}
-          {!soloCalendario && (
-            <button
-              onClick={() => setVistaCompatta(v => !v)}
-              title={vistaCompatta ? 'Vista estesa' : 'Vista compatta'}
-              className={`flex items-center gap-1.5 border px-2.5 py-1.5 rounded text-sm font-medium transition-colors ${
-                vistaCompatta
-                  ? 'border-blue-400 bg-blue-50 text-blue-700'
-                  : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              {vistaCompatta ? <CalendarDays size={14} /> : <LayoutGrid size={14} />}
-              <span className="hidden sm:inline">{vistaCompatta ? 'Esteso' : 'Compatto'}</span>
-            </button>
-          )}
+        <div className="flex items-center gap-2 sm:hidden">
+          {azioniJSX}
         </div>
       </div>
 
-      {/* Row 2: month navigation */}
-      <div className="flex items-center gap-1">
-        <button onClick={() => setMese((m) => subMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
-          <ChevronLeft size={18} />
-        </button>
-        <span className="font-semibold text-gray-700 capitalize w-36 text-center">
-          {format(mese, 'MMMM yyyy', { locale: it })}
-        </span>
-        <button onClick={() => setMese((m) => addMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
-          <ChevronRight size={18} />
-        </button>
+      {/* Row 2: navigazione mese — su desktop, riepilogo pulizie compatto + pulsanti sulla stessa riga */}
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-1">
+          <button onClick={() => setMese((m) => subMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
+            <ChevronLeft size={18} />
+          </button>
+          <span className="font-semibold text-gray-700 capitalize w-36 text-center">
+            {format(mese, 'MMMM yyyy', { locale: it })}
+          </span>
+          <button onClick={() => setMese((m) => addMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
+            <ChevronRight size={18} />
+          </button>
+        </div>
+        <div className="hidden sm:flex items-center gap-3">
+          {pulizieCompattoJSX}
+          <div className="flex items-center gap-2">{azioniJSX}</div>
+        </div>
       </div>
 
-      {/* Riepilogo pulizie del giorno selezionato */}
+      {/* Riepilogo pulizie del giorno selezionato — versione estesa, solo mobile (su desktop vedi row 2) */}
       {(pulizieCheckout.length > 0 || pulizieCambio.length > 0) && (
-        <div className="bg-white rounded-lg shadow-sm p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="sm:hidden bg-white rounded-lg shadow-sm p-3 grid grid-cols-1 gap-3">
           <div>
             <p className="text-[10px] font-semibold text-orange-500 uppercase tracking-wide mb-1">
               Check-out da pulire ({pulizieCheckout.length})
