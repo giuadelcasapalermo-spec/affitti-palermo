@@ -164,6 +164,20 @@ export default function CalendarioPage() {
     .filter((p) => p.importo_totale > 0)
     .reduce((s, p) => s + p.importo_totale, 0);
 
+  // Riepilogo pulizie del giorno selezionato: check-out (ospiti che lasciano la stanza)
+  // e cambio stanza (soggiorni lunghi, biancheria/pulizia ogni 3 notti trascorse)
+  const pulizieCheckout = prenotazioni
+    .filter((p) => p.stato !== 'cancellata' && isSameDay(parseISO(p.check_out), giornoSelezionato))
+    .sort((a, b) => a.camera_id - b.camera_id);
+
+  const pulizieCambio = prenotazioni
+    .filter((p) => {
+      if (p.stato === 'cancellata' || !isNottePren(giornoSelezionato, p)) return false;
+      const nottiTrascorse = differenceInDays(giornoSelezionato, parseISO(p.check_in));
+      return nottiTrascorse > 0 && nottiTrascorse % 3 === 0;
+    })
+    .sort((a, b) => a.camera_id - b.camera_id);
+
   // JSX della lista prenotazioni del giorno (riusata in due posizioni)
   const listaGiornoJSX = (
     <>
@@ -367,6 +381,58 @@ export default function CalendarioPage() {
           <ChevronRight size={18} />
         </button>
       </div>
+
+      {/* Riepilogo pulizie del giorno selezionato */}
+      {(pulizieCheckout.length > 0 || pulizieCambio.length > 0) && (
+        <div className="bg-white rounded-lg shadow-sm p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <p className="text-[10px] font-semibold text-orange-500 uppercase tracking-wide mb-1">
+              Check-out da pulire ({pulizieCheckout.length})
+            </p>
+            {pulizieCheckout.length === 0 ? (
+              <p className="text-xs text-gray-400">Nessuna</p>
+            ) : (
+              <div className="space-y-1">
+                {pulizieCheckout.map((p) => {
+                  const cam = camere.find((c) => c.id === p.camera_id);
+                  const st = getCameraStyle(p.camera_id, cam?.colore);
+                  return (
+                    <div key={p.id} className="flex items-center gap-1.5 text-xs">
+                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${st.dot}`} />
+                      <span className="font-medium text-gray-700">{cam?.nome}</span>
+                      <span className="text-gray-400 truncate">{p.ospite_nome}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold text-blue-500 uppercase tracking-wide mb-1">
+              Cambio stanza – soggiorni lunghi ({pulizieCambio.length})
+            </p>
+            {pulizieCambio.length === 0 ? (
+              <p className="text-xs text-gray-400">Nessuna</p>
+            ) : (
+              <div className="space-y-1">
+                {pulizieCambio.map((p) => {
+                  const cam = camere.find((c) => c.id === p.camera_id);
+                  const st = getCameraStyle(p.camera_id, cam?.colore);
+                  const nottiTrascorse = differenceInDays(giornoSelezionato, parseISO(p.check_in));
+                  return (
+                    <div key={p.id} className="flex items-center gap-1.5 text-xs">
+                      <div className={`w-2 h-2 rounded-full flex-shrink-0 ${st.dot}`} />
+                      <span className="font-medium text-gray-700">{cam?.nome}</span>
+                      <span className="text-gray-400 truncate">{p.ospite_nome}</span>
+                      <span className="text-[10px] text-gray-400 ml-auto flex-shrink-0">{nottiTrascorse}n</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Stats row */}
       <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
