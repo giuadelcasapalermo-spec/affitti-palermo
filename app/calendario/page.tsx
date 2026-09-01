@@ -464,7 +464,7 @@ export default function CalendarioPage() {
         </div>
       </div>
 
-      {/* Row 2: navigazione mese — su desktop, filtro giorno accanto + riepilogo pulizie compatto + pulsanti sulla stessa riga */}
+      {/* Row 2: navigazione mese + filtro giorno accanto (esteso su desktop, compatto su mobile) — su desktop anche riepilogo pulizie compatto + pulsanti sulla stessa riga */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-1">
@@ -481,16 +481,14 @@ export default function CalendarioPage() {
           <div className="hidden sm:flex">
             {giornoNavJSX}
           </div>
+          <div className="sm:hidden flex">
+            {giornoNavCompactJSX}
+          </div>
         </div>
         <div className="hidden sm:flex items-center gap-3">
           {pulizieCompattoJSX}
           <div className="flex items-center gap-2">{azioniJSX}</div>
         </div>
-      </div>
-
-      {/* Row 2b: filtro giorno compatto — solo mobile, subito sotto il filtro mese */}
-      <div className="sm:hidden flex justify-center">
-        {giornoNavCompactJSX}
       </div>
 
       {/* Riepilogo pulizie del giorno selezionato — versione estesa, solo mobile (su desktop vedi row 2) */}
