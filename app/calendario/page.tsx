@@ -192,22 +192,22 @@ export default function CalendarioPage() {
     })
     .sort((a, b) => a.camera_id - b.camera_id);
 
-  // Filtro giorno versione compatta (senza mese/anno) — in una riga propria sotto il filtro mese su mobile
+  // Filtro giorno versione compatta (senza mese/anno) — accanto al filtro mese su mobile
   const giornoNavCompactJSX = (
-    <div className="flex items-center gap-2">
-      <div className="flex items-center gap-0.5">
-        <button onClick={() => navigaGiorno(-1)} className="p-1 rounded hover:bg-gray-200">
-          <ChevronLeft size={15} />
+    <div className="flex items-center gap-1">
+      <div className="flex items-center gap-0">
+        <button onClick={() => navigaGiorno(-1)} className="p-0.5 rounded hover:bg-gray-200">
+          <ChevronLeft size={14} />
         </button>
-        <h2 className="font-semibold text-gray-700 text-sm capitalize text-center min-w-[70px]">
+        <h2 className="font-semibold text-gray-700 text-xs capitalize text-center min-w-[46px]">
           {format(giornoSelezionato, 'EEE d', { locale: it })}
         </h2>
-        <button onClick={() => navigaGiorno(1)} className="p-1 rounded hover:bg-gray-200">
-          <ChevronRight size={15} />
+        <button onClick={() => navigaGiorno(1)} className="p-0.5 rounded hover:bg-gray-200">
+          <ChevronRight size={14} />
         </button>
       </div>
       {!isSameDay(giornoSelezionato, today) && (
-        <button onClick={() => setGiornoSelezionato(today)} className="text-xs text-gray-400 hover:text-blue-600 hover:underline">
+        <button onClick={() => setGiornoSelezionato(today)} className="text-[10px] text-gray-400 hover:text-blue-600 hover:underline">
           Oggi
         </button>
       )}
@@ -466,15 +466,16 @@ export default function CalendarioPage() {
 
       {/* Row 2: navigazione mese + filtro giorno accanto (esteso su desktop, compatto su mobile) — su desktop anche riepilogo pulizie compatto + pulsanti sulla stessa riga */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-1">
-            <button onClick={() => setMese((m) => subMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-0.5 sm:gap-1">
+            <button onClick={() => setMese((m) => subMonths(m, 1))} className="p-1 sm:p-1.5 rounded hover:bg-gray-200">
               <ChevronLeft size={18} />
             </button>
-            <span className="font-semibold text-gray-700 capitalize w-36 text-center">
-              {format(mese, 'MMMM yyyy', { locale: it })}
+            <span className="font-semibold text-gray-700 capitalize w-16 sm:w-36 text-center text-xs sm:text-base">
+              <span className="hidden sm:inline">{format(mese, 'MMMM yyyy', { locale: it })}</span>
+              <span className="sm:hidden">{format(mese, 'MMM yy', { locale: it })}</span>
             </span>
-            <button onClick={() => setMese((m) => addMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
+            <button onClick={() => setMese((m) => addMonths(m, 1))} className="p-1 sm:p-1.5 rounded hover:bg-gray-200">
               <ChevronRight size={18} />
             </button>
           </div>
