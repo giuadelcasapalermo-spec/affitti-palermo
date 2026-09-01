@@ -128,6 +128,19 @@ export default function CalendarioPage() {
     return !isBefore(day, ci) && isBefore(day, co);
   }
 
+  // Cambio lenzuola/asciugamani ogni 3 notti trascorse (k), evitando che l'ultimo intervallo
+  // prima del check-out resti di 1 sola notte: se il soggiorno (N notti) è N%3===1, l'ultimo
+  // cambio "naturale" (a k = N-1) viene anticipato a k = N-2, così l'ultimo intervallo è di 2 notti.
+  // Es. 4 notti → cambio a k=2 (invece di k=3); 7 notti → cambio a k=3 e k=5 (invece di k=3 e k=6).
+  function isGiornoCambio(k: number, nottiTotali: number): boolean {
+    if (k <= 0) return false;
+    if (nottiTotali % 3 === 1) {
+      if (k === nottiTotali - 1) return false; // rimpiazzato da k = nottiTotali - 2
+      if (k === nottiTotali - 2) return true;
+    }
+    return k % 3 === 0;
+  }
+
   function getDayInfo(day: Date, cameraId: number) {
     const pren = prenotazioni.find((p) => {
       if (p.camera_id !== cameraId || p.stato === 'cancellata') return false;
@@ -174,7 +187,8 @@ export default function CalendarioPage() {
     .filter((p) => {
       if (p.stato === 'cancellata' || !isNottePren(giornoSelezionato, p)) return false;
       const nottiTrascorse = differenceInDays(giornoSelezionato, parseISO(p.check_in));
-      return nottiTrascorse > 0 && nottiTrascorse % 3 === 0;
+      const nottiTotali = differenceInDays(parseISO(p.check_out), parseISO(p.check_in));
+      return isGiornoCambio(nottiTrascorse, nottiTotali);
     })
     .sort((a, b) => a.camera_id - b.camera_id);
 
