@@ -178,27 +178,32 @@ export default function CalendarioPage() {
     })
     .sort((a, b) => a.camera_id - b.camera_id);
 
+  // Filtro giorno (navigazione prev/next + data + "Oggi") — mostrato accanto al filtro mese su desktop,
+  // in una riga propria sotto il filtro mese su mobile
+  const giornoNavJSX = (
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-0.5">
+        <button onClick={() => navigaGiorno(-1)} className="p-1 rounded hover:bg-gray-200">
+          <ChevronLeft size={15} />
+        </button>
+        <h2 className="font-semibold text-gray-700 text-sm capitalize text-center min-w-[180px]">
+          {format(giornoSelezionato, 'EEEE d MMMM yyyy', { locale: it })}
+        </h2>
+        <button onClick={() => navigaGiorno(1)} className="p-1 rounded hover:bg-gray-200">
+          <ChevronRight size={15} />
+        </button>
+      </div>
+      {!isSameDay(giornoSelezionato, today) && (
+        <button onClick={() => setGiornoSelezionato(today)} className="text-xs text-gray-400 hover:text-blue-600 hover:underline">
+          Oggi
+        </button>
+      )}
+    </div>
+  );
+
   // JSX della lista prenotazioni del giorno (riusata in due posizioni)
   const listaGiornoJSX = (
     <>
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-0.5">
-          <button onClick={() => navigaGiorno(-1)} className="p-1 rounded hover:bg-gray-200">
-            <ChevronLeft size={15} />
-          </button>
-          <h2 className="font-semibold text-gray-700 text-sm capitalize text-center min-w-[180px]">
-            {format(giornoSelezionato, 'EEEE d MMMM yyyy', { locale: it })}
-          </h2>
-          <button onClick={() => navigaGiorno(1)} className="p-1 rounded hover:bg-gray-200">
-            <ChevronRight size={15} />
-          </button>
-        </div>
-        {!isSameDay(giornoSelezionato, today) && (
-          <button onClick={() => setGiornoSelezionato(today)} className="text-xs text-gray-400 hover:text-blue-600 hover:underline">
-            Oggi
-          </button>
-        )}
-      </div>
       {(() => {
         const tutti = prenotazioni
           .filter((p) => {
@@ -419,23 +424,33 @@ export default function CalendarioPage() {
         </div>
       </div>
 
-      {/* Row 2: navigazione mese — su desktop, riepilogo pulizie compatto + pulsanti sulla stessa riga */}
+      {/* Row 2: navigazione mese — su desktop, filtro giorno accanto + riepilogo pulizie compatto + pulsanti sulla stessa riga */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
-        <div className="flex items-center gap-1">
-          <button onClick={() => setMese((m) => subMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
-            <ChevronLeft size={18} />
-          </button>
-          <span className="font-semibold text-gray-700 capitalize w-36 text-center">
-            {format(mese, 'MMMM yyyy', { locale: it })}
-          </span>
-          <button onClick={() => setMese((m) => addMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
-            <ChevronRight size={18} />
-          </button>
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-1">
+            <button onClick={() => setMese((m) => subMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
+              <ChevronLeft size={18} />
+            </button>
+            <span className="font-semibold text-gray-700 capitalize w-36 text-center">
+              {format(mese, 'MMMM yyyy', { locale: it })}
+            </span>
+            <button onClick={() => setMese((m) => addMonths(m, 1))} className="p-1.5 rounded hover:bg-gray-200">
+              <ChevronRight size={18} />
+            </button>
+          </div>
+          <div className="hidden sm:flex">
+            {giornoNavJSX}
+          </div>
         </div>
         <div className="hidden sm:flex items-center gap-3">
           {pulizieCompattoJSX}
           <div className="flex items-center gap-2">{azioniJSX}</div>
         </div>
+      </div>
+
+      {/* Row 2b: filtro giorno — solo mobile, subito sotto il filtro mese */}
+      <div className="sm:hidden flex justify-center">
+        {giornoNavJSX}
       </div>
 
       {/* Riepilogo pulizie del giorno selezionato — versione estesa, solo mobile (su desktop vedi row 2) */}
