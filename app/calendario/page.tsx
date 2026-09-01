@@ -178,8 +178,30 @@ export default function CalendarioPage() {
     })
     .sort((a, b) => a.camera_id - b.camera_id);
 
-  // Filtro giorno (navigazione prev/next + data + "Oggi") — mostrato accanto al filtro mese su desktop,
-  // in una riga propria sotto il filtro mese su mobile
+  // Filtro giorno versione compatta (senza mese/anno) — accanto al filtro mese su desktop
+  const giornoNavCompactJSX = (
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-0.5">
+        <button onClick={() => navigaGiorno(-1)} className="p-1 rounded hover:bg-gray-200">
+          <ChevronLeft size={15} />
+        </button>
+        <h2 className="font-semibold text-gray-700 text-sm capitalize text-center min-w-[70px]">
+          {format(giornoSelezionato, 'EEE d', { locale: it })}
+        </h2>
+        <button onClick={() => navigaGiorno(1)} className="p-1 rounded hover:bg-gray-200">
+          <ChevronRight size={15} />
+        </button>
+      </div>
+      {!isSameDay(giornoSelezionato, today) && (
+        <button onClick={() => setGiornoSelezionato(today)} className="text-xs text-gray-400 hover:text-blue-600 hover:underline">
+          Oggi
+        </button>
+      )}
+    </div>
+  );
+
+  // Filtro giorno versione estesa (con mese/anno) — in una riga propria sotto il filtro mese su mobile,
+  // ripetuto sopra i dettagli dei clienti presenti su desktop
   const giornoNavJSX = (
     <div className="flex items-center gap-2">
       <div className="flex items-center gap-0.5">
@@ -201,9 +223,13 @@ export default function CalendarioPage() {
     </div>
   );
 
-  // JSX della lista prenotazioni del giorno (riusata in due posizioni)
+  // JSX della lista prenotazioni del giorno (riusata in due posizioni) — su desktop ripete il filtro
+  // giorno esteso sopra i dettagli (su mobile è già mostrato in una riga dedicata sotto il filtro mese)
   const listaGiornoJSX = (
     <>
+      <div className="hidden sm:flex mb-2">
+        {giornoNavJSX}
+      </div>
       {(() => {
         const tutti = prenotazioni
           .filter((p) => {
@@ -439,7 +465,7 @@ export default function CalendarioPage() {
             </button>
           </div>
           <div className="hidden sm:flex">
-            {giornoNavJSX}
+            {giornoNavCompactJSX}
           </div>
         </div>
         <div className="hidden sm:flex items-center gap-3">
