@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { fetchEmailBooking, marcaProcessata } from '@/lib/gmail';
 import { leggiPrenotazioni, scriviPrenotazioni } from '@/lib/db';
-import { leggiImpostazioni } from '@/lib/ical';
-import { CAMERE } from '@/lib/types';
-import { randomUUID } from 'crypto';
-import { addDays, parseISO, format } from 'date-fns';
 import sql from '@/lib/postgres';
 
 export async function POST(req: Request) {
@@ -24,7 +20,6 @@ export async function POST(req: Request) {
   }
 
   const prenotazioni = await leggiPrenotazioni();
-  const impostazioni = await leggiImpostazioni();
 
   // Mappa booking_number → prenotazione esistente (cercata nelle note e nell'ical_uid)
   const mappaBooking = new Map<string, string>(); // booking_number → id prenotazione
@@ -54,33 +49,12 @@ export async function POST(req: Request) {
       continue;
     }
 
-    // ── Prenotazione già esistente (abbinata per booking_number): aggiorna ─
+    // ── Prenotazione già abbinata a questo booking_number: nulla da fare ────
+    // (Booking.com non include più nome/importo/camera nel corpo dell'email:
+    // non c'è altro dato da aggiungere in questo passaggio successivo.)
     if (mappaBooking.has(email.booking_number)) {
-      const idEsistente = mappaBooking.get(email.booking_number)!;
-      const p = prenotazioni.find(x => x.id === idEsistente);
-      if (p) {
-        let aggiornata = false;
-        if ((!p.ospite_nome || p.ospite_nome === 'Ospite Booking.com') && email.ospite_nome && email.ospite_nome !== 'Ospite Booking.com') {
-          p.ospite_nome = email.ospite_nome; aggiornata = true;
-        }
-        if (!p.importo_totale && email.importo > 0) {
-          p.importo_totale = email.importo; aggiornata = true;
-        }
-        if (!p.tassa_soggiorno && email.tassa_soggiorno > 0) {
-          p.tassa_soggiorno = email.tassa_soggiorno; aggiornata = true;
-        }
-        if (!p.ospite_email && email.ospite_email) {
-          p.ospite_email = email.ospite_email; aggiornata = true;
-        }
-        if (!p.ospite_telefono && email.ospite_telefono) {
-          p.ospite_telefono = email.ospite_telefono; aggiornata = true;
-        }
-        if (aggiornata) {
-          importate++;
-          dettagli.push(`${email.booking_number}: aggiornata con dati email ✓`);
-        }
-      }
-      await marcaProcessata(email.gmail_message_id, email.booking_number, idEsistente);
+      await marcaProcessata(email.gmail_message_id, email.booking_number, mappaBooking.get(email.booking_number)!);
+      dettagli.push(`${email.booking_number}: già abbinata`);
       continue;
     }
 
@@ -90,93 +64,31 @@ export async function POST(req: Request) {
       continue;
     }
 
-    // Se check-out manca, usa check-in + 1 come placeholder
-    const check_out = email.check_out ?? format(addDays(parseISO(email.check_in), 1), 'yyyy-MM-dd');
-    const checkoutPlaceholder = !email.check_out;
-
-    // Cerca camera_id dal nome camera
-    let camera_id = 1;
-    const nomeCamera = email.camera_nome.toLowerCase();
-    if (email.camera_nome) {
-      for (const [id, nome] of Object.entries(impostazioni.nomi_camere ?? {})) {
-        if (nomeCamera.includes(nome.toLowerCase()) || nome.toLowerCase().includes(nomeCamera)) {
-          camera_id = Number(id);
-          break;
-        }
-      }
-      if (camera_id === 1) {
-        for (const cam of CAMERE) {
-          if (nomeCamera.includes(cam.nome.toLowerCase())) {
-            camera_id = cam.id;
-            break;
-          }
-        }
-      }
-    }
-
-    // ── Cerca prenotazione iCal esistente per check_in + camera_id ─────────
-    const iCalMatch = prenotazioni.find(p =>
+    // ── Abbina al blocco iCal con lo stesso check-in ────────────────────────
+    // L'email non porta più camera/nome/importo: la camera certa arriva solo dalla
+    // sync iCal (che crea già il blocco con camera e date reali). Qui ci limitiamo
+    // ad agganciare il numero di prenotazione al blocco corrispondente, per riferimento.
+    // Se il blocco iCal non esiste ancora (sync non ancora passata) o è ambiguo
+    // (più camere con check-in lo stesso giorno), non creiamo nulla "alla cieca":
+    // verrà agganciato a un prossimo giro, o resta visibile come "da completare".
+    const candidati = prenotazioni.filter(p =>
       p.check_in === email.check_in &&
-      p.camera_id === camera_id &&
       p.fonte === 'ical' &&
-      (!p.ospite_nome || p.ospite_nome === 'Ospite Booking.com')
+      p.stato !== 'cancellata' &&
+      !p.note?.includes('BK:')
     );
 
-    if (iCalMatch) {
-      let aggiornata = false;
-      if (email.ospite_nome && email.ospite_nome !== 'Ospite Booking.com') {
-        iCalMatch.ospite_nome = email.ospite_nome; aggiornata = true;
-      }
-      if (email.importo > 0 && !iCalMatch.importo_totale) {
-        iCalMatch.importo_totale = email.importo; aggiornata = true;
-      }
-      if (email.tassa_soggiorno > 0 && !iCalMatch.tassa_soggiorno) {
-        iCalMatch.tassa_soggiorno = email.tassa_soggiorno; aggiornata = true;
-      }
-      if (email.ospite_email && !iCalMatch.ospite_email) {
-        iCalMatch.ospite_email = email.ospite_email; aggiornata = true;
-      }
-      if (email.ospite_telefono && !iCalMatch.ospite_telefono) {
-        iCalMatch.ospite_telefono = email.ospite_telefono; aggiornata = true;
-      }
-      // Aggiorna le note per includere il booking number
-      iCalMatch.note = `BK:${email.booking_number} - Importata da Booking.com (iCal+email)`;
-      mappaBooking.set(email.booking_number, iCalMatch.id);
-      await marcaProcessata(email.gmail_message_id, email.booking_number, iCalMatch.id);
-      if (aggiornata) {
-        importate++;
-        dettagli.push(`${email.booking_number}: abbinata a iCal e aggiornata (${email.check_in}) ✓`);
-      } else {
-        dettagli.push(`${email.booking_number}: abbinata a iCal (nessun dato nuovo)`);
-      }
-      continue;
+    if (candidati.length === 1) {
+      const match = candidati[0];
+      match.note = [match.note, `BK:${email.booking_number}`].filter(Boolean).join(' - ');
+      mappaBooking.set(email.booking_number, match.id);
+      await marcaProcessata(email.gmail_message_id, email.booking_number, match.id);
+      importate++;
+      dettagli.push(`${email.booking_number}: abbinata al blocco iCal del ${email.check_in} (camera ${match.camera_id}) ✓`);
+    } else {
+      await marcaProcessata(email.gmail_message_id, email.booking_number, '');
+      dettagli.push(`${email.booking_number}: nessun blocco iCal univoco per ${email.check_in} (${candidati.length} candidati) — saltata`);
     }
-
-    // ── Nessun match: crea nuova prenotazione ──────────────────────────────
-    const id = randomUUID();
-    prenotazioni.push({
-      id,
-      camera_id,
-      ospite_nome: email.ospite_nome,
-      ospite_telefono: email.ospite_telefono,
-      ospite_email: email.ospite_email,
-      check_in: email.check_in,
-      check_out,
-      importo_totale: email.importo,
-      tassa_soggiorno: email.tassa_soggiorno || undefined,
-      stato: 'confermata',
-      note: `BK:${email.booking_number} - Importata da email${checkoutPlaceholder ? ' (check-out da verificare)' : ''}`,
-      created_at: new Date().toISOString(),
-      fonte: 'ical',
-      ical_uid: `gmail-${email.booking_number}`,
-    });
-
-    mappaBooking.set(email.booking_number, id);
-    await marcaProcessata(email.gmail_message_id, email.booking_number, id);
-    importate++;
-    dettagli.push(
-      `${email.booking_number}: ${email.ospite_nome} (${email.check_in} → ${check_out}${checkoutPlaceholder ? ' ⚠️ verifica checkout' : ''})`
-    );
   }
 
   if (importate > 0 || cancellate > 0) {

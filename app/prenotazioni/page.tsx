@@ -24,6 +24,15 @@ function statoColore(stato: Prenotazione['stato']) {
   return 'bg-red-100 text-red-800';
 }
 
+// Prenotazioni create dalla sync iCal ma senza nome/importo reali: Booking.com non li
+// fornisce più via email, vanno completate a mano (da Pulse/extranet) modificandole qui.
+function daCompletare(p: Prenotazione): boolean {
+  if (p.stato === 'cancellata') return false;
+  if (p.fonte !== 'ical') return false;
+  const nomeVuoto = !p.ospite_nome?.trim() || p.ospite_nome === 'Ospite Booking.com';
+  return nomeVuoto || !p.importo_totale;
+}
+
 const oggi = new Date();
 const DEFAULT_DAL = format(oggi, 'yyyy-MM-dd');
 const DEFAULT_AL  = format(endOfMonth(oggi),   'yyyy-MM-dd');
@@ -251,8 +260,11 @@ function PrenotazioniInner() {
 
   const nomiOspiti = Array.from(new Set(prenotazioni.map(p => p.ospite_nome))).sort();
 
+  const daCompletareCount = prenotazioni.filter(daCompletare).length;
+
   const filtrate = prenotazioni.filter(p => {
-    if (filtroStato  !== 'tutti'  && p.stato     !== filtroStato)          return false;
+    if (filtroStato === 'da_completare') { if (!daCompletare(p)) return false; }
+    else if (filtroStato !== 'tutti' && p.stato !== filtroStato) return false;
     if (filtroCamera !== 'tutte'  && p.camera_id !== Number(filtroCamera)) return false;
     if (filtroOspite && !p.ospite_nome.toLowerCase().includes(filtroOspite.toLowerCase())) return false;
     if (filtroDal && p.check_in < filtroDal) return false;
@@ -407,6 +419,7 @@ function PrenotazioniInner() {
             <option value="confermata">Confermata</option>
             <option value="pending">In attesa</option>
             <option value="cancellata">Cancellata</option>
+            <option value="da_completare">Da completare{daCompletareCount > 0 ? ` (${daCompletareCount})` : ''}</option>
           </select>
           <select value={filtroCamera} onChange={e => setFiltroCamera(e.target.value)} className="border rounded px-2 py-1 text-xs">
             <option value="tutte">Tutte le camere</option>

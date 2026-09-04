@@ -564,6 +564,210 @@ export async function arricchisciPrenotazioniDaSheetsAll(struttura_id?: string):
   return arricchisciPrenotazioniDaSheets(sheets, tabEsistenti, sid, struttura_id);
 }
 
+// ── Nuova prenotazione Booking (da email) → riga nel tab mensile ─────────
+// Scrive nelle sole colonne "manuali" (Tipologia, Descrizione, Cellulare, Tassa,
+// Booking, Data inizio/fine, Fornitore, Stanza, Note) e ricrea le formule delle
+// colonne derivate (Differenza, Entrate, % Booking) copiando esattamente il
+// pattern già usato dalle righe esistenti: =E{r}-F{r}, =H{r}*0,55, =H{r}*0,45.
+export interface NuovoRicavoBooking {
+  ospite_nome: string;
+  ospite_telefono?: string;
+  check_in: string;
+  check_out: string;
+  camera_id: number;
+  importo_lordo: number;
+  tassa_soggiorno?: number;
+  note?: string;
+}
+
+export async function inserisciRicavoBookingNelFoglio(
+  dati: NuovoRicavoBooking,
+  opts: { dryRun?: boolean } = {},
+): Promise<{ inserita: boolean; tab: string; riga?: number; motivo?: string }> {
+  const tab = tabPerData(dati.check_in);
+  const sid = await getSpreadsheetId();
+  const sheets = await getSheetsClient();
+
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: sid });
+  const tabEsistenti = new Set(meta.data.sheets?.map((s) => s.properties?.title ?? '') ?? []);
+  if (!tabEsistenti.has(tab)) {
+    return { inserita: false, tab, motivo: `tab "${tab}" non esiste nel foglio` };
+  }
+
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: sid,
+    range: `'${tab}'!A:O`,
+    valueRenderOption: 'UNFORMATTED_VALUE',
+  });
+  const rows = (res.data.values ?? []) as (string | number)[][];
+
+  const hIdx = rows.findIndex((r) => String(r[0] ?? '').trim() === 'Tipologia');
+  if (hIdx === -1) return { inserita: false, tab, motivo: 'riga intestazione "Tipologia" non trovata' };
+
+  const headerRow = rows[hIdx] as (string | number)[];
+  const telefonoIdx = headerRow.findIndex((c) => {
+    const v = String(c ?? '').toLowerCase().trim();
+    return v === 'cellulare' || v === 'email';
+  });
+  const shift = telefonoIdx >= 0 && telefonoIdx <= 2 ? 1 : 0;
+  const ncols = headerRow.length;
+  const is2025 = ncols > 0 && ncols <= 12 + shift;
+  if (is2025 || shift !== 1) {
+    return { inserita: false, tab, motivo: 'layout del tab non riconosciuto (diverso da quello verificato con colonna "Cellulare" e split Booking), inserimento non supportato per sicurezza' };
+  }
+  const C = { dataI: 8 + shift, stanza: 11 + shift };
+
+  const stanzaNome = STANZA_NOME[dati.camera_id] ?? '';
+
+  // ── Cerca duplicati e punto di inserimento tra le righe di ricavo datate ─
+  // L'inserimento va sempre dentro il blocco di righe datate (non in fondo al
+  // tab, dove ci sono righe di totali/riepilogo senza data in colonna J).
+  let insertBeforeRow: number | null = null; // 1-based
+  let lastDatedRow: number | null = null; // 1-based, ultima riga di ricavo con data valida
+  let duplicato = false;
+  for (let i = hIdx + 1; i < rows.length; i++) {
+    const row = rows[i];
+    const tipo = String(row[0] ?? '').trim().toLowerCase();
+    const isRicavo = tipo === 'affitto' || tipo.startsWith('ricavo') || tipo.includes('booking') || tipo.includes('airbnb') || tipo.includes('privato');
+    if (!isRicavo) continue;
+    const data = parseSheetDate(row[C.dataI] as string | number | undefined);
+    if (!data) continue;
+    lastDatedRow = i + 1;
+    const stanzaRaw = String(row[C.stanza] ?? '').trim().toLowerCase();
+    if (stanzaRaw === stanzaNome.toLowerCase() && data === dati.check_in) {
+      duplicato = true;
+      break;
+    }
+    if (insertBeforeRow === null && data > dati.check_in) {
+      insertBeforeRow = i + 1; // 1-based
+    }
+  }
+  if (duplicato) {
+    return { inserita: false, tab, motivo: 'esiste già una riga con stessa camera e stesso check-in' };
+  }
+  const rigaInserimento = insertBeforeRow ?? (lastDatedRow !== null ? lastDatedRow + 1 : rows.length + 1);
+  const insertIdx0 = rigaInserimento - 1; // 0-based, indice della riga PRIMA della quale inserire
+
+  const sheetId = meta.data.sheets?.find((s) => s.properties?.title === tab)?.properties?.sheetId;
+  if (sheetId === undefined) return { inserita: false, tab, motivo: 'sheetId non trovato' };
+
+  if (opts.dryRun) {
+    return { inserita: true, tab, riga: rigaInserimento, motivo: 'dry run: nessuna scrittura effettuata' };
+  }
+
+  await sheets.spreadsheets.batchUpdate({
+    spreadsheetId: sid,
+    requestBody: {
+      requests: [{
+        insertDimension: {
+          range: { sheetId, dimension: 'ROWS', startIndex: insertIdx0, endIndex: insertIdx0 + 1 },
+          inheritFromBefore: insertIdx0 > hIdx + 1,
+        },
+      }],
+    },
+  });
+
+  const r = rigaInserimento;
+  const riga: (string | number)[] = [
+    'Ricavo Booking',
+    dati.ospite_nome,
+    dati.ospite_telefono ?? '',
+    `=E${r}-F${r}`,
+    `=H${r}*0,55`,
+    '',
+    dati.tassa_soggiorno ?? '',
+    dati.importo_lordo,
+    `=H${r}*0,45`,
+    isoToSerial(dati.check_in),
+    isoToSerial(dati.check_out),
+    'Booking',
+    stanzaNome,
+    '',
+    dati.note ?? '',
+  ];
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: sid,
+    range: `'${tab}'!A${r}:O${r}`,
+    valueInputOption: 'USER_ENTERED',
+    requestBody: { values: [riga] },
+  });
+
+  return { inserita: true, tab, riga: r };
+}
+
+// ── Completa a mano (dall'app) una riga scheletro già inserita nel foglio ──
+// Trova la riga per camera+check-in (creata da inserisciRicavoBookingNelFoglio) e
+// aggiorna solo le celle manuali (Descrizione, Cellulare, Tassa, Booking) — non
+// tocca la posizione della riga né le formule già presenti.
+export async function aggiornaRigaSheetPerPrenotazione(dati: {
+  check_in: string;
+  camera_id: number;
+  ospite_nome: string;
+  ospite_telefono?: string;
+  importo_lordo: number;
+  tassa_soggiorno?: number;
+}): Promise<{ aggiornata: boolean; tab: string; riga?: number; motivo?: string }> {
+  const tab = tabPerData(dati.check_in);
+  const sid = await getSpreadsheetId();
+  const sheets = await getSheetsClient();
+
+  const meta = await sheets.spreadsheets.get({ spreadsheetId: sid });
+  const tabEsistenti = new Set(meta.data.sheets?.map((s) => s.properties?.title ?? '') ?? []);
+  if (!tabEsistenti.has(tab)) return { aggiornata: false, tab, motivo: `tab "${tab}" non esiste` };
+
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: sid,
+    range: `'${tab}'!A:O`,
+    valueRenderOption: 'UNFORMATTED_VALUE',
+  });
+  const rows = (res.data.values ?? []) as (string | number)[][];
+
+  const hIdx = rows.findIndex((r) => String(r[0] ?? '').trim() === 'Tipologia');
+  if (hIdx === -1) return { aggiornata: false, tab, motivo: 'riga intestazione "Tipologia" non trovata' };
+
+  const headerRow = rows[hIdx] as (string | number)[];
+  const telefonoIdx = headerRow.findIndex((c) => {
+    const v = String(c ?? '').toLowerCase().trim();
+    return v === 'cellulare' || v === 'email';
+  });
+  const shift = telefonoIdx >= 0 && telefonoIdx <= 2 ? 1 : 0;
+  if (headerRow.length <= 12 + shift || shift !== 1) {
+    return { aggiornata: false, tab, motivo: 'layout del tab non riconosciuto' };
+  }
+  const C = { dataI: 8 + shift, stanza: 11 + shift };
+  const stanzaNome = STANZA_NOME[dati.camera_id] ?? '';
+
+  const candidate: number[] = []; // indici 0-based
+  for (let i = hIdx + 1; i < rows.length; i++) {
+    const row = rows[i];
+    const data = parseSheetDate(row[C.dataI] as string | number | undefined);
+    if (data !== dati.check_in) continue;
+    const stanzaRaw = String(row[C.stanza] ?? '').trim().toLowerCase();
+    if (stanzaRaw !== stanzaNome.toLowerCase()) continue;
+    candidate.push(i);
+  }
+  if (candidate.length !== 1) {
+    return { aggiornata: false, tab, motivo: `${candidate.length} righe corrispondenti (serve esattamente 1)` };
+  }
+
+  const r = candidate[0] + 1; // 1-based
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: sid,
+    range: `'${tab}'!B${r}:C${r}`,
+    valueInputOption: 'USER_ENTERED',
+    requestBody: { values: [[dati.ospite_nome, dati.ospite_telefono ?? '']] },
+  });
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: sid,
+    range: `'${tab}'!G${r}:H${r}`,
+    valueInputOption: 'USER_ENTERED',
+    requestBody: { values: [[dati.tassa_soggiorno ?? '', dati.importo_lordo]] },
+  });
+
+  return { aggiornata: true, tab, riga: r };
+}
+
 // ── Import completo: Prima Nota App + tab mensili → App (solo uscite) ────
 export async function importFromSheets(struttura_id?: string): Promise<{ importate: number; ignorate: number; rimosse: number; doppioniRimossi: number; prenotazioniArricchite: number }> {
   const sid     = await getSpreadsheetId();

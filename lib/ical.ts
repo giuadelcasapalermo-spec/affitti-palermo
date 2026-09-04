@@ -186,6 +186,7 @@ export interface SyncResult {
   aggiunte: number;
   rimosse: number;
   errore?: string;
+  nuove?: Prenotazione[];
 }
 
 // ── UID iCal da ignorare permanentemente (blocchi/prenotazioni fantasma eliminate manualmente) ──
@@ -331,6 +332,7 @@ export async function sincronizzaCalendario(
     camera_id: cameraId,
     aggiunte: daAggiungere.length,
     rimosse,
+    nuove: daAggiungere,
   };
 }
 
