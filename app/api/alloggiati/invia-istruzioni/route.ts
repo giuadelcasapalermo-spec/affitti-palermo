@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
 Ecco tutte le informazioni utili per il vostro soggiorno presso di noi:
 
-Check-in: Una volta arrivati in ${struttura.indirizzo || struttura.nome}, citofonate su GiuAdel casa Palermo e vi apriremo il portone da remoto. Salite al 4° piano e inserite il codice 315518 sul tastierino accanto alla porta. La vostra camera è la n. ${stanza}. All'interno della stanza, appese al dispositivo che attiva l'elettricità, troverete 3 chiavi (stanza, porta d'ingresso e portone su strada). Durante la permanenza vi chiediamo di utilizzare sempre le chiavi per rientrare.
+Check-in: la stanza è disponibile a partire dalle ore 15. Una volta arrivati in ${struttura.indirizzo || struttura.nome}, citofonate su GiuAdel casa Palermo e vi apriremo il portone da remoto. Salite al 4° piano e inserite il codice 315518 sul tastierino accanto alla porta. La vostra camera è la n. ${stanza}. All'interno della stanza, appese al dispositivo che attiva l'elettricità, troverete 3 chiavi (stanza, porta d'ingresso e portone su strada). Durante la permanenza vi chiediamo di utilizzare sempre le chiavi per rientrare.
 
 Check-out: La camera va liberata entro le ore 11:00. Vi preghiamo di lasciare le chiavi riagganciate allo stacca-luce come le avete trovate. Per motivi organizzativi, purtroppo non possiamo offrire il servizio di deposito bagagli dopo il check-out.
 
@@ -60,7 +60,7 @@ Good morning ${pren.ospite_nome}, welcome! 🌸
 
 Here is all the information you need for your stay with us:
 
-Check-in: Once you arrive at ${struttura.indirizzo || struttura.nome}, ring the intercom for GiuAdel casa Palermo and we will open the main door remotely. Go up to the 4th floor and enter code 315518 on the keypad next to the door. Your room is n. ${stanza}. Inside the room, hanging on the device that activates the electricity, you will find 3 keys (room, entrance door and street door). During your stay, please always use the keys to get back in.
+Check-in: the room is available from 3:00 PM. Once you arrive at ${struttura.indirizzo || struttura.nome}, ring the intercom for GiuAdel casa Palermo and we will open the main door remotely. Go up to the 4th floor and enter code 315518 on the keypad next to the door. Your room is n. ${stanza}. Inside the room, hanging on the device that activates the electricity, you will find 3 keys (room, entrance door and street door). During your stay, please always use the keys to get back in.
 
 Check-out: The room must be vacated by 11:00 AM. Please leave the keys hanging back on the light-switch device as you found them. For organizational reasons, we unfortunately cannot offer luggage storage after check-out.
 
