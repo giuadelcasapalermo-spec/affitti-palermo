@@ -651,6 +651,39 @@ export async function inserisciRicavoBookingNelFoglio(
   const sheetId = meta.data.sheets?.find((s) => s.properties?.title === tab)?.properties?.sheetId;
   if (sheetId === undefined) return { inserita: false, tab, motivo: 'sheetId non trovato' };
 
+  // Quando la nuova riga è cronologicamente l'ultima del blocco datato (insertBeforeRow ===
+  // null), viene inserita esattamente subito PRIMA della riga di totali che segue. Google
+  // Sheets estende automaticamente i riferimenti di un intervallo (es. SUM(E3:E28)) solo se il
+  // punto di inserimento cade STRETTAMENTE dentro l'intervallo referenziato — inserire subito
+  // dopo l'ultima riga referenziata (qui: subito prima della riga totali) non lo estende, per
+  // cui il nuovo ricavo resterebbe silenziosamente fuori dal totale del mese. Leggiamo quindi
+  // le formule SUM della riga di totali PRIMA di inserire, e dopo l'inserimento le riscriviamo
+  // allargando il limite superiore di un rigo, così da includere la riga appena aggiunta.
+  const totaliDaEstendere: { colonna: string; formula: string }[] = [];
+  if (insertBeforeRow === null && lastDatedRow !== null) {
+    const totRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: sid,
+      range: `'${tab}'!A${rigaInserimento}:O${rigaInserimento}`,
+      valueRenderOption: 'FORMULA',
+    });
+    const totRow = (totRes.data.values?.[0] ?? []) as string[];
+    const tipoTot = String(totRow[0] ?? '').trim();
+    if (tipoTot === '') {
+      const COLONNE = ['B','C','D','E','F','G','H','I','J','K','L','M','N','O'];
+      for (let c = 0; c < COLONNE.length; c++) {
+        const formula = String(totRow[c + 1] ?? '');
+        // Estende solo le SUM il cui estremo superiore è esattamente l'ultima riga datata:
+        // altre SUM più corte nella stessa riga di totali (es. un subtotale "Quantità" che
+        // copre solo le righe di spesa non datate, non l'intero blocco) vanno lasciate
+        // intatte — non coprivano il blocco datato per scelta, non per un limite del range.
+        const m = formula.match(/^=SUM\([A-Z]+(\d+):[A-Z]+(\d+)\)$/i);
+        if (m && Number(m[2]) === lastDatedRow) {
+          totaliDaEstendere.push({ colonna: COLONNE[c], formula });
+        }
+      }
+    }
+  }
+
   if (opts.dryRun) {
     return { inserita: true, tab, riga: rigaInserimento, motivo: 'dry run: nessuna scrittura effettuata' };
   }
@@ -692,6 +725,20 @@ export async function inserisciRicavoBookingNelFoglio(
     valueInputOption: 'USER_ENTERED',
     requestBody: { values: [riga] },
   });
+
+  // Estende di un rigo le SUM catturate prima dell'inserimento (vedi commento sopra): la riga
+  // di totali si è spostata di una posizione insieme a tutto quello che stava sotto di essa.
+  if (totaliDaEstendere.length > 0) {
+    const rigaTotali = rigaInserimento + 1;
+    const updates = totaliDaEstendere.map(({ colonna, formula }) => {
+      const estesa = formula.replace(/(:[A-Z]+)(\d+)\)$/i, (_m, prefisso, num) => `${prefisso}${Number(num) + 1})`);
+      return { range: `'${tab}'!${colonna}${rigaTotali}`, values: [[estesa]] };
+    });
+    await sheets.spreadsheets.values.batchUpdate({
+      spreadsheetId: sid,
+      requestBody: { valueInputOption: 'USER_ENTERED', data: updates },
+    });
+  }
 
   return { inserita: true, tab, riga: r };
 }

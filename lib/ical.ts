@@ -187,6 +187,9 @@ export interface SyncResult {
   rimosse: number;
   errore?: string;
   nuove?: Prenotazione[];
+  /** Prenotazioni che erano 'cancellata' e il cui UID e' ricomparso nel feed: come le nuove,
+   *  hanno bisogno di una riga sul foglio e di essere completate a mano. */
+  riattivate?: Prenotazione[];
 }
 
 // ── UID iCal da ignorare permanentemente (blocchi/prenotazioni fantasma eliminate manualmente) ──
@@ -247,13 +250,12 @@ export async function sincronizzaCalendario(
   const oggi = format(new Date(), 'yyyy-MM-dd');
 
   const daAggiungere: Prenotazione[] = [];
+  const riattivate: Prenotazione[] = [];
   const daAggiornare = new Map<string, Prenotazione>();
 
   for (const ev of eventiRemoti) {
     if (uidIgnorati.has(ev.uid)) continue;
     if (isBloccoGenerico(ev.summary, ev.start, ev.end)) continue; // blocco di disponibilità, non una prenotazione reale
-    const giaPresente = esistentiIcal.find((p) => p.ical_uid === ev.uid);
-    if (giaPresente) continue;
 
     const summaryLower = ev.summary.toLowerCase();
     const ospiteNome =
@@ -267,17 +269,52 @@ export async function sincronizzaCalendario(
     const checkIn = format(ev.start, 'yyyy-MM-dd');
     const checkOut = format(ev.end, 'yyyy-MM-dd');
 
+    // L'UID iCal di Booking.com identifica la finestra camera+periodo, non la singola
+    // prenotazione: se un soggiorno viene cancellato e la stessa camera è riprenotata per le
+    // stesse date, il feed ripubblica lo STESSO UID per un ospite diverso (verificato: le 5
+    // camere del 16-18/10/2026 portano gli UID di una prenotazione cancellata a luglio).
+    // Un UID già presente in locale ma marcato 'cancellata' va quindi riattivato e ripulito
+    // dei dati del vecchio ospite: prima ogni sync lo trovava "già presente" e lo saltava
+    // per sempre, così la prenotazione non compariva mai né in app né sul foglio.
+    const giaPresente = esistentiIcal.find((p) => p.ical_uid === ev.uid);
+    if (giaPresente) {
+      if (giaPresente.stato === 'cancellata') {
+        const precedente = [
+          giaPresente.ospite_nome,
+          giaPresente.importo_totale ? `€ ${giaPresente.importo_totale}` : '',
+        ].filter(Boolean).join(' ');
+        const riattivata: Prenotazione = {
+          ...giaPresente,
+          ospite_nome: ospiteNome,
+          ospite_telefono: '',
+          ospite_email: '',
+          check_in: checkIn,
+          check_out: checkOut,
+          importo_totale: 0,
+          tassa_soggiorno: undefined,
+          stato: 'confermata',
+          note: `Importata da Booking.com (iCal) — riattivata${precedente ? `, prima era: ${precedente}` : ''}`,
+        };
+        daAggiornare.set(giaPresente.id, riattivata);
+        riattivate.push(riattivata);
+      }
+      continue;
+    }
+
     const rinominata = orfane.find(
       (p) => !orfaneRiassegnate.has(p.id) && p.check_in === checkIn && p.check_out === checkOut
     );
     if (rinominata) {
       orfaneRiassegnate.add(rinominata.id);
-      daAggiornare.set(rinominata.id, {
+      const riassegnata: Prenotazione = {
         ...rinominata,
         ospite_nome: ospiteNome,
         ical_uid: ev.uid,
         stato: rinominata.stato === 'cancellata' ? 'confermata' : rinominata.stato,
-      });
+      };
+      daAggiornare.set(rinominata.id, riassegnata);
+      // Se era cancellata, per il foglio è a tutti gli effetti una prenotazione nuova
+      if (rinominata.stato === 'cancellata') riattivate.push(riassegnata);
       continue;
     }
 
@@ -333,6 +370,7 @@ export async function sincronizzaCalendario(
     aggiunte: daAggiungere.length,
     rimosse,
     nuove: daAggiungere,
+    riattivate,
   };
 }
 
